@@ -4,8 +4,12 @@ import Projects from "./pages/Projects"
 import Home from "./pages/Home"
 import Games from "./pages/Games"
 import Contact from "./pages/Contact"
+import { useVisit } from "./hooks/useVisit"
 
 function App() {
+
+  useVisit()
+
   return (
     <div>
       <h1>Mam Portfolio</h1>
