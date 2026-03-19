@@ -1,37 +1,42 @@
-import { useEffect, useState } from "react"
-import { api } from "../services/api"
+import { useApiData } from "../hooks/useApiData"
 
 function Home() {
+  const { data: profile, isLoading, error } = useApiData("/profile", null)
 
-  const [profile, setProfile] = useState(null)
+  if (isLoading) {
+    return <div className="status-panel">Loading profile...</div>
+  }
 
-  useEffect(() => {
-    api.get("/profile")
-      .then(res => {
-        setProfile(res.data)
-      })
-      .catch(err => {
-        console.error(err)
-      })
-  }, [])
+  if (error) {
+    return <div className="status-panel is-error">{error}</div>
+  }
 
-  if (!profile) return <div>Loading...</div>
+  if (!profile) {
+    return <div className="status-panel">No profile data found.</div>
+  }
 
   return (
-    <div>
-      <h2>{profile.name}</h2>
-      <p>{profile.title}</p>
+    <section className="page-section">
+      <div className="section-heading">
+        <p className="section-label">Profile</p>
+        <h2>{profile.name}</h2>
+        <p className="lead-copy">{profile.title}</p>
+      </div>
 
-      <p>Email: {profile.email}</p>
+      <div className="info-grid">
+        <article className="info-card">
+          <p className="info-label">Email</p>
+          <a href={`mailto:${profile.email}`}>{profile.email}</a>
+        </article>
 
-      <p>
-        Github: 
-        <a href={profile.github} target="_blank">
-          {profile.github}
-        </a>
-      </p>
-
-    </div>
+        <article className="info-card">
+          <p className="info-label">GitHub</p>
+          <a href={profile.github} target="_blank" rel="noreferrer">
+            {profile.github}
+          </a>
+        </article>
+      </div>
+    </section>
   )
 }
 

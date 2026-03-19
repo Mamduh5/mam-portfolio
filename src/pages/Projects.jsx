@@ -1,33 +1,23 @@
-import { useEffect, useState } from "react"
-import { api } from "../services/api"
+import ProjectList from "../components/ProjectList"
+import { useApiData } from "../hooks/useApiData"
 
 function Projects() {
+  const { data: projects = [], isLoading, error } = useApiData("/projects", [])
 
-  const [projects, setProjects] = useState([])
+  if (isLoading) {
+    return <div className="status-panel">Loading projects...</div>
+  }
 
-  useEffect(() => {
-
-    const fetchProjects = async () => {
-      const res = await api.get("/projects")
-      setProjects(res.data)
-    }
-
-    fetchProjects()
-
-  }, [])
+  if (error) {
+    return <div className="status-panel is-error">{error}</div>
+  }
 
   return (
-    <div>
-      <h2>Projects</h2>
-
-      {projects.map(project => (
-        <div key={project._id}>
-          <h3>{project.name}</h3>
-          <p>{project.description}</p>
-        </div>
-      ))}
-
-    </div>
+    <ProjectList
+      title="Projects"
+      items={projects}
+      emptyMessage="No projects have been added yet."
+    />
   )
 }
 

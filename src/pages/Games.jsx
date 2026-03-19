@@ -1,33 +1,23 @@
-import { useEffect, useState } from "react"
-import { api } from "../services/api"
+import ProjectList from "../components/ProjectList"
+import { useApiData } from "../hooks/useApiData"
 
 function Games() {
+  const { data: games = [], isLoading, error } = useApiData("/projects?type=game", [])
 
-  const [games, setGames] = useState([])
+  if (isLoading) {
+    return <div className="status-panel">Loading games...</div>
+  }
 
-  useEffect(() => {
-
-    const fetchGames = async () => {
-      const res = await api.get("/projects?type=game")
-      setGames(res.data)
-    }
-
-    fetchGames()
-
-  }, [])
+  if (error) {
+    return <div className="status-panel is-error">{error}</div>
+  }
 
   return (
-    <div>
-      <h2>Games</h2>
-
-      {games.map(game => (
-        <div key={game._id}>
-          <h3>{game.name}</h3>
-          <p>{game.description}</p>
-        </div>
-      ))}
-
-    </div>
+    <ProjectList
+      title="Games"
+      items={games}
+      emptyMessage="No games have been added yet."
+    />
   )
 }
 
