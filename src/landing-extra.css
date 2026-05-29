@@ -13,13 +13,42 @@
   border-radius: 999px;
 }
 
+.landing-canvas {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(300px, 0.55fr);
+  gap: 18px;
+  min-height: calc(100svh - 98px);
+}
+
+.landing-primary {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  gap: 16px;
+  min-width: 0;
+}
+
+.landing-primary .command-hero {
+  align-content: center;
+  min-height: clamp(430px, calc(100svh - 230px), 680px);
+}
+
+.landing-primary .command-hero__copy,
+.landing-primary .command-hero__body {
+  max-width: 880px;
+}
+
+.landing-primary .command-hero h1 {
+  font-size: clamp(54px, 6vw, 96px);
+}
+
 .landing-summary {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
 }
 
-.landing-summary div {
+.landing-summary div,
+.landing-side-card {
   padding: 18px;
   background: rgba(16, 27, 51, 0.7);
   border: 1px solid rgba(45, 72, 111, 0.72);
@@ -56,8 +85,72 @@
   box-shadow: var(--shadow);
 }
 
-@media (max-width: 860px) {
-  .landing-summary {
+.landing-side {
+  display: grid;
+  grid-template-rows: 1.2fr 1fr 1fr;
+  gap: 14px;
+  min-width: 0;
+}
+
+.landing-side-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 0;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(18px);
+}
+
+.landing-side-card--feature {
+  border-color: rgba(63, 235, 255, 0.36);
+  background:
+    linear-gradient(145deg, rgba(63, 235, 255, 0.12), transparent 42%),
+    rgba(16, 27, 51, 0.72);
+}
+
+.landing-side-card--quiet {
+  background: rgba(16, 27, 51, 0.52);
+}
+
+.landing-side-card h2 {
+  margin-bottom: 8px;
+  color: var(--foreground);
+  font-size: clamp(22px, 2vw, 30px);
+  line-height: 1;
+  letter-spacing: -0.05em;
+}
+
+.landing-side-card p {
+  color: var(--muted-foreground);
+}
+
+@media (max-width: 1180px) {
+  .landing-canvas {
     grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  .landing-primary .command-hero {
+    min-height: 380px;
+  }
+
+  .landing-side {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: auto;
+  }
+
+  .landing-side-card {
+    min-height: 180px;
+  }
+}
+
+@media (max-width: 860px) {
+  .landing-summary,
+  .landing-side {
+    grid-template-columns: 1fr;
+  }
+
+  .landing-primary .command-hero {
+    min-height: auto;
   }
 }
