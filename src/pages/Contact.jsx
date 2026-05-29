@@ -1,63 +1,30 @@
-import { useState } from "react"
-import { api } from "../services/api"
+import CommandHero from "../components/CommandHero"
+import RouteChip from "../components/RouteChip"
+import SecureContactForm from "../components/SecureContactForm"
 
 function Contact() {
-
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    message: ""
-  })
-
-  const handleChange = (e) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value
-    })
-  }
-
-  const handleSubmit = (e) => {
-    e.preventDefault()
-
-    api.post("/messages", form)
-      .then(() => {
-        alert("Message sent")
-      })
-      .catch(err => {
-        console.error(err)
-      })
-  }
-
   return (
-    <div>
-      <h2>Contact</h2>
+    <div className="page-stack">
+      <CommandHero
+        eyebrow={<RouteChip method="POST" path="/messages" />}
+        title="Secure uplink"
+        description="Send a direct message through the public contact endpoint."
+      >
+        <SecureContactForm />
+      </CommandHero>
 
-      <form onSubmit={handleSubmit}>
-
-        <input
-          name="name"
-          placeholder="Name"
-          onChange={handleChange}
-        />
-
-        <input
-          name="email"
-          placeholder="Email"
-          onChange={handleChange}
-        />
-
-        <textarea
-          name="message"
-          placeholder="Message"
-          onChange={handleChange}
-        />
-
-        <button type="submit">
-          Send
-        </button>
-
-      </form>
-
+      <section className="bento-grid bento-grid--two" aria-label="Contact support cards">
+        <article className="bento-card bento-card--focus">
+          <span className="card-kicker">Contact protocol</span>
+          <h2>Form first, status second</h2>
+          <p>Inline sent/error states replace browser alerts and preserve the message on failure.</p>
+        </article>
+        <article className="bento-card bento-card--quiet">
+          <span className="card-kicker">Inbox preview</span>
+          <h2>Admin later</h2>
+          <p>Message management can remain private and should not clutter the public route.</p>
+        </article>
+      </section>
     </div>
   )
 }
