@@ -5,6 +5,7 @@ import App from "./App.jsx"
 import "./index.css"
 import "./landing-extra.css"
 import "./admin.css"
+import "./ui-polish.css"
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
