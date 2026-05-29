@@ -1,10 +1,11 @@
 import { NavLink } from "react-router-dom"
 
 const navItems = [
-  { to: "/", label: "Home", short: "H" },
-  { to: "/projects", label: "Work", short: "W" },
-  { to: "/games", label: "Games", short: "G" },
-  { to: "/contact", label: "Link", short: "L" }
+  { to: "/", label: "Home" },
+  { to: "/profile", label: "Profile" },
+  { to: "/projects", label: "Work" },
+  { to: "/games", label: "Games" },
+  { to: "/contact", label: "Link" }
 ]
 
 function ConsoleShell({ children }) {
