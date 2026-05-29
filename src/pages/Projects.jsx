@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react"
+import { Link } from "react-router-dom"
 import { api } from "../services/api"
 import CommandHero from "../components/CommandHero"
 import ProjectMissionCard from "../components/ProjectMissionCard"
@@ -49,26 +50,42 @@ function Projects() {
   if (error) {
     return (
       <CommandHero
+        className="page-compact-hero"
         eyebrow={<RouteChip method="GET" path="/projects" />}
-        title="Mission archive unavailable"
-        description="The project endpoint did not respond. Keep the UI shell stable and retry when the API is online."
+        title="Work unavailable"
+        description="The project endpoint did not respond. Try again when the API is online."
       />
     )
   }
 
   if (projects.length === 0) {
     return (
-      <CommandHero
-        eyebrow={<RouteChip method="GET" path="/projects" />}
-        title="Work archive"
-        description="Add your first project to activate the mission board."
-      />
+      <div className="empty-state-grid">
+        <CommandHero
+          className="page-compact-hero"
+          eyebrow={<RouteChip method="GET" path="/projects" />}
+          title="Work archive"
+          description="Projects will appear here after they are added from the owner dashboard."
+          actions={<Link className="button button--secondary" to="/profile">View Profile</Link>}
+        />
+        <article className="empty-state-card">
+          <span className="card-kicker">Coming next</span>
+          <h2>No public projects yet</h2>
+          <p>This route is ready. Add projects in Admin → Projects when you want to publish work.</p>
+          <div className="empty-state-list">
+            <span>Supports project and game types</span>
+            <span>Public read, owner-only edits</span>
+            <span>Image, demo, repo, and stack fields</span>
+          </div>
+        </article>
+      </div>
     )
   }
 
   return (
     <div className="page-stack">
       <CommandHero
+        className="page-compact-hero"
         eyebrow={<RouteChip method="GET" path="/projects" />}
         title="Work archive"
         description="Featured mission board for selected portfolio builds."
