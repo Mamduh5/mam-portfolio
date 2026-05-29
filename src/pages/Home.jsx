@@ -1,94 +1,63 @@
-import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
-import { api } from "../services/api"
 import CommandHero from "../components/CommandHero"
-import RouteChip from "../components/RouteChip"
+
+const skills = [
+  "React interfaces",
+  "Express APIs",
+  "MongoDB data models",
+  "Portfolio systems",
+  "Game experiments",
+  "Deployment workflows"
+]
 
 function Home() {
-  const [profile, setProfile] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(false)
-
-  useEffect(() => {
-    api.get("/profile")
-      .then(res => {
-        setProfile(res.data)
-        setError(false)
-      })
-      .catch(err => {
-        console.error(err)
-        setError(true)
-      })
-      .finally(() => setLoading(false))
-  }, [])
-
-  if (loading) {
-    return (
-      <div className="page-stack">
-        <div className="skeleton skeleton--hero" />
-        <div className="bento-grid bento-grid--two">
-          <div className="skeleton" />
-          <div className="skeleton" />
-        </div>
-      </div>
-    )
-  }
-
-  if (error || !profile) {
-    return (
-      <CommandHero
-        eyebrow={<RouteChip method="GET" path="/profile" />}
-        title="Profile signal unavailable"
-        description="The portfolio shell is online, but the profile endpoint did not respond. Check the API connection and retry."
-      />
-    )
-  }
-
   return (
     <div className="page-stack">
       <CommandHero
-        eyebrow={<RouteChip method="GET" path="/profile" />}
-        title={profile.name || "Mam Portfolio"}
-        description={profile.title || "Full-stack builder"}
+        eyebrow={<span className="static-chip">Static landing / no API</span>}
+        title="Mam Portfolio"
+        description="Full-stack builder focused on clean React frontends, Express backends, practical game projects, and deployable portfolio systems."
         actions={(
           <>
             <Link className="button button--primary" to="/projects">View Projects</Link>
-            {profile.github && (
-              <a className="button button--secondary" href={profile.github} target="_blank" rel="noreferrer">
-                Open GitHub
-              </a>
-            )}
+            <Link className="button button--secondary" to="/contact">Contact</Link>
           </>
         )}
       >
-        <div className="identity-grid">
+        <div className="landing-summary">
           <div>
-            <span>Email</span>
-            <strong>{profile.email || "Not published"}</strong>
+            <span>Primary stack</span>
+            <strong>React + Express + MongoDB</strong>
           </div>
           <div>
-            <span>Stack signal</span>
-            <strong>React + Express</strong>
+            <span>Build mode</span>
+            <strong>Clean UI, working API, deploy-ready</strong>
           </div>
         </div>
       </CommandHero>
 
-      <section className="bento-grid bento-grid--three" aria-label="Profile support cards">
+      <section className="bento-grid bento-grid--three" aria-label="Skills and info">
         <article className="bento-card">
-          <span className="card-kicker">Current signal</span>
-          <h2>Available for build work</h2>
-          <p>Public portfolio stays focused on identity, routes, and project proof.</p>
+          <span className="card-kicker">Skill signal</span>
+          <h2>Frontend craft</h2>
+          <p>Cyber-console UI, route structure, reusable components, loading states, and public-first presentation.</p>
         </article>
         <article className="bento-card">
-          <span className="card-kicker">Route map</span>
-          <h2>Projects / Games / Contact</h2>
-          <p>Each page uses one dominant command panel with quieter supporting cards.</p>
+          <span className="card-kicker">Backend logic</span>
+          <h2>API systems</h2>
+          <p>Express endpoints, MongoDB repositories, authentication planning, file upload flows, and admin-only surfaces.</p>
         </article>
         <article className="bento-card bento-card--quiet">
-          <span className="card-kicker">Telemetry</span>
-          <h2>Visit hook active</h2>
-          <p>Admin signals stay secondary so the public experience remains clean.</p>
+          <span className="card-kicker">No data dependency</span>
+          <h2>Landing stays fast</h2>
+          <p>This page is static and does not depend on profile or project API availability.</p>
         </article>
+      </section>
+
+      <section className="skill-cluster" aria-label="Technology skills">
+        {skills.map(skill => (
+          <span key={skill}>{skill}</span>
+        ))}
       </section>
     </div>
   )
