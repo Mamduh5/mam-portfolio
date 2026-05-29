@@ -4,6 +4,7 @@ import { BrowserRouter } from "react-router-dom"
 import App from "./App.jsx"
 import "./index.css"
 import "./landing-extra.css"
+import "./admin.css"
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
