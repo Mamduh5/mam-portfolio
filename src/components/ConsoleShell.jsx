@@ -10,30 +10,31 @@ const navItems = [
 function ConsoleShell({ children }) {
   return (
     <div className="console-shell">
-      <aside className="console-rail" aria-label="Portfolio navigation">
-        <div className="console-rail__brand">MAM</div>
-        <nav>
+      <header className="console-topbar">
+        <NavLink className="console-brand" to="/" aria-label="Mam Portfolio home">
+          MAM
+        </NavLink>
+
+        <nav className="console-nav" aria-label="Portfolio navigation">
           {navItems.map(item => (
             <NavLink
               key={item.to}
               to={item.to}
               end={item.to === "/"}
-              className={({ isActive }) => `rail-link${isActive ? " rail-link--active" : ""}`}
-              aria-label={item.label}
+              className={({ isActive }) => `console-nav__link${isActive ? " console-nav__link--active" : ""}`}
             >
-              <span>{item.short}</span>
-              <small>{item.label}</small>
+              {item.label}
             </NavLink>
           ))}
         </nav>
-      </aside>
 
-      <main className="console-main">
-        <header className="console-status" aria-label="Portfolio status">
+        <div className="console-status-pill" aria-label="Portfolio status">
           <span className="status-light" />
           <span>PUBLIC PORTFOLIO ONLINE</span>
-          <span className="console-status__endpoint">visit hook active</span>
-        </header>
+        </div>
+      </header>
+
+      <main className="console-main">
         {children}
       </main>
     </div>
