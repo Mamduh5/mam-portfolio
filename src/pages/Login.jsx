@@ -25,7 +25,7 @@ function Login() {
     try {
       await login(form)
       setStatus("sent")
-      navigate("/projects")
+      navigate("/admin", { replace: true })
     } catch (err) {
       console.error(err)
       setStatus("error")
