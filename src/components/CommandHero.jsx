@@ -1,6 +1,6 @@
-function CommandHero({ eyebrow, title, description, children, actions }) {
+function CommandHero({ eyebrow, title, description, children, actions, className = "" }) {
   return (
-    <section className="command-hero">
+    <section className={`command-hero${className ? ` ${className}` : ""}`}>
       {eyebrow && <div className="command-hero__eyebrow">{eyebrow}</div>}
       <div className="command-hero__copy">
         <h1>{title}</h1>
