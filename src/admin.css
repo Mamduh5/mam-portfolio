@@ -1,0 +1,125 @@
+.admin-shell {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  width: min(1220px, 100%);
+  min-height: 100svh;
+  padding: 32px 24px 72px;
+  margin: 0 auto;
+  gap: 22px;
+}
+
+.admin-sidebar {
+  position: sticky;
+  top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  height: calc(100svh - 48px);
+  padding: 22px;
+  background: rgba(5, 9, 18, 0.72);
+  border: 1px solid rgba(45, 72, 111, 0.72);
+  border-radius: 28px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(18px);
+}
+
+.admin-kicker {
+  display: block;
+  margin-bottom: 10px;
+  color: var(--focus);
+  font: 800 11px/1 var(--font-mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.admin-sidebar h1 {
+  margin-bottom: 8px;
+  color: var(--foreground);
+  font-size: 36px;
+  line-height: 0.95;
+  letter-spacing: -0.06em;
+}
+
+.admin-sidebar p {
+  color: var(--muted-foreground);
+}
+
+.admin-nav {
+  display: grid;
+  gap: 10px;
+}
+
+.admin-nav__link {
+  display: flex;
+  align-items: center;
+  min-height: 46px;
+  padding: 0 14px;
+  color: var(--muted-foreground);
+  font-weight: 800;
+  background: rgba(16, 27, 51, 0.52);
+  border: 1px solid rgba(45, 72, 111, 0.58);
+  border-radius: 16px;
+  transition: border-color 160ms ease, color 160ms ease, background 160ms ease, transform 160ms ease;
+}
+
+.admin-nav__link:hover,
+.admin-nav__link--active {
+  color: var(--primary);
+  background: rgba(63, 235, 255, 0.1);
+  border-color: rgba(63, 235, 255, 0.45);
+  transform: translateY(-1px);
+}
+
+.admin-logout {
+  margin-top: auto;
+}
+
+.admin-main {
+  min-width: 0;
+}
+
+.admin-auth-check {
+  width: min(920px, 100%);
+  min-height: 100svh;
+  padding: 32px 24px;
+  margin: 0 auto;
+}
+
+.admin-hero {
+  border-color: rgba(255, 77, 182, 0.34);
+  background:
+    linear-gradient(135deg, rgba(255, 77, 182, 0.11), transparent 32%),
+    linear-gradient(180deg, rgba(12, 20, 38, 0.96), rgba(5, 9, 18, 0.94));
+}
+
+.admin-card-link {
+  display: block;
+  transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+}
+
+.admin-card-link:hover {
+  border-color: rgba(63, 235, 255, 0.42);
+  background: rgba(16, 27, 51, 0.8);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 900px) {
+  .admin-shell {
+    grid-template-columns: 1fr;
+    padding: 18px 14px 56px;
+  }
+
+  .admin-sidebar {
+    position: relative;
+    top: 0;
+    height: auto;
+  }
+
+  .admin-nav {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .admin-logout {
+    margin-top: 0;
+  }
+}
