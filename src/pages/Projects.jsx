@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react"
-import { Link } from "react-router-dom"
 import { api } from "../services/api"
 import CommandHero from "../components/CommandHero"
 import ProjectMissionCard from "../components/ProjectMissionCard"
@@ -65,15 +64,14 @@ function Projects() {
           className="page-compact-hero"
           eyebrow={<RouteChip method="GET" path="/projects" />}
           title="Work archive"
-          description="Projects will appear here after they are added from the owner dashboard."
-          actions={<Link className="button button--secondary" to="/profile">View Profile</Link>}
+          description="Projects will appear here after they are published from the owner dashboard."
         />
         <article className="empty-state-card">
           <span className="card-kicker">Coming next</span>
           <h2>No public projects yet</h2>
-          <p>This route is ready. Add projects in Admin → Projects when you want to publish work.</p>
+          <p>This route is only for project cards. Profile and personal information live on the dedicated Profile route.</p>
           <div className="empty-state-list">
-            <span>Supports project and game types</span>
+            <span>Project and game records only</span>
             <span>Public read, owner-only edits</span>
             <span>Image, demo, repo, and stack fields</span>
           </div>
