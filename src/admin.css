@@ -103,6 +103,115 @@
   transform: translateY(-2px);
 }
 
+.admin-crud-grid {
+  display: grid;
+  grid-template-columns: minmax(280px, 420px) minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.admin-crud-grid--single {
+  grid-template-columns: minmax(280px, 520px) minmax(0, 1fr);
+}
+
+.admin-panel,
+.admin-list-card {
+  padding: 20px;
+  background: rgba(12, 20, 38, 0.78);
+  border: 1px solid rgba(45, 72, 111, 0.72);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(18px);
+}
+
+.admin-panel select,
+.admin-panel input[type="file"] {
+  width: 100%;
+  color: var(--foreground);
+  background: rgba(5, 9, 18, 0.7);
+  border: 1px solid rgba(45, 72, 111, 0.8);
+  border-radius: 18px;
+  outline: 0;
+  padding: 14px 16px;
+}
+
+.admin-panel select:focus,
+.admin-panel input[type="file"]:focus {
+  border-color: rgba(255, 77, 182, 0.72);
+  box-shadow: 0 0 0 4px rgba(255, 77, 182, 0.1);
+}
+
+.admin-profile-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.admin-form-full {
+  grid-column: 1 / -1;
+}
+
+.admin-list {
+  display: grid;
+  gap: 14px;
+}
+
+.admin-list-card {
+  display: grid;
+  gap: 14px;
+}
+
+.admin-list-card--unread {
+  border-color: rgba(255, 77, 182, 0.42);
+}
+
+.admin-list-card__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.admin-list-card h2 {
+  margin-bottom: 6px;
+  color: var(--foreground);
+  font-size: 22px;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+}
+
+.admin-list-card p,
+.admin-upload-result p {
+  color: var(--muted-foreground);
+  overflow-wrap: anywhere;
+}
+
+.admin-list-card small,
+.admin-upload-result small {
+  color: var(--dim-foreground);
+  font: 700 11px/1.4 var(--font-mono);
+}
+
+.admin-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.admin-checkbox {
+  display: flex !important;
+  align-items: center;
+  grid-template-columns: auto !important;
+  gap: 10px !important;
+}
+
+.admin-checkbox input {
+  width: auto;
+}
+
+.admin-upload-result {
+  align-self: start;
+}
+
 @media (max-width: 900px) {
   .admin-shell {
     grid-template-columns: 1fr;
@@ -121,5 +230,11 @@
 
   .admin-logout {
     margin-top: 0;
+  }
+
+  .admin-crud-grid,
+  .admin-crud-grid--single,
+  .admin-profile-form {
+    grid-template-columns: 1fr;
   }
 }
