@@ -1,9 +1,11 @@
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import {
   createFocusSnapshot,
+  fetchActivityEvents,
   fetchFocusCurrent,
   fetchFocusSnapshots,
   fetchProjects,
+  syncGitHubActivity,
   updateFocusCurrent
 } from "../../services/admin"
 
@@ -58,11 +60,15 @@ function AdminFocus() {
   const [form, setForm] = useState(emptyFocusForm)
   const [projects, setProjects] = useState([])
   const [snapshots, setSnapshots] = useState([])
+  const [activityEvents, setActivityEvents] = useState([])
   const [latestDailySnapshot, setLatestDailySnapshot] = useState(null)
   const [latestWeeklySnapshot, setLatestWeeklySnapshot] = useState(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [snapshotting, setSnapshotting] = useState(false)
+  const [syncingGithub, setSyncingGithub] = useState(false)
+  const [syncResult, setSyncResult] = useState(null)
+  const [syncError, setSyncError] = useState("")
   const [error, setError] = useState("")
   const [success, setSuccess] = useState("")
 
@@ -74,35 +80,49 @@ function AdminFocus() {
     }))
   }, [projects])
 
-  useEffect(() => {
-    const loadFocus = async () => {
+  const githubActivityEvents = useMemo(() => {
+    return activityEvents.filter(event => event.source === "github")
+  }, [activityEvents])
+
+  const portfolioActivityEvents = useMemo(() => {
+    return activityEvents.filter(event => event.source === "portfolio")
+  }, [activityEvents])
+
+  const loadFocus = useCallback(async ({ showLoading = true } = {}) => {
+    if (showLoading) {
       setLoading(true)
-      setError("")
+    }
+    setError("")
 
-      try {
-        const [current, snapshotData, projectData, dailySnapshotData, weeklySnapshotData] = await Promise.all([
-          fetchFocusCurrent(),
-          fetchFocusSnapshots({ limit: 20 }),
-          fetchProjects(),
-          fetchFocusSnapshots({ type: "daily", limit: 1 }),
-          fetchFocusSnapshots({ type: "weekly", limit: 1 })
-        ])
+    try {
+      const [current, snapshotData, projectData, dailySnapshotData, weeklySnapshotData, activityData] = await Promise.all([
+        fetchFocusCurrent(),
+        fetchFocusSnapshots({ limit: 20 }),
+        fetchProjects(),
+        fetchFocusSnapshots({ type: "daily", limit: 1 }),
+        fetchFocusSnapshots({ type: "weekly", limit: 1 }),
+        fetchActivityEvents({ limit: 30 })
+      ])
 
-        setForm(toForm(current || {}))
-        setSnapshots(Array.isArray(snapshotData) ? snapshotData : [])
-        setProjects(Array.isArray(projectData) ? projectData : [])
-        setLatestDailySnapshot(Array.isArray(dailySnapshotData) ? dailySnapshotData[0] || null : null)
-        setLatestWeeklySnapshot(Array.isArray(weeklySnapshotData) ? weeklySnapshotData[0] || null : null)
-      } catch (err) {
-        console.error(err)
-        setError(err.response?.data?.error || "Failed to load focus dashboard.")
-      } finally {
+      setForm(toForm(current || {}))
+      setSnapshots(Array.isArray(snapshotData) ? snapshotData : [])
+      setProjects(Array.isArray(projectData) ? projectData : [])
+      setLatestDailySnapshot(Array.isArray(dailySnapshotData) ? dailySnapshotData[0] || null : null)
+      setLatestWeeklySnapshot(Array.isArray(weeklySnapshotData) ? weeklySnapshotData[0] || null : null)
+      setActivityEvents(Array.isArray(activityData) ? activityData : [])
+    } catch (err) {
+      console.error(err)
+      setError(err.response?.data?.error || "Failed to load focus dashboard.")
+    } finally {
+      if (showLoading) {
         setLoading(false)
       }
     }
-
-    loadFocus()
   }, [])
+
+  useEffect(() => {
+    loadFocus()
+  }, [loadFocus])
 
   const handleChange = (event) => {
     setForm({
@@ -112,8 +132,17 @@ function AdminFocus() {
   }
 
   const refreshSnapshots = async () => {
-    const snapshotData = await fetchFocusSnapshots({ limit: 20 })
+    const [snapshotData, dailySnapshotData, weeklySnapshotData, activityData] = await Promise.all([
+      fetchFocusSnapshots({ limit: 20 }),
+      fetchFocusSnapshots({ type: "daily", limit: 1 }),
+      fetchFocusSnapshots({ type: "weekly", limit: 1 }),
+      fetchActivityEvents({ limit: 30 })
+    ])
+
     setSnapshots(Array.isArray(snapshotData) ? snapshotData : [])
+    setLatestDailySnapshot(Array.isArray(dailySnapshotData) ? dailySnapshotData[0] || null : null)
+    setLatestWeeklySnapshot(Array.isArray(weeklySnapshotData) ? weeklySnapshotData[0] || null : null)
+    setActivityEvents(Array.isArray(activityData) ? activityData : [])
   }
 
   const handleSubmit = async (event) => {
@@ -126,6 +155,7 @@ function AdminFocus() {
       const updated = await updateFocusCurrent(toPayload(form))
       setForm(toForm(updated))
       setSuccess("Focus saved.")
+      await refreshSnapshots()
     } catch (err) {
       console.error(err)
       setError(err.response?.data?.error || "Failed to save focus.")
@@ -150,6 +180,50 @@ function AdminFocus() {
     } finally {
       setSnapshotting(false)
     }
+  }
+
+  const handleGitHubSync = async () => {
+    setSyncingGithub(true)
+    setError("")
+    setSuccess("")
+    setSyncResult(null)
+    setSyncError("")
+
+    try {
+      const result = await syncGitHubActivity()
+      setSyncResult(result)
+      setSuccess("GitHub activity sync completed.")
+      await loadFocus({ showLoading: false })
+    } catch (err) {
+      console.error(err)
+      setSyncError(err.response?.data?.error || "Failed to sync GitHub activity.")
+    } finally {
+      setSyncingGithub(false)
+    }
+  }
+
+  const renderActivityList = (events, emptyCopy) => {
+    if (events.length === 0) {
+      return (
+        <article className="admin-list-card">
+          <span className="card-kicker">Empty</span>
+          <p>{emptyCopy}</p>
+        </article>
+      )
+    }
+
+    return events.map(event => (
+      <article className="admin-list-card" key={event.id}>
+        <div className="admin-list-card__header">
+          <div>
+            <span className="card-kicker">{event.eventType || event.event_type}</span>
+            <h2>{event.title}</h2>
+          </div>
+          <small>{formatDate(event.occurredAt || event.occurred_at)}</small>
+        </div>
+        {(event.repoFullName || event.repo_full_name) && <p>{event.repoFullName || event.repo_full_name}</p>}
+      </article>
+    ))
   }
 
   return (
@@ -189,6 +263,35 @@ function AdminFocus() {
                 <p>No weekly snapshot yet.</p>
               )}
             </article>
+          </section>
+
+          <section className="page-stack" aria-label="Observed activity">
+            <article className="admin-panel admin-focus-summary">
+              <span className="card-kicker">Observed activity</span>
+              <h2>Declared focus vs observed activity</h2>
+              <p>Declared focus = what you said you planned. Observed activity = what the system detected from GitHub and portfolio actions.</p>
+              <div className="admin-actions">
+                <button className="button button--secondary" type="button" onClick={handleGitHubSync} disabled={syncingGithub}>
+                  {syncingGithub ? "Syncing..." : "Sync GitHub activity now"}
+                </button>
+              </div>
+              {syncResult && (
+                <p className="form-status">
+                  GitHub sync scanned {syncResult.reposScanned || 0} repos, inserted {syncResult.eventsInserted || 0} events, errors {(syncResult.errors || []).length}.
+                </p>
+              )}
+              {syncError && <p className="form-status form-status--error">{syncError}</p>}
+            </article>
+            <div className="bento-grid bento-grid--two">
+              <section className="admin-list" aria-label="GitHub activity">
+                <span className="card-kicker">GitHub</span>
+                {renderActivityList(githubActivityEvents, "No GitHub activity events yet.")}
+              </section>
+              <section className="admin-list" aria-label="Portfolio activity">
+                <span className="card-kicker">Portfolio</span>
+                {renderActivityList(portfolioActivityEvents, "No portfolio activity events yet.")}
+              </section>
+            </div>
           </section>
 
           <section className="admin-crud-grid admin-focus-grid">

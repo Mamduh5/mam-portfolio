@@ -81,3 +81,16 @@ export const createFocusSnapshot = async (payload) => {
   const res = await api.post("/focus/snapshots", payload, authConfig())
   return res.data
 }
+
+export const fetchActivityEvents = async (params = {}) => {
+  const res = await api.get("/activity/events", {
+    ...authConfig(),
+    params
+  })
+  return res.data
+}
+
+export const syncGitHubActivity = async (payload = {}) => {
+  const res = await api.post("/activity/sync/github", payload, authConfig())
+  return res.data
+}
