@@ -5,7 +5,8 @@ const cards = [
   { title: "Messages", copy: "Review contact messages after B4 exposes owner-only message management.", to: "/admin/messages" },
   { title: "Projects", copy: "Prepare project and game management screens for Sprint F3 CRUD wiring.", to: "/admin/projects" },
   { title: "Profile", copy: "Plan owner-only profile edits while keeping public reads available.", to: "/admin/profile" },
-  { title: "Uploads", copy: "Use protected upload flow after the backend upload contract is finalized.", to: "/admin/uploads" }
+  { title: "Uploads", copy: "Use protected upload flow after the backend upload contract is finalized.", to: "/admin/uploads" },
+  { title: "Focus", copy: "Track active work, parked projects, and weekly attention without changing public portfolio routes.", to: "/admin/focus" }
 ]
 
 function AdminOverview() {

@@ -58,3 +58,26 @@ export const uploadImage = async (file) => {
 
   return res.data
 }
+
+export const fetchFocusCurrent = async () => {
+  const res = await api.get("/focus/current", authConfig())
+  return res.data
+}
+
+export const updateFocusCurrent = async (payload) => {
+  const res = await api.patch("/focus/current", payload, authConfig())
+  return res.data
+}
+
+export const fetchFocusSnapshots = async (params = {}) => {
+  const res = await api.get("/focus/snapshots", {
+    ...authConfig(),
+    params
+  })
+  return res.data
+}
+
+export const createFocusSnapshot = async (payload) => {
+  const res = await api.post("/focus/snapshots", payload, authConfig())
+  return res.data
+}

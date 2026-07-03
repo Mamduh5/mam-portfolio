@@ -6,7 +6,8 @@ const adminItems = [
   { to: "/admin/messages", label: "Messages" },
   { to: "/admin/projects", label: "Projects" },
   { to: "/admin/profile", label: "Profile" },
-  { to: "/admin/uploads", label: "Uploads" }
+  { to: "/admin/uploads", label: "Uploads" },
+  { to: "/admin/focus", label: "Focus" }
 ]
 
 function AdminShell() {

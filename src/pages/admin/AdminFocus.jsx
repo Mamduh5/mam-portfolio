@@ -1,0 +1,242 @@
+import { useEffect, useMemo, useState } from "react"
+import {
+  createFocusSnapshot,
+  fetchFocusCurrent,
+  fetchFocusSnapshots,
+  fetchProjects,
+  updateFocusCurrent
+} from "../../services/admin"
+
+const emptyFocusForm = {
+  activeProjectId: "",
+  weeklyMission: "",
+  allowedWork: "",
+  forbiddenWork: "",
+  attentionItems: "",
+  parkedProjects: ""
+}
+
+const toLines = (items) => Array.isArray(items) ? items.join("\n") : ""
+
+const fromLines = (value) => {
+  return value
+    .split("\n")
+    .map(item => item.trim())
+    .filter(Boolean)
+}
+
+const toForm = (focus = {}) => ({
+  activeProjectId: focus.activeProjectId || focus.active_project_id || "",
+  weeklyMission: focus.weeklyMission || focus.weekly_mission || "",
+  allowedWork: toLines(focus.allowedWork || focus.allowed_work),
+  forbiddenWork: toLines(focus.forbiddenWork || focus.forbidden_work),
+  attentionItems: toLines(focus.attentionItems || focus.attention_items),
+  parkedProjects: toLines(focus.parkedProjects || focus.parked_projects)
+})
+
+const toPayload = (form) => ({
+  activeProjectId: form.activeProjectId || null,
+  weeklyMission: form.weeklyMission.trim(),
+  allowedWork: fromLines(form.allowedWork),
+  forbiddenWork: fromLines(form.forbiddenWork),
+  attentionItems: fromLines(form.attentionItems),
+  parkedProjects: fromLines(form.parkedProjects)
+})
+
+const formatDate = (value) => {
+  if (!value) {
+    return "Unknown time"
+  }
+
+  return new Intl.DateTimeFormat(undefined, {
+    dateStyle: "medium",
+    timeStyle: "short"
+  }).format(new Date(value))
+}
+
+function AdminFocus() {
+  const [form, setForm] = useState(emptyFocusForm)
+  const [projects, setProjects] = useState([])
+  const [snapshots, setSnapshots] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+  const [snapshotting, setSnapshotting] = useState(false)
+  const [error, setError] = useState("")
+  const [success, setSuccess] = useState("")
+
+  const projectOptions = useMemo(() => {
+    return projects.map(project => ({
+      id: project.id || project._id,
+      name: project.name,
+      type: project.type || project.project_type || "project"
+    }))
+  }, [projects])
+
+  useEffect(() => {
+    const loadFocus = async () => {
+      setLoading(true)
+      setError("")
+
+      try {
+        const [current, snapshotData, projectData] = await Promise.all([
+          fetchFocusCurrent(),
+          fetchFocusSnapshots({ limit: 20 }),
+          fetchProjects()
+        ])
+
+        setForm(toForm(current || {}))
+        setSnapshots(Array.isArray(snapshotData) ? snapshotData : [])
+        setProjects(Array.isArray(projectData) ? projectData : [])
+      } catch (err) {
+        console.error(err)
+        setError(err.response?.data?.error || "Failed to load focus dashboard.")
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadFocus()
+  }, [])
+
+  const handleChange = (event) => {
+    setForm({
+      ...form,
+      [event.target.name]: event.target.value
+    })
+  }
+
+  const refreshSnapshots = async () => {
+    const snapshotData = await fetchFocusSnapshots({ limit: 20 })
+    setSnapshots(Array.isArray(snapshotData) ? snapshotData : [])
+  }
+
+  const handleSubmit = async (event) => {
+    event.preventDefault()
+    setSaving(true)
+    setError("")
+    setSuccess("")
+
+    try {
+      const updated = await updateFocusCurrent(toPayload(form))
+      setForm(toForm(updated))
+      setSuccess("Focus saved.")
+    } catch (err) {
+      console.error(err)
+      setError(err.response?.data?.error || "Failed to save focus.")
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const handleSnapshot = async () => {
+    setSnapshotting(true)
+    setError("")
+    setSuccess("")
+
+    try {
+      const snapshot = await createFocusSnapshot({ snapshotType: "manual" })
+      setSnapshots(currentSnapshots => [snapshot, ...currentSnapshots].slice(0, 20))
+      setSuccess("Manual snapshot created.")
+      await refreshSnapshots()
+    } catch (err) {
+      console.error(err)
+      setError(err.response?.data?.error || "Failed to create manual snapshot.")
+    } finally {
+      setSnapshotting(false)
+    }
+  }
+
+  return (
+    <div className="page-stack">
+      <section className="command-hero admin-hero">
+        <span className="static-chip">GET /focus/current</span>
+        <div className="command-hero__copy">
+          <h1>Focus</h1>
+          <p>Track current mission, allowed work, forbidden work, attention items, and parked projects.</p>
+        </div>
+      </section>
+
+      {loading && <div className="skeleton" />}
+
+      {!loading && (
+        <section className="admin-crud-grid admin-focus-grid">
+          <form className="secure-form admin-panel admin-focus-form" onSubmit={handleSubmit}>
+            <span className="card-kicker">Current focus</span>
+            <label>
+              Active project
+              <select name="activeProjectId" value={form.activeProjectId} onChange={handleChange}>
+                <option value="">No active project</option>
+                {projectOptions.map(project => (
+                  <option key={project.id} value={project.id}>
+                    {project.name} ({project.type})
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              Weekly mission
+              <textarea name="weeklyMission" value={form.weeklyMission} onChange={handleChange} rows="4" />
+            </label>
+            <label>
+              Allowed work
+              <textarea name="allowedWork" value={form.allowedWork} onChange={handleChange} rows="5" />
+            </label>
+            <label>
+              Forbidden work
+              <textarea name="forbiddenWork" value={form.forbiddenWork} onChange={handleChange} rows="5" />
+            </label>
+            <label>
+              Attention items
+              <textarea name="attentionItems" value={form.attentionItems} onChange={handleChange} rows="5" />
+            </label>
+            <label>
+              Parked projects
+              <textarea name="parkedProjects" value={form.parkedProjects} onChange={handleChange} rows="5" />
+            </label>
+            <div className="admin-actions">
+              <button className="button button--primary" type="submit" disabled={saving}>
+                {saving ? "Saving..." : "Save focus"}
+              </button>
+              <button className="button button--secondary" type="button" onClick={handleSnapshot} disabled={snapshotting}>
+                {snapshotting ? "Creating..." : "Manual snapshot"}
+              </button>
+            </div>
+            {error && <p className="form-status form-status--error">{error}</p>}
+            {success && <p className="form-status form-status--success">{success}</p>}
+          </form>
+
+          <section className="admin-list" aria-label="Recent focus snapshots">
+            <article className="admin-panel admin-focus-summary">
+              <span className="card-kicker">Recent snapshots</span>
+              <h2>Manual history</h2>
+              <p>Newest focus snapshots are listed first.</p>
+            </article>
+
+            {snapshots.length === 0 && (
+              <article className="bento-card bento-card--quiet">
+                <span className="card-kicker">Empty</span>
+                <h2>No snapshots yet</h2>
+                <p>Create a manual snapshot when the current focus is worth preserving.</p>
+              </article>
+            )}
+
+            {snapshots.map(snapshot => (
+              <article className="admin-list-card" key={snapshot.id}>
+                <div className="admin-list-card__header">
+                  <div>
+                    <span className="card-kicker">{snapshot.snapshotType || snapshot.snapshot_type || "manual"}</span>
+                    <h2>{formatDate(snapshot.createdAt)}</h2>
+                  </div>
+                  {snapshot.activeProjectId && <small>{snapshot.activeProjectId}</small>}
+                </div>
+                <p>{snapshot.summary}</p>
+              </article>
+            ))}
+          </section>
+        </section>
+      )}
+    </div>
+  )
+}
+
+export default AdminFocus

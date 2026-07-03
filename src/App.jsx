@@ -11,6 +11,7 @@ import AdminMessages from "./pages/admin/AdminMessages"
 import AdminProjects from "./pages/admin/AdminProjects"
 import AdminProfile from "./pages/admin/AdminProfile"
 import AdminUploads from "./pages/admin/AdminUploads"
+import AdminFocus from "./pages/admin/AdminFocus"
 import ConsoleShell from "./components/ConsoleShell"
 import AdminShell from "./components/AdminShell"
 import ProtectedRoute from "./components/ProtectedRoute"
@@ -44,6 +45,7 @@ function App() {
         <Route path="projects" element={<AdminProjects />} />
         <Route path="profile" element={<AdminProfile />} />
         <Route path="uploads" element={<AdminUploads />} />
+        <Route path="focus" element={<AdminFocus />} />
       </Route>
     </Routes>
   )
