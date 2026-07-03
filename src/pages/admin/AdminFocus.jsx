@@ -58,6 +58,8 @@ function AdminFocus() {
   const [form, setForm] = useState(emptyFocusForm)
   const [projects, setProjects] = useState([])
   const [snapshots, setSnapshots] = useState([])
+  const [latestDailySnapshot, setLatestDailySnapshot] = useState(null)
+  const [latestWeeklySnapshot, setLatestWeeklySnapshot] = useState(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [snapshotting, setSnapshotting] = useState(false)
@@ -78,15 +80,19 @@ function AdminFocus() {
       setError("")
 
       try {
-        const [current, snapshotData, projectData] = await Promise.all([
+        const [current, snapshotData, projectData, dailySnapshotData, weeklySnapshotData] = await Promise.all([
           fetchFocusCurrent(),
           fetchFocusSnapshots({ limit: 20 }),
-          fetchProjects()
+          fetchProjects(),
+          fetchFocusSnapshots({ type: "daily", limit: 1 }),
+          fetchFocusSnapshots({ type: "weekly", limit: 1 })
         ])
 
         setForm(toForm(current || {}))
         setSnapshots(Array.isArray(snapshotData) ? snapshotData : [])
         setProjects(Array.isArray(projectData) ? projectData : [])
+        setLatestDailySnapshot(Array.isArray(dailySnapshotData) ? dailySnapshotData[0] || null : null)
+        setLatestWeeklySnapshot(Array.isArray(weeklySnapshotData) ? weeklySnapshotData[0] || null : null)
       } catch (err) {
         console.error(err)
         setError(err.response?.data?.error || "Failed to load focus dashboard.")
@@ -159,81 +165,108 @@ function AdminFocus() {
       {loading && <div className="skeleton" />}
 
       {!loading && (
-        <section className="admin-crud-grid admin-focus-grid">
-          <form className="secure-form admin-panel admin-focus-form" onSubmit={handleSubmit}>
-            <span className="card-kicker">Current focus</span>
-            <label>
-              Active project
-              <select name="activeProjectId" value={form.activeProjectId} onChange={handleChange}>
-                <option value="">No active project</option>
-                {projectOptions.map(project => (
-                  <option key={project.id} value={project.id}>
-                    {project.name} ({project.type})
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label>
-              Weekly mission
-              <textarea name="weeklyMission" value={form.weeklyMission} onChange={handleChange} rows="4" />
-            </label>
-            <label>
-              Allowed work
-              <textarea name="allowedWork" value={form.allowedWork} onChange={handleChange} rows="5" />
-            </label>
-            <label>
-              Forbidden work
-              <textarea name="forbiddenWork" value={form.forbiddenWork} onChange={handleChange} rows="5" />
-            </label>
-            <label>
-              Attention items
-              <textarea name="attentionItems" value={form.attentionItems} onChange={handleChange} rows="5" />
-            </label>
-            <label>
-              Parked projects
-              <textarea name="parkedProjects" value={form.parkedProjects} onChange={handleChange} rows="5" />
-            </label>
-            <div className="admin-actions">
-              <button className="button button--primary" type="submit" disabled={saving}>
-                {saving ? "Saving..." : "Save focus"}
-              </button>
-              <button className="button button--secondary" type="button" onClick={handleSnapshot} disabled={snapshotting}>
-                {snapshotting ? "Creating..." : "Manual snapshot"}
-              </button>
-            </div>
-            {error && <p className="form-status form-status--error">{error}</p>}
-            {success && <p className="form-status form-status--success">{success}</p>}
-          </form>
-
-          <section className="admin-list" aria-label="Recent focus snapshots">
-            <article className="admin-panel admin-focus-summary">
-              <span className="card-kicker">Recent snapshots</span>
-              <h2>Manual history</h2>
-              <p>Newest focus snapshots are listed first.</p>
+        <>
+          <section className="bento-grid bento-grid--two" aria-label="Latest automated focus snapshots">
+            <article className="bento-card">
+              <span className="card-kicker">Latest daily snapshot</span>
+              {latestDailySnapshot ? (
+                <>
+                  <h2>{formatDate(latestDailySnapshot.createdAt)}</h2>
+                  <p>{latestDailySnapshot.summary}</p>
+                </>
+              ) : (
+                <p>No daily snapshot yet.</p>
+              )}
             </article>
-
-            {snapshots.length === 0 && (
-              <article className="bento-card bento-card--quiet">
-                <span className="card-kicker">Empty</span>
-                <h2>No snapshots yet</h2>
-                <p>Create a manual snapshot when the current focus is worth preserving.</p>
-              </article>
-            )}
-
-            {snapshots.map(snapshot => (
-              <article className="admin-list-card" key={snapshot.id}>
-                <div className="admin-list-card__header">
-                  <div>
-                    <span className="card-kicker">{snapshot.snapshotType || snapshot.snapshot_type || "manual"}</span>
-                    <h2>{formatDate(snapshot.createdAt)}</h2>
-                  </div>
-                  {snapshot.activeProjectId && <small>{snapshot.activeProjectId}</small>}
-                </div>
-                <p>{snapshot.summary}</p>
-              </article>
-            ))}
+            <article className="bento-card">
+              <span className="card-kicker">Latest weekly snapshot</span>
+              {latestWeeklySnapshot ? (
+                <>
+                  <h2>{formatDate(latestWeeklySnapshot.createdAt)}</h2>
+                  <p>{latestWeeklySnapshot.summary}</p>
+                </>
+              ) : (
+                <p>No weekly snapshot yet.</p>
+              )}
+            </article>
           </section>
-        </section>
+
+          <section className="admin-crud-grid admin-focus-grid">
+            <form className="secure-form admin-panel admin-focus-form" onSubmit={handleSubmit}>
+              <span className="card-kicker">Current focus</span>
+              <label>
+                Active project
+                <select name="activeProjectId" value={form.activeProjectId} onChange={handleChange}>
+                  <option value="">No active project</option>
+                  {projectOptions.map(project => (
+                    <option key={project.id} value={project.id}>
+                      {project.name} ({project.type})
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                Weekly mission
+                <textarea name="weeklyMission" value={form.weeklyMission} onChange={handleChange} rows="4" />
+              </label>
+              <label>
+                Allowed work
+                <textarea name="allowedWork" value={form.allowedWork} onChange={handleChange} rows="5" />
+              </label>
+              <label>
+                Forbidden work
+                <textarea name="forbiddenWork" value={form.forbiddenWork} onChange={handleChange} rows="5" />
+              </label>
+              <label>
+                Attention items
+                <textarea name="attentionItems" value={form.attentionItems} onChange={handleChange} rows="5" />
+              </label>
+              <label>
+                Parked projects
+                <textarea name="parkedProjects" value={form.parkedProjects} onChange={handleChange} rows="5" />
+              </label>
+              <div className="admin-actions">
+                <button className="button button--primary" type="submit" disabled={saving}>
+                  {saving ? "Saving..." : "Save focus"}
+                </button>
+                <button className="button button--secondary" type="button" onClick={handleSnapshot} disabled={snapshotting}>
+                  {snapshotting ? "Creating..." : "Manual snapshot"}
+                </button>
+              </div>
+              {error && <p className="form-status form-status--error">{error}</p>}
+              {success && <p className="form-status form-status--success">{success}</p>}
+            </form>
+
+            <section className="admin-list" aria-label="Recent focus snapshots">
+              <article className="admin-panel admin-focus-summary">
+                <span className="card-kicker">Recent snapshots</span>
+                <h2>Manual history</h2>
+                <p>Newest focus snapshots are listed first.</p>
+              </article>
+
+              {snapshots.length === 0 && (
+                <article className="bento-card bento-card--quiet">
+                  <span className="card-kicker">Empty</span>
+                  <h2>No snapshots yet</h2>
+                  <p>Create a manual snapshot when the current focus is worth preserving.</p>
+                </article>
+              )}
+
+              {snapshots.map(snapshot => (
+                <article className="admin-list-card" key={snapshot.id}>
+                  <div className="admin-list-card__header">
+                    <div>
+                      <span className="card-kicker">{snapshot.snapshotType || snapshot.snapshot_type || "manual"}</span>
+                      <h2>{formatDate(snapshot.createdAt)}</h2>
+                    </div>
+                    {snapshot.activeProjectId && <small>{snapshot.activeProjectId}</small>}
+                  </div>
+                  <p>{snapshot.summary}</p>
+                </article>
+              ))}
+            </section>
+          </section>
+        </>
       )}
     </div>
   )
