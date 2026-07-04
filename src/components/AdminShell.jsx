@@ -21,9 +21,9 @@ function AdminShell() {
 
   return (
     <div className="admin-shell">
-      <aside className="admin-sidebar" aria-label="Owner dashboard navigation">
+      <aside className="admin-sidebar" aria-label="Dashboard navigation">
         <div>
-          <span className="admin-kicker">Owner workspace</span>
+          <span className="admin-kicker">Workspace</span>
           <h1>Mam Admin</h1>
           <p>{admin?.username ? `Signed in as ${admin.username}` : "Private dashboard"}</p>
         </div>
