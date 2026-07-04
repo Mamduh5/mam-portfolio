@@ -55,31 +55,41 @@ https://mam-portfolio.pages.dev
 
 ## Backend
 
-The frontend expects an API backend through this environment variable:
-
-```text
-VITE_API_URL
-```
-
-Production API:
-
-```text
-https://mam-portfolio-api.mamduh2542.workers.dev
-```
-
-Local fallback, if `VITE_API_URL` is not set:
+The frontend calls the API through the same-origin Pages Function proxy:
 
 ```text
 /api
 ```
 
-For Cloudflare Pages production, set:
+Production builds should not set `VITE_API_URL` to the backend Worker URL. If `VITE_API_URL` is unset, the app uses `/api`.
+
+The Pages Function proxy needs these Cloudflare Pages environment variables:
 
 ```text
-VITE_API_URL=https://mam-portfolio-api.mamduh2542.workers.dev
+API_ORIGIN=<backend Worker origin>
+API_PROXY_SECRET=<long random secret>
 ```
 
-Important: Vite environment variables are baked into the frontend during build. After changing `VITE_API_URL`, redeploy the Pages project.
+`API_PROXY_SECRET` is server-side only. Do not prefix it with `VITE_`.
+
+Local development can still point directly at a local Worker if needed:
+
+```text
+VITE_API_URL=http://localhost:8787
+```
+
+Important: Vite environment variables are baked into the frontend during build. Keep production API routing on `/api` unless you intentionally want the browser bundle to contain a public API origin.
+
+## Pages Function Proxy
+
+The project includes:
+
+```text
+functions/api/[[path]].js
+public/_routes.json
+```
+
+Requests such as `/api/projects?type=game` are proxied server-side to `${API_ORIGIN}/projects?type=game`. Browser Network requests still show `/api/...`; the proxy hides the backend Worker origin and adds the internal proxy secret before forwarding.
 
 ## Local Development
 
@@ -145,10 +155,11 @@ Build output directory:
 dist
 ```
 
-Required production environment variable:
+Required production environment variables:
 
 ```text
-VITE_API_URL=https://mam-portfolio-api.mamduh2542.workers.dev
+API_ORIGIN=<backend Worker origin>
+API_PROXY_SECRET=<same value as backend PROXY_SHARED_SECRET>
 ```
 
 ## SPA Routing
@@ -170,6 +181,6 @@ With:
 ## Notes
 
 * Do not commit real secrets.
-* `VITE_API_URL` is safe to expose because it is a public frontend API URL.
+* Do not expose `API_PROXY_SECRET` through Vite or any `VITE_` variable.
 * JWT secrets, admin creation secrets, D1 IDs, and R2 credentials belong in the backend Worker configuration, not in this frontend repo.
 * The admin area requires the backend Worker to be deployed and configured correctly.
