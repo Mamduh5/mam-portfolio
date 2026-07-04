@@ -70,7 +70,7 @@ function Games() {
       <CommandHero
         eyebrow={<span className="static-chip">Game projects</span>}
         title="Games"
-        description="Playable work and experiments using the same project system."
+        description="Playable works."
         actions={<button className="button button--secondary" type="button">View selected</button>}
       >
         <div className="featured-project">
