@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from "react"
 import { api } from "../services/api"
 import CommandHero from "../components/CommandHero"
 import ProjectMissionCard from "../components/ProjectMissionCard"
-import RouteChip from "../components/RouteChip"
 
 function Projects() {
   const [projects, setProjects] = useState([])
@@ -50,9 +49,9 @@ function Projects() {
     return (
       <CommandHero
         className="page-compact-hero"
-        eyebrow={<RouteChip method="GET" path="/projects" />}
+        eyebrow={<span className="static-chip">Work catalog</span>}
         title="Work unavailable"
-        description="The project endpoint did not respond. Try again when the API is online."
+        description="Projects could not be loaded right now. Try again in a moment."
       />
     )
   }
@@ -62,18 +61,18 @@ function Projects() {
       <div className="empty-state-grid">
         <CommandHero
           className="page-compact-hero"
-          eyebrow={<RouteChip method="GET" path="/projects" />}
+          eyebrow={<span className="static-chip">Work catalog</span>}
           title="Work archive"
           description="Projects will appear here after they are published from the owner dashboard."
         />
         <article className="empty-state-card">
           <span className="card-kicker">Coming next</span>
           <h2>No public projects yet</h2>
-          <p>This route is only for project cards. Profile and personal information live on the dedicated Profile route.</p>
+          <p>Published project cards will appear here once they are ready to share.</p>
           <div className="empty-state-list">
-            <span>Project and game records only</span>
-            <span>Public read, owner-only edits</span>
-            <span>Image, demo, repo, and stack fields</span>
+            <span>Projects and games</span>
+            <span>Owner-managed updates</span>
+            <span>Images, demos, repos, and stack notes</span>
           </div>
         </article>
       </div>
@@ -84,7 +83,7 @@ function Projects() {
     <div className="page-stack">
       <CommandHero
         className="page-compact-hero"
-        eyebrow={<RouteChip method="GET" path="/projects" />}
+        eyebrow={<span className="static-chip">Work catalog</span>}
         title="Work archive"
         description="Featured portfolio work and selected builds."
         actions={<button className="button button--secondary" type="button">View selected</button>}

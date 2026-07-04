@@ -4,9 +4,9 @@ import { getAdminUser } from "../../services/auth"
 const cards = [
   { title: "Messages", copy: "Review contact messages and remove stale entries.", to: "/admin/messages" },
   { title: "Projects", copy: "Manage public project and game records, including GitHub imports.", to: "/admin/projects" },
-  { title: "Profile", copy: "Plan owner-only profile edits while keeping public reads available.", to: "/admin/profile" },
+  { title: "Profile", copy: "Edit the public profile details shown to visitors.", to: "/admin/profile" },
   { title: "Uploads", copy: "Upload standalone images and manage project assets.", to: "/admin/uploads" },
-  { title: "Focus", copy: "Track active work, parked projects, and weekly attention without changing public portfolio routes.", to: "/admin/focus" }
+  { title: "Focus", copy: "Track active work, parked projects, and weekly attention.", to: "/admin/focus" }
 ]
 
 function AdminOverview() {
@@ -15,7 +15,7 @@ function AdminOverview() {
   return (
     <div className="page-stack">
       <section className="command-hero admin-hero">
-        <span className="static-chip">Protected /auth/me verified</span>
+        <span className="static-chip">Private workspace</span>
         <div className="command-hero__copy">
           <h1>Owner dashboard</h1>
           <p>Private workspace for portfolio management, project updates, uploads, messages, and profile details.</p>

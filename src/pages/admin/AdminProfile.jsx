@@ -91,10 +91,10 @@ function AdminProfile() {
   return (
     <div className="page-stack">
       <section className="command-hero admin-hero">
-        <span className="static-chip">PATCH /profile</span>
+        <span className="static-chip">Public profile</span>
         <div className="command-hero__copy">
           <h1>Profile</h1>
-          <p>Edit the public profile record while keeping public reads available to visitors.</p>
+          <p>Edit the profile details shown to visitors.</p>
         </div>
       </section>
 

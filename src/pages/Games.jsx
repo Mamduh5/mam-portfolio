@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from "react"
 import { api } from "../services/api"
 import CommandHero from "../components/CommandHero"
 import ProjectMissionCard from "../components/ProjectMissionCard"
-import RouteChip from "../components/RouteChip"
 
 function Games() {
   const [games, setGames] = useState([])
@@ -49,9 +48,9 @@ function Games() {
   if (error) {
     return (
       <CommandHero
-        eyebrow={<RouteChip method="GET" path="/projects?type=game" />}
+        eyebrow={<span className="static-chip">Game projects</span>}
         title="Games unavailable"
-        description="The games endpoint did not respond. The public route can retry when the API is online."
+        description="Games could not be loaded right now. Try again in a moment."
       />
     )
   }
@@ -59,9 +58,9 @@ function Games() {
   if (games.length === 0) {
     return (
       <CommandHero
-        eyebrow={<RouteChip method="GET" path="/projects?type=game" />}
+        eyebrow={<span className="static-chip">Game projects</span>}
         title="Games"
-        description="No game projects yet. Add a game project to activate this route."
+        description="No games selected yet."
       />
     )
   }
@@ -69,7 +68,7 @@ function Games() {
   return (
     <div className="page-stack">
       <CommandHero
-        eyebrow={<RouteChip method="GET" path="/projects?type=game" />}
+        eyebrow={<span className="static-chip">Game projects</span>}
         title="Games"
         description="Playable work and experiments using the same project system."
         actions={<button className="button button--secondary" type="button">View selected</button>}

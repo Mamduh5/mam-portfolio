@@ -1,6 +1,5 @@
 import { useState } from "react"
 import { api } from "../services/api"
-import RouteChip from "./RouteChip"
 
 const initialForm = {
   name: "",
@@ -38,7 +37,6 @@ function SecureContactForm() {
 
   return (
     <form className="secure-form" onSubmit={handleSubmit}>
-      <RouteChip method="POST" path="/messages" />
       <label>
         Name
         <input
@@ -53,7 +51,7 @@ function SecureContactForm() {
         Email
         <input
           name="email"
-          placeholder="you@example.com"
+          placeholder="Your email"
           type="email"
           value={form.email}
           onChange={handleChange}

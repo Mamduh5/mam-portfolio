@@ -353,18 +353,18 @@ function AdminProjects() {
   return (
     <div className="page-stack">
       <section className="command-hero admin-hero">
-        <span className="static-chip">Projects CRUD</span>
+        <span className="static-chip">Project collection</span>
         <div className="command-hero__copy">
           <h1>Projects</h1>
-          <p>Create and update public work/game cards. Public reads stay open; mutations use the owner token.</p>
+          <p>Create and update the work and game cards shown on the portfolio.</p>
         </div>
       </section>
 
       <section className="admin-panel admin-sync-panel" aria-label="GitHub project sync">
         <div>
-          <span className="card-kicker">Catalog bridge</span>
+          <span className="card-kicker">GitHub import</span>
           <h2>Sync GitHub Projects</h2>
-          <p>Imports repository catalog data without making source metadata editable here.</p>
+          <p>Import public repository details while keeping portfolio edits in this workspace.</p>
         </div>
         <div className="admin-actions">
           <button className="button button--primary" type="button" onClick={handleSync} disabled={syncing}>
@@ -464,7 +464,7 @@ function AdminProjects() {
           </label>
           <div className="admin-actions">
             <button className="button button--primary" type="submit" disabled={saving}>
-              {saving ? "Saving..." : editingId ? "Update" : "Create"}
+              {saving ? "Saving..." : editingId ? "Save project" : "Create project"}
             </button>
             {editingId && (
               <button className="button button--secondary" type="button" onClick={resetForm}>
@@ -553,7 +553,7 @@ function AdminProjects() {
                 </div>
                 {githubImported && (
                   <div className="admin-meta-grid">
-                    <span>Source kind: {getSourceKind(project) || "github"}</span>
+                    <span>Source: {getSourceKind(project) || "github"}</span>
                     <span>GitHub full name: {getGitHubFullName(project) || "Not set"}</span>
                     <span>GitHub language: {getGitHubLanguage(project) || "Not set"}</span>
                     <span>GitHub pushed at: {formatDate(getGitHubPushedAt(project)) || "Not set"}</span>

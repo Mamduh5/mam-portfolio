@@ -3,7 +3,7 @@ import CommandHero from "../components/CommandHero"
 
 const skills = [
   "React interfaces",
-  "Express APIs",
+  "Node services",
   "MongoDB data models",
   "Portfolio systems",
   "Game experiments",
@@ -17,7 +17,7 @@ function Home() {
         <CommandHero
           eyebrow={<span className="static-chip">Developer portfolio</span>}
           title="Hi, I'm Mam."
-          description="Full-stack builder focused on clean React frontends, Express backends, practical game projects, and deployable portfolio systems."
+          description="Full-stack builder focused on clean React frontends, Node services, practical game projects, and deployable portfolio systems."
           actions={(
             <>
               <Link className="button button--primary" to="/projects">View work</Link>
@@ -32,7 +32,7 @@ function Home() {
             </div>
             <div>
               <span>Build mode</span>
-              <strong>Clean UI, working API, deploy-ready</strong>
+              <strong>Clean UI, reliable data, deploy-ready</strong>
             </div>
           </div>
         </CommandHero>
@@ -41,12 +41,12 @@ function Home() {
           <article className="landing-side-card landing-side-card--feature">
             <span className="card-kicker">Frontend craft</span>
             <h2>Frontend craft</h2>
-            <p>React route structure, reusable components, responsive states, and public-first presentation.</p>
+            <p>React page structure, reusable components, responsive states, and public-first presentation.</p>
           </article>
           <article className="landing-side-card">
-            <span className="card-kicker">Backend logic</span>
-            <h2>API systems</h2>
-            <p>Express endpoints, MongoDB repositories, auth, uploads, admin-only tools, and deployment workflows.</p>
+            <span className="card-kicker">Server-side logic</span>
+            <h2>Service systems</h2>
+            <p>Express services, MongoDB repositories, auth, uploads, admin tools, and deployment workflows.</p>
           </article>
         </aside>
       </section>
@@ -61,7 +61,7 @@ function Home() {
         <article className="landing-side-card landing-side-card--quiet">
           <span className="card-kicker">Fast first page</span>
           <h2>Landing stays fast</h2>
-          <p>This page is static and does not depend on profile or project API availability.</p>
+          <p>This page stays lightweight and does not depend on project data being available.</p>
         </article>
       </section>
     </div>

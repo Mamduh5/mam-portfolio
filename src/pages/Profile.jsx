@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react"
 import { api } from "../services/api"
 import CommandHero from "../components/CommandHero"
-import RouteChip from "../components/RouteChip"
 
 function Profile() {
   const [profile, setProfile] = useState(null)
@@ -29,9 +28,9 @@ function Profile() {
     return (
       <CommandHero
         className="page-compact-hero"
-        eyebrow={<RouteChip method="GET" path="/profile" />}
+        eyebrow={<span className="static-chip">Profile</span>}
         title="Profile unavailable"
-        description="The profile endpoint did not respond. Try again after the API is online."
+        description="Profile details could not be loaded right now. Try again in a moment."
       />
     )
   }
@@ -39,7 +38,7 @@ function Profile() {
   return (
     <div className="page-stack">
       <CommandHero
-        eyebrow={<RouteChip method="GET" path="/profile" />}
+        eyebrow={<span className="static-chip">Profile</span>}
         title={profile.name || "Mam"}
         description={profile.title || profile.introduction || "Full-stack developer"}
       />

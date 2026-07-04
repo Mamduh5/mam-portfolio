@@ -2,13 +2,13 @@ import { useEffect } from "react"
 import { useLocation } from "react-router-dom"
 import { logVisit } from "../services/visit"
 
-const API_FREE_PATHS = new Set(["/", "/login"])
+const VISIT_FREE_PATHS = new Set(["/", "/login"])
 
 export const useVisit = () => {
   const location = useLocation()
 
   useEffect(() => {
-    if (API_FREE_PATHS.has(location.pathname)) {
+    if (VISIT_FREE_PATHS.has(location.pathname)) {
       return
     }
 

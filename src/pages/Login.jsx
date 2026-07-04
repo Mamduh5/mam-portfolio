@@ -1,7 +1,6 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import CommandHero from "../components/CommandHero"
-import RouteChip from "../components/RouteChip"
 import { login } from "../services/auth"
 
 function Login() {
@@ -36,9 +35,9 @@ function Login() {
   return (
     <div className="page-stack login-page">
       <CommandHero
-        eyebrow={<RouteChip method="POST" path="/auth/login" />}
+        eyebrow={<span className="static-chip">Private access</span>}
         title="Owner sign in"
-        description="Optional private access for portfolio management. This route is intentionally not listed in public navigation."
+        description="Private access for portfolio updates, uploads, messages, and focus notes."
       >
         <form className="secure-form login-form" onSubmit={handleSubmit}>
           <label>

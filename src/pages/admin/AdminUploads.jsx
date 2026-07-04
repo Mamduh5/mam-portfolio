@@ -260,16 +260,16 @@ function AdminUploads() {
   return (
     <div className="page-stack">
       <section className="command-hero admin-hero">
-        <span className="static-chip">POST /upload</span>
+        <span className="static-chip">Image library</span>
         <div className="command-hero__copy">
           <h1>Uploads</h1>
-          <p>Upload protected media files and copy the returned URL for project/profile records.</p>
+          <p>Upload media files and manage images used by projects and profile details.</p>
         </div>
       </section>
 
       <section className="admin-crud-grid admin-upload-grid">
         <form className="secure-form admin-panel" onSubmit={handleSubmit}>
-          <span className="card-kicker">Protected upload</span>
+          <span className="card-kicker">New image</span>
           <label>
             Image file
             <input type="file" accept="image/*" onChange={(event) => setFile(event.target.files?.[0] || null)} />
@@ -333,7 +333,7 @@ function AdminUploads() {
           <section className="admin-list" aria-label="Asset list">
             <div className="admin-list-card__header">
               <div>
-                <span className="card-kicker">GET /assets?limit=50</span>
+                <span className="card-kicker">Image library</span>
                 <h2>Asset catalog</h2>
               </div>
               <button className="button button--secondary" type="button" onClick={loadAssets} disabled={loadingAssets}>
@@ -348,7 +348,7 @@ function AdminUploads() {
               <article className="bento-card bento-card--quiet">
                 <span className="card-kicker">Empty</span>
                 <h2>No assets yet</h2>
-                <p>Uploads will appear here after the backend records them.</p>
+                <p>No uploaded assets yet.</p>
               </article>
             )}
             {!loadingAssets && assets.map(asset => {
@@ -370,8 +370,8 @@ function AdminUploads() {
                       <small>{assetId}</small>
                     </div>
                     <div className="admin-meta-grid">
-                      <span>Entity type: {getAssetEntityType(asset) || "standalone"}</span>
-                      <span>Entity ID: {getAssetEntityId(asset) || "None"}</span>
+                      <span>Linked type: {getAssetEntityType(asset) || "standalone"}</span>
+                      <span>Linked item: {getAssetEntityId(asset) || "None"}</span>
                     </div>
                     <label>
                       Role
@@ -420,7 +420,7 @@ function AdminUploads() {
                         disabled={assetActionId === assetId}
                         onClick={() => handleAssetUpdate(assetId)}
                       >
-                        Update metadata
+                        Save asset details
                       </button>
                       <button
                         className="button button--secondary"

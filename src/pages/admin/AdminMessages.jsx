@@ -59,7 +59,7 @@ function AdminMessages() {
   return (
     <div className="page-stack">
       <section className="command-hero admin-hero">
-        <span className="static-chip">GET /messages</span>
+        <span className="static-chip">Private inbox</span>
         <div className="command-hero__copy">
           <h1>Messages</h1>
           <p>Owner-only inbox for contact form submissions. Mark messages as read or remove stale entries.</p>
@@ -103,7 +103,7 @@ function AdminMessages() {
               <div className="admin-actions">
                 {!message.read && (
                   <button className="button button--secondary" type="button" disabled={actionId === message._id} onClick={() => handleMarkRead(message._id)}>
-                    Mark read
+                    Mark as read
                   </button>
                 )}
                 <button className="button button--secondary" type="button" disabled={actionId === message._id} onClick={() => handleDelete(message._id)}>

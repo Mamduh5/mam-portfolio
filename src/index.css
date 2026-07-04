@@ -209,7 +209,7 @@ button {
   border-radius: 50%;
 }
 
-.console-status__endpoint {
+.console-status__scope {
   margin-left: auto;
   color: var(--graphite);
 }
@@ -302,7 +302,6 @@ button {
   gap: 12px;
 }
 
-.route-chip,
 .static-chip,
 .badge,
 .card-kicker {
@@ -313,7 +312,6 @@ button {
   text-transform: uppercase;
 }
 
-.route-chip,
 .static-chip,
 .badge {
   display: inline-flex;
@@ -324,23 +322,6 @@ button {
   background: var(--paper-sheet);
   border: 1px solid var(--line);
   border-radius: 4px;
-}
-
-.route-chip span {
-  color: var(--ink);
-  padding-right: 8px;
-  border-right: 1px solid var(--line);
-}
-
-.route-chip--post {
-  color: var(--graphite);
-  background: var(--paper-sheet);
-  border-color: var(--line-strong);
-}
-
-.route-chip--post span {
-  color: var(--ink);
-  background: transparent;
 }
 
 .button,
@@ -615,7 +596,7 @@ button {
     padding-bottom: 14px;
   }
 
-  .console-status__endpoint {
+  .console-status__scope {
     margin-left: 0;
   }
 

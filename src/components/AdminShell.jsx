@@ -49,8 +49,8 @@ function AdminShell() {
       <main className="admin-main">
         <header className="console-status" aria-label="Admin status">
           <span className="status-light" />
-          <span>OWNER SESSION ACTIVE</span>
-          <span className="console-status__endpoint">private routes</span>
+          <span>Owner session active</span>
+          <span className="console-status__scope">Private workspace</span>
         </header>
         <Outlet />
       </main>

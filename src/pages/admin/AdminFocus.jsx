@@ -229,7 +229,7 @@ function AdminFocus() {
   return (
     <div className="page-stack">
       <section className="command-hero admin-hero">
-        <span className="static-chip">GET /focus/current</span>
+        <span className="static-chip">Focus workspace</span>
         <div className="command-hero__copy">
           <h1>Focus</h1>
           <p>Track current focus, allowed work, forbidden work, attention items, and parked projects.</p>
@@ -269,7 +269,7 @@ function AdminFocus() {
             <article className="admin-panel admin-focus-summary">
               <span className="card-kicker">Observed activity</span>
               <h2>Declared focus vs observed activity</h2>
-              <p>Declared focus = what you said you planned. Observed activity = what the system detected from GitHub and portfolio actions.</p>
+              <p>Compare planned work with recent GitHub and portfolio activity.</p>
               <div className="admin-actions">
                 <button className="button button--secondary" type="button" onClick={handleGitHubSync} disabled={syncingGithub}>
                   {syncingGithub ? "Syncing..." : "Sync GitHub activity now"}
@@ -277,7 +277,7 @@ function AdminFocus() {
               </div>
               {syncResult && (
                 <p className="form-status">
-                  GitHub sync scanned {syncResult.reposScanned || 0} repos, inserted {syncResult.eventsInserted || 0} events, errors {(syncResult.errors || []).length}.
+                  GitHub sync checked {syncResult.reposScanned || 0} repos, added {syncResult.eventsInserted || 0} events, errors {(syncResult.errors || []).length}.
                 </p>
               )}
               {syncError && <p className="form-status form-status--error">{syncError}</p>}
@@ -351,7 +351,7 @@ function AdminFocus() {
                 <article className="bento-card bento-card--quiet">
                   <span className="card-kicker">Empty</span>
                   <h2>No snapshots yet</h2>
-                  <p>Create a manual snapshot when the current focus is worth preserving.</p>
+                  <p>No focus snapshots yet.</p>
                 </article>
               )}
 
