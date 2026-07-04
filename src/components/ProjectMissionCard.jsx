@@ -10,10 +10,10 @@ function ProjectMissionCard({ project, selected = false, onSelect }) {
         {projectType && <span className="badge">{projectType}</span>}
       </div>
       <h3>{project.name}</h3>
-      <p>{project.description || "No mission briefing yet."}</p>
+      <p>{project.description || "No project description yet."}</p>
       {onSelect && (
         <button className="text-button" type="button" onClick={() => onSelect(project)}>
-          Inspect mission
+          View project
         </button>
       )}
     </article>

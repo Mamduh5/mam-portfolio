@@ -232,7 +232,7 @@ function AdminFocus() {
         <span className="static-chip">GET /focus/current</span>
         <div className="command-hero__copy">
           <h1>Focus</h1>
-          <p>Track current mission, allowed work, forbidden work, attention items, and parked projects.</p>
+          <p>Track current focus, allowed work, forbidden work, attention items, and parked projects.</p>
         </div>
       </section>
 
@@ -309,7 +309,7 @@ function AdminFocus() {
                 </select>
               </label>
               <label>
-                Weekly mission
+                Weekly aim
                 <textarea name="weeklyMission" value={form.weeklyMission} onChange={handleChange} rows="4" />
               </label>
               <label>

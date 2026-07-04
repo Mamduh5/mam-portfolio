@@ -7,7 +7,7 @@ function Contact() {
     <div className="page-stack">
       <CommandHero
         eyebrow={<RouteChip method="POST" path="/messages" />}
-        title="Secure uplink"
+        title="Contact"
         description="Send a direct message through the public contact endpoint."
       >
         <SecureContactForm />
@@ -15,7 +15,7 @@ function Contact() {
 
       <section className="bento-grid bento-grid--two" aria-label="Contact support cards">
         <article className="bento-card bento-card--focus">
-          <span className="card-kicker">Contact protocol</span>
+          <span className="card-kicker">Contact form</span>
           <h2>Form first, status second</h2>
           <p>Inline sent/error states replace browser alerts and preserve the message on failure.</p>
         </article>

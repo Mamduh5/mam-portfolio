@@ -4,7 +4,8 @@ import {
   deleteProject,
   fetchProjects,
   syncGitHubProjectCatalog,
-  updateProject
+  updateProject,
+  uploadImage
 } from "../../services/admin"
 
 const emptyProject = {
@@ -160,13 +161,17 @@ const getSyncValue = (result, keys) => {
   return 0
 }
 
+const getUploadUrl = (result) => result?.url || result?.asset?.url || result?.previewImage || result?.preview_image || ""
+
 function AdminProjects() {
   const [projects, setProjects] = useState([])
   const [form, setForm] = useState(emptyProject)
   const [filters, setFilters] = useState(emptyFilters)
+  const [previewFile, setPreviewFile] = useState(null)
   const [editingId, setEditingId] = useState("")
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [previewUploading, setPreviewUploading] = useState(false)
   const [syncing, setSyncing] = useState(false)
   const [syncResult, setSyncResult] = useState(null)
   const [syncError, setSyncError] = useState("")
@@ -222,12 +227,14 @@ function AdminProjects() {
 
   const resetForm = () => {
     setForm(emptyProject)
+    setPreviewFile(null)
     setEditingId("")
   }
 
   const handleEdit = (project) => {
     setEditingId(getProjectId(project))
     setForm(toForm(project))
+    setPreviewFile(null)
     setSuccess("")
     setError("")
   }
@@ -278,6 +285,53 @@ function AdminProjects() {
       setError(err.response?.data?.error || "Failed to save project.")
     } finally {
       setSaving(false)
+    }
+  }
+
+  const handlePreviewUpload = async () => {
+    setError("")
+    setSuccess("")
+
+    if (!editingId) {
+      setError("Save or select a project before uploading a preview image.")
+      return
+    }
+
+    if (!previewFile) {
+      setError("Choose a preview image first.")
+      return
+    }
+
+    setPreviewUploading(true)
+
+    try {
+      const result = await uploadImage(previewFile, {
+        entityType: "project",
+        entityId: editingId,
+        assetRole: "preview",
+        altText: form.name ? `${form.name} preview` : "Project preview"
+      })
+      const previewUrl = getUploadUrl(result)
+
+      if (previewUrl) {
+        setForm({
+          ...form,
+          previewImage: previewUrl
+        })
+        setProjects(projects.map(project => (
+          getProjectId(project) === editingId
+            ? { ...project, previewImage: previewUrl, preview_image: previewUrl, imageUrl: previewUrl }
+            : project
+        )))
+      }
+
+      setPreviewFile(null)
+      setSuccess("Preview image uploaded.")
+    } catch (err) {
+      console.error(err)
+      setError(err.response?.data?.error || "Failed to upload preview image.")
+    } finally {
+      setPreviewUploading(false)
     }
   }
 
@@ -371,8 +425,33 @@ function AdminProjects() {
             Demo URL
             <input name="demoUrl" value={form.demoUrl} onChange={handleChange} />
           </label>
+          <div className="admin-preview-panel">
+            <span className="card-kicker">Preview image</span>
+            {form.previewImage ? (
+              <img src={form.previewImage} alt={form.name ? `${form.name} preview` : "Project preview"} />
+            ) : (
+              <small>No preview image set.</small>
+            )}
+            <label>
+              Upload preview image
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(event) => setPreviewFile(event.target.files?.[0] || null)}
+              />
+            </label>
+            <button
+              className="button button--secondary"
+              type="button"
+              onClick={handlePreviewUpload}
+              disabled={previewUploading || !previewFile}
+            >
+              {previewUploading ? "Uploading..." : "Upload preview image"}
+            </button>
+            {!editingId && <small>Create or edit a project before uploading a preview image.</small>}
+          </div>
           <label>
-            Preview image
+            Preview image URL (advanced fallback)
             <input name="previewImage" value={form.previewImage} onChange={handleChange} />
           </label>
           <label className="admin-checkbox">

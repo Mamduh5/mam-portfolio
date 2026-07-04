@@ -5,7 +5,7 @@ const navItems = [
   { to: "/profile", label: "Profile" },
   { to: "/projects", label: "Work" },
   { to: "/games", label: "Games" },
-  { to: "/contact", label: "Link" }
+  { to: "/contact", label: "Contact" }
 ]
 
 function ConsoleShell({ children }) {
@@ -13,7 +13,7 @@ function ConsoleShell({ children }) {
     <div className="console-shell">
       <header className="console-topbar">
         <NavLink className="console-brand" to="/" aria-label="Mam Portfolio home">
-          MAM
+          Mam
         </NavLink>
 
         <nav className="console-nav" aria-label="Portfolio navigation">
@@ -29,10 +29,7 @@ function ConsoleShell({ children }) {
           ))}
         </nav>
 
-        <div className="console-status-pill" aria-label="Portfolio status">
-          <span className="status-light" />
-          <span>PUBLIC PORTFOLIO ONLINE</span>
-        </div>
+        <div className="console-status-pill" aria-label="Portfolio status" />
       </header>
 
       <main className="console-main">

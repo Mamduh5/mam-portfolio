@@ -15,13 +15,13 @@ function Home() {
     <div className="landing-page">
       <section className="landing-hero-grid">
         <CommandHero
-          eyebrow={<span className="static-chip">Static landing / no API</span>}
-          title="Mam Portfolio"
+          eyebrow={<span className="static-chip">Developer portfolio</span>}
+          title="Hi, I'm Mam."
           description="Full-stack builder focused on clean React frontends, Express backends, practical game projects, and deployable portfolio systems."
           actions={(
             <>
-              <Link className="button button--primary" to="/projects">View Projects</Link>
-              <Link className="button button--secondary" to="/contact">Contact</Link>
+              <Link className="button button--primary" to="/projects">View work</Link>
+              <Link className="button button--secondary" to="/contact">Get in touch</Link>
             </>
           )}
         >
@@ -39,9 +39,9 @@ function Home() {
 
         <aside className="landing-status-stack" aria-label="Portfolio capability summary">
           <article className="landing-side-card landing-side-card--feature">
-            <span className="card-kicker">Skill signal</span>
+            <span className="card-kicker">Frontend craft</span>
             <h2>Frontend craft</h2>
-            <p>Cyber-console UI, route structure, reusable components, responsive states, and public-first presentation.</p>
+            <p>React route structure, reusable components, responsive states, and public-first presentation.</p>
           </article>
           <article className="landing-side-card">
             <span className="card-kicker">Backend logic</span>
@@ -59,7 +59,7 @@ function Home() {
         </div>
 
         <article className="landing-side-card landing-side-card--quiet">
-          <span className="card-kicker">No data dependency</span>
+          <span className="card-kicker">Fast first page</span>
           <h2>Landing stays fast</h2>
           <p>This page is static and does not depend on profile or project API availability.</p>
         </article>

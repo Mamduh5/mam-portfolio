@@ -71,17 +71,17 @@ function Games() {
       <CommandHero
         eyebrow={<RouteChip method="GET" path="/projects?type=game" />}
         title="Games"
-        description="Playable work and experiments share the same mission card system."
-        actions={<button className="button button--secondary" type="button">Inspect</button>}
+        description="Playable work and experiments using the same project system."
+        actions={<button className="button button--secondary" type="button">View selected</button>}
       >
         <div className="featured-project">
           <span className="card-kicker">Featured game</span>
           <h2>{selectedGame.name}</h2>
-          <p>{selectedGame.description || "No mission briefing yet."}</p>
+          <p>{selectedGame.description || "No game description yet."}</p>
         </div>
       </CommandHero>
 
-      <section className="mission-grid" aria-label="Game missions">
+      <section className="mission-grid" aria-label="Game cards">
         {games.map(game => (
           <ProjectMissionCard
             key={game._id}

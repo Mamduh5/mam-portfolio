@@ -86,17 +86,17 @@ function Projects() {
         className="page-compact-hero"
         eyebrow={<RouteChip method="GET" path="/projects" />}
         title="Work archive"
-        description="Featured mission board for selected portfolio builds."
-        actions={<button className="button button--secondary" type="button">Inspect</button>}
+        description="Featured portfolio work and selected builds."
+        actions={<button className="button button--secondary" type="button">View selected</button>}
       >
         <div className="featured-project">
-          <span className="card-kicker">Featured mission</span>
+          <span className="card-kicker">Featured work</span>
           <h2>{selectedProject.name}</h2>
-          <p>{selectedProject.description || "No mission briefing yet."}</p>
+          <p>{selectedProject.description || "No project description yet."}</p>
         </div>
       </CommandHero>
 
-      <section className="mission-grid" aria-label="Project missions">
+      <section className="mission-grid" aria-label="Project cards">
         {projects.map(project => (
           <ProjectMissionCard
             key={project._id}

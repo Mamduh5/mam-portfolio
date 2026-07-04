@@ -1,44 +1,28 @@
-.static-chip {
-  display: inline-flex;
-  align-items: center;
-  width: fit-content;
-  min-height: 32px;
-  padding: 0 12px;
-  color: var(--success);
-  font: 800 12px/1 var(--font-mono);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  background: rgba(132, 255, 170, 0.08);
-  border: 1px solid rgba(132, 255, 170, 0.28);
-  border-radius: 999px;
-}
-
 .landing-page {
   display: grid;
-  gap: clamp(14px, 1.4vw, 20px);
-  min-height: calc(100svh - 98px);
+  gap: clamp(18px, 2vw, 28px);
 }
 
 .landing-hero-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.5fr) minmax(320px, 0.5fr);
-  gap: clamp(14px, 1.4vw, 20px);
+  grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.65fr);
+  gap: clamp(18px, 2vw, 28px);
   min-width: 0;
 }
 
 .landing-hero-grid .command-hero {
   align-content: center;
-  min-height: clamp(440px, calc(100svh - 188px), 720px);
+  min-height: clamp(390px, calc(100svh - 220px), 620px);
 }
 
 .landing-hero-grid .command-hero__copy,
 .landing-hero-grid .command-hero__body {
-  max-width: 980px;
+  max-width: 880px;
 }
 
 .landing-hero-grid .command-hero h1 {
-  font-size: clamp(58px, 6.7vw, 112px);
-  max-width: 1100px;
+  max-width: 920px;
+  font-size: clamp(52px, 6.2vw, 92px);
 }
 
 .landing-summary {
@@ -50,88 +34,98 @@
 .landing-summary div,
 .landing-side-card {
   padding: clamp(18px, 1.8vw, 26px);
-  background: rgba(16, 27, 51, 0.7);
-  border: 1px solid rgba(45, 72, 111, 0.72);
-  border-radius: 24px;
+  background: var(--paper-sheet);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
 }
 
 .landing-summary span {
   display: block;
   margin-bottom: 8px;
-  color: var(--primary);
-  font: 800 11px/1 var(--font-mono);
-  letter-spacing: 0.08em;
+  color: var(--graphite);
+  font: 750 11px/1 var(--font-mono);
+  letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
 .landing-summary strong {
   display: block;
-  color: var(--foreground);
+  color: var(--ink);
+  font-weight: 750;
 }
 
 .skill-cluster {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
+  gap: 12px;
   min-width: 0;
 }
 
 .skill-cluster span {
   display: flex;
   align-items: center;
-  min-height: 54px;
+  min-height: 52px;
   padding: 10px 14px;
-  color: var(--foreground);
-  font-weight: 800;
-  background: rgba(16, 27, 51, 0.7);
-  border: 1px solid rgba(45, 72, 111, 0.72);
-  border-radius: 999px;
-  box-shadow: var(--shadow);
+  color: var(--ink);
+  font: 750 13px/1.3 var(--font-mono);
+  background: var(--paper-sheet);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
 }
 
 .landing-status-stack {
   display: grid;
-  grid-template-rows: minmax(0, 1.15fr) minmax(0, 0.85fr);
-  gap: clamp(14px, 1.4vw, 20px);
+  grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(18px, 2vw, 28px);
   min-width: 0;
 }
 
 .landing-side-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  min-height: 220px;
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(18px);
+  min-height: 210px;
 }
 
-.landing-side-card--feature {
-  border-color: rgba(63, 235, 255, 0.36);
-  background:
-    linear-gradient(145deg, rgba(63, 235, 255, 0.12), transparent 42%),
-    rgba(16, 27, 51, 0.72);
+.landing-side-card::before {
+  position: absolute;
+  inset: 5px -6px -6px 5px;
+  z-index: -1;
+  content: "";
+  background: var(--paper-stack);
+  border: 1px solid var(--line);
+  border-radius: inherit;
 }
 
+.landing-side-card--feature,
 .landing-side-card--quiet {
-  background: rgba(16, 27, 51, 0.52);
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 31px,
+      rgba(232, 226, 212, 0.42) 32px
+    ),
+    var(--paper-sheet);
 }
 
 .landing-side-card h2 {
   margin-bottom: 8px;
-  color: var(--foreground);
+  color: var(--ink);
   font-size: clamp(22px, 2vw, 30px);
-  line-height: 1;
+  line-height: 1.1;
   letter-spacing: 0;
 }
 
 .landing-side-card p {
-  color: var(--muted-foreground);
+  color: var(--graphite);
 }
 
 .landing-lower-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(320px, 0.36fr);
-  gap: clamp(14px, 1.4vw, 20px);
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.36fr);
+  gap: clamp(18px, 2vw, 28px);
   min-width: 0;
 }
 
@@ -150,7 +144,7 @@
   }
 
   .landing-hero-grid .command-hero {
-    min-height: 380px;
+    min-height: 360px;
   }
 
   .landing-status-stack {
@@ -159,7 +153,7 @@
   }
 
   .landing-side-card {
-    min-height: 180px;
+    min-height: 170px;
   }
 }
 

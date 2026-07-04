@@ -2,10 +2,10 @@ import { Link } from "react-router-dom"
 import { getAdminUser } from "../../services/auth"
 
 const cards = [
-  { title: "Messages", copy: "Review contact messages after B4 exposes owner-only message management.", to: "/admin/messages" },
-  { title: "Projects", copy: "Prepare project and game management screens for Sprint F3 CRUD wiring.", to: "/admin/projects" },
+  { title: "Messages", copy: "Review contact messages and remove stale entries.", to: "/admin/messages" },
+  { title: "Projects", copy: "Manage public project and game records, including GitHub imports.", to: "/admin/projects" },
   { title: "Profile", copy: "Plan owner-only profile edits while keeping public reads available.", to: "/admin/profile" },
-  { title: "Uploads", copy: "Use protected upload flow after the backend upload contract is finalized.", to: "/admin/uploads" },
+  { title: "Uploads", copy: "Upload standalone images and manage project assets.", to: "/admin/uploads" },
   { title: "Focus", copy: "Track active work, parked projects, and weekly attention without changing public portfolio routes.", to: "/admin/focus" }
 ]
 
@@ -18,7 +18,7 @@ function AdminOverview() {
         <span className="static-chip">Protected /auth/me verified</span>
         <div className="command-hero__copy">
           <h1>Owner dashboard</h1>
-          <p>Private control surface for portfolio management. This shell is ready for CRUD screens after backend Sprint B4.</p>
+          <p>Private workspace for portfolio management, project updates, uploads, messages, and profile details.</p>
         </div>
         <div className="landing-summary">
           <div>
@@ -26,8 +26,8 @@ function AdminOverview() {
             <strong>{admin?.username ? `Signed in as ${admin.username}` : "Session active"}</strong>
           </div>
           <div>
-            <span>Next backend sprint</span>
-            <strong>B4 Admin CRUD APIs</strong>
+            <span>Admin tools</span>
+            <strong>Projects, uploads, messages, profile, focus</strong>
           </div>
         </div>
       </section>

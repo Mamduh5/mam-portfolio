@@ -32,7 +32,7 @@ function SecureContactForm() {
     } catch (err) {
       console.error(err)
       setStatus("error")
-      setError("Signal failed — keep form data and retry.")
+      setError("Message failed. Keep your text and try again.")
     }
   }
 
@@ -64,7 +64,7 @@ function SecureContactForm() {
         Message
         <textarea
           name="message"
-          placeholder="Send a mission brief..."
+          placeholder="Write your message..."
           value={form.message}
           onChange={handleChange}
           rows="5"
@@ -72,9 +72,9 @@ function SecureContactForm() {
         />
       </label>
       <button className="button button--primary" type="submit" disabled={status === "submitting"}>
-        {status === "submitting" ? "Transmitting..." : "Transmit"}
+        {status === "submitting" ? "Sending..." : "Send message"}
       </button>
-      {status === "sent" && <p className="form-status form-status--success">Transmission sent.</p>}
+      {status === "sent" && <p className="form-status form-status--success">Message sent.</p>}
       {status === "error" && <p className="form-status form-status--error">{error}</p>}
     </form>
   )

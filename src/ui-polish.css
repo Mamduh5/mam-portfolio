@@ -1,7 +1,7 @@
 .command-hero h1 {
   font-size: clamp(34px, 4.8vw, 62px);
-  letter-spacing: -0.055em;
-  line-height: 0.98;
+  letter-spacing: 0;
+  line-height: 1.04;
 }
 
 .command-hero__copy p {
@@ -9,11 +9,7 @@
 }
 
 .console-shell {
-  width: min(1500px, calc(100% - 28px));
-}
-
-.console-topbar {
-  min-height: 58px;
+  width: min(1180px, calc(100% - 28px));
 }
 
 .page-compact-hero {
@@ -36,7 +32,7 @@
 .empty-state-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr);
-  gap: 16px;
+  gap: 18px;
   align-items: stretch;
 }
 
@@ -45,23 +41,20 @@
   align-content: center;
   min-height: 220px;
   padding: clamp(22px, 3vw, 34px);
-  background: rgba(12, 20, 38, 0.76);
-  border: 1px solid rgba(45, 72, 111, 0.72);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(18px);
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 31px,
+      rgba(232, 226, 212, 0.55) 32px
+    ),
+    var(--paper-sheet);
 }
 
 .empty-state-card h2 {
   margin-bottom: 10px;
-  color: var(--foreground);
   font-size: clamp(24px, 3vw, 36px);
-  line-height: 1;
-  letter-spacing: -0.04em;
-}
-
-.empty-state-card p {
-  color: var(--muted-foreground);
+  line-height: 1.1;
 }
 
 .empty-state-list {
@@ -72,40 +65,43 @@
 
 .empty-state-list span {
   padding: 12px 14px;
-  color: var(--foreground);
-  font-weight: 800;
-  background: rgba(16, 27, 51, 0.72);
-  border: 1px solid rgba(45, 72, 111, 0.72);
-  border-radius: 16px;
+  color: var(--ink);
+  font-weight: 750;
+  background: var(--paper-sheet);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
 }
 
 .profile-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(300px, 0.7fr);
-  gap: 16px;
+  gap: 18px;
   align-items: stretch;
 }
 
 .profile-panel {
   padding: clamp(22px, 3vw, 36px);
-  background: rgba(12, 20, 38, 0.78);
-  border: 1px solid rgba(45, 72, 111, 0.72);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(18px);
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 31px,
+      rgba(232, 226, 212, 0.48) 32px
+    ),
+    var(--paper-sheet);
 }
 
 .profile-panel h2 {
   margin-bottom: 10px;
-  color: var(--foreground);
+  color: var(--ink);
   font-size: clamp(24px, 3vw, 38px);
-  letter-spacing: -0.05em;
-  line-height: 1;
+  letter-spacing: 0;
+  line-height: 1.1;
 }
 
 .profile-panel p,
 .profile-meta p {
-  color: var(--muted-foreground);
+  color: var(--graphite);
 }
 
 .profile-meta {
@@ -115,17 +111,17 @@
 
 .profile-meta div {
   padding: 16px;
-  background: rgba(16, 27, 51, 0.7);
-  border: 1px solid rgba(45, 72, 111, 0.72);
-  border-radius: 18px;
+  background: var(--paper-sheet);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
 }
 
 .profile-meta span {
   display: block;
   margin-bottom: 6px;
-  color: var(--primary);
-  font: 800 11px/1 var(--font-mono);
-  letter-spacing: 0.08em;
+  color: var(--graphite);
+  font: 750 11px/1 var(--font-mono);
+  letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
@@ -137,7 +133,7 @@
   }
 
   .console-shell {
-    width: min(100% - 20px, 1500px);
+    width: min(100% - 20px, 1180px);
   }
 }
 
