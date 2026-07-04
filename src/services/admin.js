@@ -38,6 +38,34 @@ export const deleteProject = async (projectId) => {
   return res.data
 }
 
+export const syncGitHubProjectCatalog = async (payload = {}) => {
+  const res = await api.post("/projects/sync/github", payload, authConfig())
+  return res.data
+}
+
+export const fetchAssets = async (params = {}) => {
+  const res = await api.get("/assets", {
+    ...authConfig(),
+    params
+  })
+  return res.data
+}
+
+export const updateAsset = async (assetId, payload) => {
+  const res = await api.patch(`/assets/${assetId}`, payload, authConfig())
+  return res.data
+}
+
+export const deleteAsset = async (assetId) => {
+  const res = await api.delete(`/assets/${assetId}`, authConfig())
+  return res.data
+}
+
+export const linkAsset = async (assetId, payload) => {
+  const res = await api.post(`/assets/${assetId}/link`, payload, authConfig())
+  return res.data
+}
+
 export const fetchProfile = async () => {
   const res = await api.get("/profile")
   return res.data
@@ -48,9 +76,15 @@ export const updateProfile = async (payload) => {
   return res.data
 }
 
-export const uploadImage = async (file) => {
+export const uploadImage = async (file, metadata = {}) => {
   const formData = new FormData()
   formData.append("image", file)
+
+  Object.entries(metadata).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== "") {
+      formData.append(key, value)
+    }
+  })
 
   const res = await api.post("/upload", formData, {
     headers: getAuthHeaders()

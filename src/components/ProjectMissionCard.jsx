@@ -1,11 +1,13 @@
 import RouteChip from "./RouteChip"
 
 function ProjectMissionCard({ project, selected = false, onSelect }) {
+  const projectType = project.type || project.projectType || project.project_type
+
   return (
     <article className={`mission-card${selected ? " mission-card--selected" : ""}`}>
       <div className="mission-card__topline">
-        <RouteChip method="GET" path={project.type === "game" ? "/projects?type=game" : "/projects"} />
-        {project.type && <span className="badge">{project.type}</span>}
+        <RouteChip method="GET" path={projectType === "game" ? "/projects?type=game" : "/projects"} />
+        {projectType && <span className="badge">{projectType}</span>}
       </div>
       <h3>{project.name}</h3>
       <p>{project.description || "No mission briefing yet."}</p>
