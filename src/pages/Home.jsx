@@ -4,10 +4,10 @@ import CommandHero from "../components/CommandHero"
 const skills = [
   "React interfaces",
   "Express APIs",
-  "MongoDB data models",
+  "MongoDB models",
   "Portfolio systems",
   "Game experiments",
-  "Deployment workflows"
+  "Deployment notes"
 ]
 
 function Home() {
@@ -15,37 +15,37 @@ function Home() {
     <div className="landing-page">
       <section className="landing-hero-grid">
         <CommandHero
-          eyebrow={<span className="static-chip">Static landing / no API</span>}
+          eyebrow={<span className="static-chip">Cover page / no API</span>}
           title="Mam Portfolio"
-          description="Full-stack builder focused on clean React frontends, Express backends, practical game projects, and deployable portfolio systems."
+          description="A black-and-white handbook of practical builds, backend notes, frontend craft, game experiments, and deployment work. Read it like a working notebook, not a project wall."
           actions={(
             <>
-              <Link className="button button--primary" to="/projects">View Projects</Link>
-              <Link className="button button--secondary" to="/contact">Contact</Link>
+              <Link className="button button--primary" to="/projects">Read Chapters</Link>
+              <Link className="button button--secondary" to="/contact">Write a Note</Link>
             </>
           )}
         >
           <div className="landing-summary">
             <div>
-              <span>Primary stack</span>
+              <span>Main stack</span>
               <strong>React + Express + MongoDB</strong>
             </div>
             <div>
-              <span>Build mode</span>
-              <strong>Clean UI, working API, deploy-ready</strong>
+              <span>Book format</span>
+              <strong>Short chapters, proof of work, clear routes</strong>
             </div>
           </div>
         </CommandHero>
 
         <aside className="landing-status-stack" aria-label="Portfolio capability summary">
           <article className="landing-side-card landing-side-card--feature">
-            <span className="card-kicker">Skill signal</span>
+            <span className="card-kicker">Chapter one</span>
             <h2>Frontend craft</h2>
-            <p>Cyber-console UI, route structure, reusable components, responsive states, and public-first presentation.</p>
+            <p>Readable interfaces, route structure, reusable components, responsive states, and public-first presentation.</p>
           </article>
           <article className="landing-side-card">
-            <span className="card-kicker">Backend logic</span>
-            <h2>API systems</h2>
+            <span className="card-kicker">Chapter two</span>
+            <h2>Backend logic</h2>
             <p>Express endpoints, MongoDB repositories, auth, uploads, admin-only tools, and deployment workflows.</p>
           </article>
         </aside>
@@ -60,8 +60,8 @@ function Home() {
 
         <article className="landing-side-card landing-side-card--quiet">
           <span className="card-kicker">No data dependency</span>
-          <h2>Landing stays fast</h2>
-          <p>This page is static and does not depend on profile or project API availability.</p>
+          <h2>Fast cover page</h2>
+          <p>The cover stays static, so the portfolio can open cleanly even when API pages are offline.</p>
         </article>
       </section>
     </div>
