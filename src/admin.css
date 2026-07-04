@@ -16,18 +16,18 @@
   gap: 24px;
   height: calc(100svh - 48px);
   padding: 22px;
-  background: rgba(5, 9, 18, 0.72);
-  border: 1px solid rgba(45, 72, 111, 0.72);
-  border-radius: 28px;
+  color: var(--foreground);
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-2xl);
   box-shadow: var(--shadow);
-  backdrop-filter: blur(18px);
 }
 
 .admin-kicker {
   display: block;
   margin-bottom: 10px;
-  color: var(--focus);
-  font: 800 11px/1 var(--font-mono);
+  color: var(--foreground);
+  font: 900 11px/1 var(--font-mono);
   letter-spacing: 0.14em;
   text-transform: uppercase;
 }
@@ -54,19 +54,20 @@
   align-items: center;
   min-height: 46px;
   padding: 0 14px;
-  color: var(--muted-foreground);
-  font-weight: 800;
-  background: rgba(16, 27, 51, 0.52);
-  border: 1px solid rgba(45, 72, 111, 0.58);
-  border-radius: 16px;
-  transition: border-color 160ms ease, color 160ms ease, background 160ms ease, transform 160ms ease;
+  color: var(--foreground);
+  font: 900 12px/1 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  transition: background 160ms ease, transform 160ms ease, box-shadow 160ms ease;
 }
 
 .admin-nav__link:hover,
 .admin-nav__link--active {
-  color: var(--primary);
-  background: rgba(63, 235, 255, 0.1);
-  border-color: rgba(63, 235, 255, 0.45);
+  background: var(--surface-2);
+  box-shadow: inset 0 -2px 0 var(--foreground);
   transform: translateY(-1px);
 }
 
@@ -86,21 +87,18 @@
 }
 
 .admin-hero {
-  border-color: rgba(255, 77, 182, 0.34);
-  background:
-    linear-gradient(135deg, rgba(255, 77, 182, 0.11), transparent 32%),
-    linear-gradient(180deg, rgba(12, 20, 38, 0.96), rgba(5, 9, 18, 0.94));
+  background: var(--surface);
 }
 
 .admin-card-link {
   display: block;
-  transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+  transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
 }
 
 .admin-card-link:hover {
-  border-color: rgba(63, 235, 255, 0.42);
-  background: rgba(16, 27, 51, 0.8);
-  transform: translateY(-2px);
+  background: var(--surface-2);
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow);
 }
 
 .admin-crud-grid {
@@ -117,28 +115,11 @@
 .admin-panel,
 .admin-list-card {
   padding: 20px;
-  background: rgba(12, 20, 38, 0.78);
-  border: 1px solid rgba(45, 72, 111, 0.72);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(18px);
-}
-
-.admin-panel select,
-.admin-panel input[type="file"] {
-  width: 100%;
   color: var(--foreground);
-  background: rgba(5, 9, 18, 0.7);
-  border: 1px solid rgba(45, 72, 111, 0.8);
-  border-radius: 18px;
-  outline: 0;
-  padding: 14px 16px;
-}
-
-.admin-panel select:focus,
-.admin-panel input[type="file"]:focus {
-  border-color: rgba(255, 77, 182, 0.72);
-  box-shadow: 0 0 0 4px rgba(255, 77, 182, 0.1);
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--soft-shadow);
 }
 
 .admin-profile-form {
@@ -161,7 +142,7 @@
 }
 
 .admin-list-card--unread {
-  border-color: rgba(255, 77, 182, 0.42);
+  background: var(--surface-2);
 }
 
 .admin-list-card__header {
