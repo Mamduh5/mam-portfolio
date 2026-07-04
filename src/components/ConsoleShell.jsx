@@ -1,11 +1,11 @@
 import { NavLink } from "react-router-dom"
 
 const navItems = [
-  { to: "/", label: "Home" },
-  { to: "/profile", label: "Profile" },
-  { to: "/projects", label: "Work" },
-  { to: "/games", label: "Games" },
-  { to: "/contact", label: "Link" }
+  { to: "/", label: "Cover" },
+  { to: "/profile", label: "Author" },
+  { to: "/projects", label: "Chapters" },
+  { to: "/games", label: "Playbook" },
+  { to: "/contact", label: "Letter" }
 ]
 
 function ConsoleShell({ children }) {
@@ -16,7 +16,7 @@ function ConsoleShell({ children }) {
           MAM
         </NavLink>
 
-        <nav className="console-nav" aria-label="Portfolio navigation">
+        <nav className="console-nav" aria-label="Portfolio table of contents">
           {navItems.map(item => (
             <NavLink
               key={item.to}
@@ -31,7 +31,7 @@ function ConsoleShell({ children }) {
 
         <div className="console-status-pill" aria-label="Portfolio status">
           <span className="status-light" />
-          <span>PUBLIC PORTFOLIO ONLINE</span>
+          <span>Public handbook</span>
         </div>
       </header>
 
