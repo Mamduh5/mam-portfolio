@@ -96,13 +96,18 @@ function AdminProfile() {
           <h1>Profile</h1>
           <p>Edit the profile details shown to visitors.</p>
         </div>
+        <div className="admin-actions">
+          <button className="button button--primary" type="submit" form="admin-profile-form" disabled={saving || loading}>
+            {saving ? "Saving..." : "Save profile"}
+          </button>
+        </div>
       </section>
 
       {loading && <div className="skeleton" />}
 
       {!loading && (
         <section className="admin-workbench admin-workbench--profile">
-          <form className="secure-form admin-panel admin-profile-form" onSubmit={handleSubmit}>
+          <form id="admin-profile-form" className="secure-form admin-panel admin-profile-form" onSubmit={handleSubmit}>
             <div className="admin-inspector__header">
               <div>
                 <span className="card-kicker">Editor</span>

@@ -110,7 +110,7 @@ button {
   position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  width: min(1180px, calc(100% - 32px));
+  width: min(90vw, 1280px);
   min-height: calc(100svh - 32px);
   padding: clamp(14px, 2vw, 28px);
   margin: 16px auto;
@@ -559,7 +559,7 @@ button {
 
 @media (max-width: 1023px) {
   .console-shell {
-    width: min(100% - 24px, 1180px);
+    width: min(90vw, 1280px);
     padding-top: 18px;
   }
 
@@ -570,7 +570,7 @@ button {
 
 @media (max-width: 767px) {
   .console-shell {
-    width: min(100% - 18px, 1180px);
+    width: min(90vw, 1280px);
     min-height: calc(100svh - 18px);
     margin: 9px auto;
     padding: 16px;
@@ -791,15 +791,47 @@ button {
 }
 
 .admin-shell {
-  grid-template-columns: minmax(188px, 220px) minmax(0, 1fr);
+  display: grid;
+  grid-template-areas:
+    "session session"
+    "sidebar workspace";
+  grid-template-columns: 240px minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr);
+  width: 100%;
+  max-width: none;
+  min-height: 100svh;
+  margin: 0;
+  background: var(--paper-bg);
+}
+
+.admin-session-bar {
+  grid-area: session;
+  min-height: 42px;
+  padding: 0 16px;
+  margin: 0;
+  background: var(--paper-sheet);
+  border-bottom: 1px solid var(--guide-line);
 }
 
 .admin-sidebar {
-  padding: 18px 14px;
+  position: sticky;
+  top: 42px;
+  grid-area: sidebar;
+  align-self: start;
+  height: calc(100svh - 42px);
+  padding: 16px;
+  overflow: auto;
+  background: var(--paper-sheet);
+  border-right: 1px solid var(--guide-line);
 }
 
 .admin-main {
-  padding: 14px;
+  grid-area: workspace;
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  min-height: calc(100svh - 42px);
+  padding: 12px 14px 18px;
 }
 
 .admin-desk {
@@ -809,17 +841,18 @@ button {
 
 .admin-page-bar {
   display: flex;
+  flex-wrap: wrap;
   gap: 14px;
   align-items: center;
   justify-content: space-between;
   min-height: 0;
-  padding: 14px 16px;
+  padding: 12px 14px;
 }
 
 .admin-page-bar h1 {
   color: var(--ink);
   font-family: var(--font-voice);
-  font-size: clamp(28px, 3vw, 42px);
+  font-size: clamp(24px, 2vw, 32px);
   font-weight: 500;
   line-height: 1.05;
   letter-spacing: 0;
@@ -835,18 +868,46 @@ button {
   margin: 0;
 }
 
+.admin-page-bar > .admin-meta-grid,
+.admin-page-bar > .form-status {
+  flex-basis: 100%;
+}
+
 .admin-workbench {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(340px, 420px);
   gap: 12px;
   align-items: start;
+  width: 100%;
+  max-width: none;
 }
 
 .admin-workbench--projects {
-  grid-template-columns: minmax(520px, 1fr) minmax(380px, 460px);
+  grid-template-columns: minmax(0, 1fr) clamp(380px, 28vw, 480px);
+}
+
+.admin-workbench--uploads {
+  grid-template-columns: minmax(300px, 360px) minmax(0, 1fr) minmax(360px, 440px);
+}
+
+.admin-workbench--messages,
+.admin-workbench--profile {
+  grid-template-columns: minmax(0, 1fr) clamp(360px, 30vw, 440px);
 }
 
 .admin-main-pane {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+
+.admin-metric-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.admin-upload-column {
   display: grid;
   gap: 10px;
   min-width: 0;
@@ -876,8 +937,8 @@ button {
   top: 12px;
   display: grid;
   gap: 12px;
-  max-height: calc(100svh - 96px);
-  overflow: auto;
+  max-height: none;
+  overflow: visible;
 }
 
 .admin-inspector__header {
@@ -897,11 +958,12 @@ button {
 
 .admin-ruled-row {
   display: grid;
-  grid-template-columns: minmax(220px, 1fr) minmax(260px, auto) auto;
+  grid-template-columns: minmax(240px, 1fr) minmax(280px, auto) auto;
   gap: 12px;
   align-items: center;
   width: 100%;
-  padding: 12px 14px;
+  min-height: 72px;
+  padding: 10px 12px;
   text-align: left;
   cursor: pointer;
   box-shadow: none;
@@ -994,6 +1056,8 @@ button.admin-ruled-row {
 
 .asset-contact-sheet {
   margin-top: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+  gap: 10px;
 }
 
 .asset-tile {
@@ -1069,6 +1133,9 @@ button.admin-ruled-row {
 @media (max-width: 1180px) {
   .admin-workbench,
   .admin-workbench--projects,
+  .admin-workbench--uploads,
+  .admin-workbench--messages,
+  .admin-workbench--profile,
   .project-detail-grid,
   .project-detail-sections {
     grid-template-columns: 1fr;
@@ -1082,7 +1149,30 @@ button.admin-ruled-row {
 
 @media (max-width: 760px) {
   .admin-shell {
+    grid-template-areas:
+      "session"
+      "sidebar"
+      "workspace";
     grid-template-columns: 1fr;
+  }
+
+  .admin-session-bar {
+    align-items: flex-start;
+    flex-direction: column;
+    min-height: 0;
+    padding: 10px 14px;
+  }
+
+  .admin-sidebar {
+    position: static;
+    height: auto;
+    border-right: 0;
+    border-bottom: 1px solid var(--guide-line);
+  }
+
+  .admin-main {
+    min-height: 0;
+    padding: 12px;
   }
 
   .admin-page-bar,

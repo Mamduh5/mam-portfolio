@@ -23,6 +23,7 @@ const emptyProject = {
 }
 
 const emptyFilters = {
+  search: "",
   type: "",
   status: "",
   source: "",
@@ -203,6 +204,17 @@ function AdminProjects() {
 
   const filteredProjects = useMemo(() => (
     projects.filter(project => {
+      const search = filters.search.trim().toLowerCase()
+      if (search) {
+        const haystack = [
+          project.name,
+          project.description,
+          getRepoUrl(project),
+          getGitHubFullName(project),
+          getGitHubLanguage(project)
+        ].filter(Boolean).join(" ").toLowerCase()
+        if (!haystack.includes(search)) return false
+      }
       if (filters.type && getProjectType(project) !== filters.type) return false
       if (filters.status && (project.status || "draft") !== filters.status) return false
       if (filters.source === "github" && !isGitHubImported(project)) return false
@@ -391,6 +403,10 @@ function AdminProjects() {
       <section className="admin-workbench admin-workbench--projects">
         <div className="admin-main-pane">
           <div className="admin-panel admin-filter-panel">
+            <label>
+              Search
+              <input name="search" value={filters.search} onChange={handleFilterChange} placeholder="Name, repo, language" />
+            </label>
             <label>
               Type
               <select name="type" value={filters.type} onChange={handleFilterChange}>

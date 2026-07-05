@@ -234,6 +234,14 @@ function AdminFocus() {
           <h1>Focus</h1>
           <p>Track current focus, allowed work, forbidden work, attention items, and parked projects.</p>
         </div>
+        <div className="admin-actions">
+          <button className="button button--primary" type="submit" form="admin-focus-form" disabled={saving || loading}>
+            {saving ? "Saving..." : "Save focus"}
+          </button>
+          <button className="button button--secondary" type="button" onClick={handleSnapshot} disabled={snapshotting || loading}>
+            {snapshotting ? "Creating..." : "Manual snapshot"}
+          </button>
+        </div>
       </section>
 
       {loading && <div className="skeleton" />}
@@ -295,7 +303,7 @@ function AdminFocus() {
           </section>
 
           <section className="admin-workbench admin-focus-grid">
-            <form className="secure-form admin-panel admin-focus-form" onSubmit={handleSubmit}>
+            <form id="admin-focus-form" className="secure-form admin-panel admin-focus-form" onSubmit={handleSubmit}>
               <span className="card-kicker">Current focus</span>
               <label>
                 Active project

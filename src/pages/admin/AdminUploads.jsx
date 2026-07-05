@@ -284,10 +284,15 @@ function AdminUploads() {
           <h1>Uploads</h1>
           <p>Upload media files and manage images used by projects and profile details.</p>
         </div>
+        <div className="admin-actions">
+          <button className="button button--secondary" type="button" onClick={loadAssets} disabled={loadingAssets}>
+            {loadingAssets ? "Loading..." : "Refresh assets"}
+          </button>
+        </div>
       </section>
 
       <section className="admin-workbench admin-workbench--uploads">
-        <div className="admin-main-pane">
+        <div className="admin-upload-column">
           <form className="secure-form admin-panel admin-upload-form" onSubmit={handleSubmit}>
             <div className="admin-inspector__header">
               <div>
@@ -356,54 +361,51 @@ function AdminUploads() {
               </div>
             </article>
           )}
-
-          <section className="admin-panel" aria-label="Asset list">
-            <div className="admin-inspector__header">
-              <div>
-                <span className="card-kicker">Contact sheet</span>
-                <h2>Asset catalog</h2>
-              </div>
-              <button className="button button--secondary" type="button" onClick={loadAssets} disabled={loadingAssets}>
-                {loadingAssets ? "Loading..." : "Refresh"}
-              </button>
-            </div>
-
-            {assetError && <p className="form-status form-status--error">{assetError}</p>}
-            {assetSuccess && <p className="form-status form-status--success">{assetSuccess}</p>}
-            {loadingAssets && <div className="skeleton" />}
-            {!loadingAssets && assets.length === 0 && (
-              <article className="bento-card bento-card--quiet">
-                <span className="card-kicker">Empty</span>
-                <h2>No assets yet</h2>
-                <p>No uploaded assets yet.</p>
-              </article>
-            )}
-            <div className="asset-contact-sheet">
-              {!loadingAssets && assets.map(asset => {
-                const assetId = getAssetId(asset)
-                const assetUrl = getAssetUrl(asset)
-
-                return (
-                  <button
-                    className={`asset-tile${selectedAssetId === assetId ? " asset-tile--selected" : ""}`}
-                    type="button"
-                    key={assetId}
-                    onClick={() => setSelectedAssetId(assetId)}
-                  >
-                    {assetUrl ? (
-                      <img src={assetUrl} alt={getAssetAltText(asset) || getAssetFilename(asset)} />
-                    ) : (
-                      <span className="paper-image-placeholder">Image</span>
-                    )}
-                    <span>{getAssetRole(asset)}</span>
-                    <strong>{getAssetFilename(asset)}</strong>
-                    <small>{getAssetEntityType(asset) || "standalone"} - {formatDate(getAssetCreatedAt(asset))}</small>
-                  </button>
-                )
-              })}
-            </div>
-          </section>
         </div>
+
+        <section className="admin-panel admin-asset-catalog" aria-label="Asset list">
+          <div className="admin-inspector__header">
+            <div>
+              <span className="card-kicker">Contact sheet</span>
+              <h2>Asset catalog</h2>
+            </div>
+          </div>
+
+          {assetError && <p className="form-status form-status--error">{assetError}</p>}
+          {assetSuccess && <p className="form-status form-status--success">{assetSuccess}</p>}
+          {loadingAssets && <div className="skeleton" />}
+          {!loadingAssets && assets.length === 0 && (
+            <article className="bento-card bento-card--quiet">
+              <span className="card-kicker">Empty</span>
+              <h2>No assets yet</h2>
+              <p>No uploaded assets yet.</p>
+            </article>
+          )}
+          <div className="asset-contact-sheet">
+            {!loadingAssets && assets.map(asset => {
+              const assetId = getAssetId(asset)
+              const assetUrl = getAssetUrl(asset)
+
+              return (
+                <button
+                  className={`asset-tile${selectedAssetId === assetId ? " asset-tile--selected" : ""}`}
+                  type="button"
+                  key={assetId}
+                  onClick={() => setSelectedAssetId(assetId)}
+                >
+                  {assetUrl ? (
+                    <img src={assetUrl} alt={getAssetAltText(asset) || getAssetFilename(asset)} />
+                  ) : (
+                    <span className="paper-image-placeholder">Image</span>
+                  )}
+                  <span>{getAssetRole(asset)}</span>
+                  <strong>{getAssetFilename(asset)}</strong>
+                  <small>{getAssetEntityType(asset) || "standalone"} - {formatDate(getAssetCreatedAt(asset))}</small>
+                </button>
+              )
+            })}
+          </div>
+        </section>
 
         <aside className="admin-panel admin-inspector">
           {selectedAsset ? (

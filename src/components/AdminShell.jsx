@@ -21,6 +21,12 @@ function AdminShell() {
 
   return (
     <div className="admin-shell">
+      <header className="console-status admin-session-bar" aria-label="Admin status">
+        <span className="status-light" />
+        <span>Session active</span>
+        <span className="console-status__scope">Private workspace</span>
+      </header>
+
       <aside className="admin-sidebar" aria-label="Dashboard navigation">
         <div>
           <span className="admin-kicker">Workspace</span>
@@ -47,11 +53,6 @@ function AdminShell() {
       </aside>
 
       <main className="admin-main">
-        <header className="console-status" aria-label="Admin status">
-          <span className="status-light" />
-          <span>Session active</span>
-          <span className="console-status__scope">Private workspace</span>
-        </header>
         <Outlet />
       </main>
     </div>

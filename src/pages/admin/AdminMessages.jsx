@@ -83,6 +83,11 @@ function AdminMessages() {
             <strong>{messages.filter(message => !message.read).length}</strong>
           </div>
         </div>
+        <div className="admin-actions">
+          <button className="button button--secondary" type="button" onClick={loadMessages} disabled={loading}>
+            {loading ? "Loading..." : "Refresh"}
+          </button>
+        </div>
       </section>
 
       {error && <p className="form-status form-status--error">{error}</p>}

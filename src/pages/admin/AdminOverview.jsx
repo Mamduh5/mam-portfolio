@@ -20,16 +20,19 @@ function AdminOverview() {
           <h1>Dashboard</h1>
           <p>Private workspace for portfolio management, project updates, uploads, messages, and profile details.</p>
         </div>
-        <div className="landing-summary">
-          <div>
-            <span>Auth status</span>
-            <strong>{admin?.username ? `Signed in as ${admin.username}` : "Session active"}</strong>
-          </div>
-          <div>
-            <span>Admin tools</span>
-            <strong>Projects, uploads, messages, profile, focus</strong>
-          </div>
-        </div>
+      </section>
+
+      <section className="admin-metric-grid" aria-label="Workspace status">
+        <article className="admin-panel">
+          <span className="card-kicker">Session</span>
+          <h2>{admin?.username ? admin.username : "Active"}</h2>
+          <p>{admin?.username ? "Signed in admin user." : "Private dashboard session is active."}</p>
+        </article>
+        <article className="admin-panel">
+          <span className="card-kicker">Admin tools</span>
+          <h2>{cards.length}</h2>
+          <p>Available workspace modules.</p>
+        </article>
       </section>
 
       <section className="admin-compact-grid" aria-label="Admin dashboard areas">
