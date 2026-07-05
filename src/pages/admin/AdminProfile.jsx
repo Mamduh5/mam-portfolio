@@ -89,10 +89,10 @@ function AdminProfile() {
   }
 
   return (
-    <div className="page-stack">
-      <section className="command-hero admin-hero">
-        <span className="static-chip">Public profile</span>
-        <div className="command-hero__copy">
+    <div className="admin-desk">
+      <section className="admin-page-bar">
+        <div>
+          <span className="card-kicker">Public profile</span>
           <h1>Profile</h1>
           <p>Edit the profile details shown to visitors.</p>
         </div>
@@ -101,51 +101,82 @@ function AdminProfile() {
       {loading && <div className="skeleton" />}
 
       {!loading && (
-        <form className="secure-form admin-panel admin-profile-form" onSubmit={handleSubmit}>
-          <label>
-            Name
-            <input name="name" value={form.name} onChange={handleChange} required />
-          </label>
-          <label>
-            Title
-            <input name="title" value={form.title} onChange={handleChange} />
-          </label>
-          <label>
-            Email
-            <input name="email" type="email" value={form.email} onChange={handleChange} />
-          </label>
-          <label>
-            GitHub
-            <input name="github" value={form.github} onChange={handleChange} />
-          </label>
-          <label>
-            Avatar URL
-            <input name="avatarUrl" value={form.avatarUrl} onChange={handleChange} />
-          </label>
-          <label>
-            Phone
-            <input name="phone" value={form.phone} onChange={handleChange} />
-          </label>
-          <label>
-            LINE
-            <input name="line" value={form.line} onChange={handleChange} />
-          </label>
-          <label>
-            Facebook
-            <input name="facebook" value={form.facebook} onChange={handleChange} />
-          </label>
-          <label className="admin-form-full">
-            Bio / introduction
-            <textarea name="bio" value={form.bio} onChange={handleChange} rows="5" />
-          </label>
-          <div className="admin-actions admin-form-full">
-            <button className="button button--primary" type="submit" disabled={saving}>
-              {saving ? "Saving..." : "Save profile"}
-            </button>
-          </div>
-          {error && <p className="form-status form-status--error admin-form-full">{error}</p>}
-          {success && <p className="form-status form-status--success admin-form-full">{success}</p>}
-        </form>
+        <section className="admin-workbench admin-workbench--profile">
+          <form className="secure-form admin-panel admin-profile-form" onSubmit={handleSubmit}>
+            <div className="admin-inspector__header">
+              <div>
+                <span className="card-kicker">Editor</span>
+                <h2>Profile fields</h2>
+              </div>
+              <button className="button button--primary" type="submit" disabled={saving}>
+                {saving ? "Saving..." : "Save profile"}
+              </button>
+            </div>
+            <fieldset>
+              <legend>Identity</legend>
+              <div className="admin-form-pair">
+                <label>
+                  Name
+                  <input name="name" value={form.name} onChange={handleChange} required />
+                </label>
+                <label>
+                  Title
+                  <input name="title" value={form.title} onChange={handleChange} />
+                </label>
+              </div>
+              <label>
+                Bio / introduction
+                <textarea name="bio" value={form.bio} onChange={handleChange} rows="5" />
+              </label>
+            </fieldset>
+            <fieldset>
+              <legend>Contact</legend>
+              <div className="admin-form-pair">
+                <label>
+                  Email
+                  <input name="email" type="email" value={form.email} onChange={handleChange} />
+                </label>
+                <label>
+                  GitHub
+                  <input name="github" value={form.github} onChange={handleChange} />
+                </label>
+                <label>
+                  Phone
+                  <input name="phone" value={form.phone} onChange={handleChange} />
+                </label>
+                <label>
+                  LINE
+                  <input name="line" value={form.line} onChange={handleChange} />
+                </label>
+                <label>
+                  Facebook
+                  <input name="facebook" value={form.facebook} onChange={handleChange} />
+                </label>
+              </div>
+            </fieldset>
+            <fieldset>
+              <legend>Media</legend>
+              <label>
+                Avatar URL
+                <input name="avatarUrl" value={form.avatarUrl} onChange={handleChange} />
+              </label>
+            </fieldset>
+            {error && <p className="form-status form-status--error">{error}</p>}
+            {success && <p className="form-status form-status--success">{success}</p>}
+          </form>
+
+          <aside className="admin-panel admin-inspector">
+            <span className="card-kicker">Preview</span>
+            {form.avatarUrl && <img className="profile-preview-image" src={form.avatarUrl} alt={form.name || "Profile preview"} />}
+            <h2>{form.name || "Mam"}</h2>
+            <p>{form.title || "Title not set"}</p>
+            <div className="ruled-rows">
+              <div><span>Email</span><strong>{form.email || "Not published"}</strong></div>
+              <div><span>GitHub</span><strong>{form.github || "Not published"}</strong></div>
+              <div><span>Contact</span><strong>{form.phone || form.line || form.facebook || "Contact page"}</strong></div>
+            </div>
+          </aside>
+        </section>
       )}
     </div>
   )

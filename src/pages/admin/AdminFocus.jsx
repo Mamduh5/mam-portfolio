@@ -227,10 +227,10 @@ function AdminFocus() {
   }
 
   return (
-    <div className="page-stack">
-      <section className="command-hero admin-hero">
-        <span className="static-chip">Focus workspace</span>
-        <div className="command-hero__copy">
+    <div className="admin-desk">
+      <section className="admin-page-bar">
+        <div>
+          <span className="card-kicker">Focus workspace</span>
           <h1>Focus</h1>
           <p>Track current focus, allowed work, forbidden work, attention items, and parked projects.</p>
         </div>
@@ -240,8 +240,8 @@ function AdminFocus() {
 
       {!loading && (
         <>
-          <section className="bento-grid bento-grid--two" aria-label="Latest automated focus snapshots">
-            <article className="bento-card">
+          <section className="admin-compact-grid" aria-label="Latest automated focus snapshots">
+            <article className="admin-panel">
               <span className="card-kicker">Latest daily snapshot</span>
               {latestDailySnapshot ? (
                 <>
@@ -252,7 +252,7 @@ function AdminFocus() {
                 <p>No daily snapshot yet.</p>
               )}
             </article>
-            <article className="bento-card">
+            <article className="admin-panel">
               <span className="card-kicker">Latest weekly snapshot</span>
               {latestWeeklySnapshot ? (
                 <>
@@ -265,7 +265,7 @@ function AdminFocus() {
             </article>
           </section>
 
-          <section className="page-stack" aria-label="Observed activity">
+          <section className="page-stack admin-compact-section" aria-label="Observed activity">
             <article className="admin-panel admin-focus-summary">
               <span className="card-kicker">Observed activity</span>
               <h2>Declared focus vs observed activity</h2>
@@ -282,7 +282,7 @@ function AdminFocus() {
               )}
               {syncError && <p className="form-status form-status--error">{syncError}</p>}
             </article>
-            <div className="bento-grid bento-grid--two">
+            <div className="admin-compact-grid">
               <section className="admin-list" aria-label="GitHub activity">
                 <span className="card-kicker">GitHub</span>
                 {renderActivityList(githubActivityEvents, "No GitHub activity events yet.")}
@@ -294,7 +294,7 @@ function AdminFocus() {
             </div>
           </section>
 
-          <section className="admin-crud-grid admin-focus-grid">
+          <section className="admin-workbench admin-focus-grid">
             <form className="secure-form admin-panel admin-focus-form" onSubmit={handleSubmit}>
               <span className="card-kicker">Current focus</span>
               <label>

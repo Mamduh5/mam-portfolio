@@ -85,6 +85,10 @@ const getGitHubPushedAt = (project) => (
   ""
 )
 
+const getUpdatedAt = (project) => (
+  project.updatedAt || project.updated_at || getGitHubPushedAt(project) || project.createdAt || project.created_at || ""
+)
+
 const getGitHubRepoUrl = (project) => (
   project.githubRepoUrl ||
   project.github_repo_url ||
@@ -209,6 +213,10 @@ function AdminProjects() {
     })
   ), [filters, projects])
 
+  const editingProject = useMemo(() => (
+    projects.find(project => getProjectId(project) === editingId) || null
+  ), [editingId, projects])
+
   const handleChange = (event) => {
     const { name, value, checked, type } = event.target
     setForm({
@@ -279,7 +287,9 @@ function AdminProjects() {
         : [saved, ...projects]
       )
       setSuccess(editingId ? "Project updated." : "Project created.")
-      resetForm()
+      setForm(toForm(saved))
+      setEditingId(getProjectId(saved))
+      setPreviewFile(null)
     } catch (err) {
       console.error(err)
       setError(err.response?.data?.error || "Failed to save project.")
@@ -351,22 +361,17 @@ function AdminProjects() {
   }
 
   return (
-    <div className="page-stack">
-      <section className="command-hero admin-hero">
-        <span className="static-chip">Project collection</span>
-        <div className="command-hero__copy">
+    <div className="admin-desk">
+      <section className="admin-page-bar">
+        <div>
+          <span className="card-kicker">Project collection</span>
           <h1>Projects</h1>
           <p>Create and update the work and game cards shown on the portfolio.</p>
         </div>
-      </section>
-
-      <section className="admin-panel admin-sync-panel" aria-label="GitHub project sync">
-        <div>
-          <span className="card-kicker">GitHub import</span>
-          <h2>Sync GitHub Projects</h2>
-          <p>Import public repository details while keeping portfolio edits in this workspace.</p>
-        </div>
         <div className="admin-actions">
+          <button className="button button--secondary" type="button" onClick={resetForm}>
+            New Project
+          </button>
           <button className="button button--primary" type="button" onClick={handleSync} disabled={syncing}>
             {syncing ? "Syncing..." : "Sync GitHub Projects"}
           </button>
@@ -383,100 +388,8 @@ function AdminProjects() {
         {syncError && <p className="form-status form-status--error">{syncError}</p>}
       </section>
 
-      <section className="admin-crud-grid">
-        <form className="secure-form admin-panel" onSubmit={handleSubmit}>
-          <span className="card-kicker">{editingId ? "Edit project" : "Create project"}</span>
-          <label>
-            Name
-            <input name="name" value={form.name} onChange={handleChange} required />
-          </label>
-          <label>
-            Description
-            <textarea name="description" value={form.description} onChange={handleChange} rows="4" />
-          </label>
-          <label>
-            Status
-            <select name="status" value={form.status} onChange={handleChange}>
-              <option value="draft">Draft</option>
-              <option value="published">Published</option>
-              <option value="archived">Archived</option>
-            </select>
-          </label>
-          <label>
-            Project type
-            <select name="projectType" value={form.projectType} onChange={handleChange}>
-              <option value="project">Project</option>
-              <option value="game">Game</option>
-            </select>
-          </label>
-          <label>
-            Sort order
-            <input name="sortOrder" type="number" value={form.sortOrder} onChange={handleChange} />
-          </label>
-          <label>
-            Tech stack, comma separated
-            <input name="techStack" value={form.techStack} onChange={handleChange} placeholder="React, Express, MongoDB" />
-          </label>
-          <label>
-            Repo URL
-            <input name="repoUrl" value={form.repoUrl} onChange={handleChange} />
-          </label>
-          <label>
-            Demo URL
-            <input name="demoUrl" value={form.demoUrl} onChange={handleChange} />
-          </label>
-          <div className="admin-preview-panel">
-            <span className="card-kicker">Preview image</span>
-            {form.previewImage ? (
-              <img src={form.previewImage} alt={form.name ? `${form.name} preview` : "Project preview"} />
-            ) : (
-              <small>No preview image set.</small>
-            )}
-            <label>
-              Upload preview image
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(event) => setPreviewFile(event.target.files?.[0] || null)}
-              />
-            </label>
-            <button
-              className="button button--secondary"
-              type="button"
-              onClick={handlePreviewUpload}
-              disabled={previewUploading || !previewFile}
-            >
-              {previewUploading ? "Uploading..." : "Upload preview image"}
-            </button>
-            {!editingId && <small>Create or edit a project before uploading a preview image.</small>}
-          </div>
-          <label>
-            Preview image URL (advanced fallback)
-            <input name="previewImage" value={form.previewImage} onChange={handleChange} />
-          </label>
-          <label className="admin-checkbox">
-            <input name="publicVisible" type="checkbox" checked={form.publicVisible} onChange={handleChange} />
-            Public visible
-          </label>
-          <label className="admin-checkbox">
-            <input name="featured" type="checkbox" checked={form.featured} onChange={handleChange} />
-            Featured
-          </label>
-          <div className="admin-actions">
-            <button className="button button--primary" type="submit" disabled={saving}>
-              {saving ? "Saving..." : editingId ? "Save project" : "Create project"}
-            </button>
-            {editingId && (
-              <button className="button button--secondary" type="button" onClick={resetForm}>
-                Cancel
-              </button>
-            )}
-          </div>
-          {error && <p className="form-status form-status--error">{error}</p>}
-          {success && <p className="form-status form-status--success">{success}</p>}
-        </form>
-
-        <section className="admin-list" aria-label="Project list">
+      <section className="admin-workbench admin-workbench--projects">
+        <div className="admin-main-pane">
           <div className="admin-panel admin-filter-panel">
             <label>
               Type
@@ -535,43 +448,167 @@ function AdminProjects() {
             const repoUrl = getGitHubRepoUrl(project) || getRepoUrl(project)
 
             return (
-              <article className="admin-list-card" key={projectId}>
-                <div className="admin-list-card__header">
-                  <div>
-                    <span className="card-kicker">{projectType}</span>
-                    <h2>{project.name}</h2>
-                  </div>
-                  {project.featured && <small>Featured</small>}
+              <article
+                className={`admin-ruled-row${editingId === projectId ? " admin-ruled-row--selected" : ""}`}
+                key={projectId}
+                role="button"
+                tabIndex={0}
+                onClick={() => handleEdit(project)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") handleEdit(project)
+                }}
+              >
+                <div>
+                  <span className="card-kicker">{projectType}</span>
+                  <h2>{project.name}</h2>
+                  <p>{formatDate(getUpdatedAt(project)) || "No date"}</p>
                 </div>
-                <p>{project.description}</p>
-                <div className="admin-status-row">
+                <div className="admin-row-tags">
                   <span>{githubImported ? "GitHub imported" : "Manual"}</span>
                   <span>{getPublicVisible(project) ? "Public" : "Hidden"}</span>
                   <span>{project.status || "draft"}</span>
-                  <span>{projectType}</span>
                   {project.featured && <span>Featured</span>}
                 </div>
-                {githubImported && (
-                  <div className="admin-meta-grid">
-                    <span>Source: {getSourceKind(project) || "github"}</span>
-                    <span>GitHub full name: {getGitHubFullName(project) || "Not set"}</span>
-                    <span>GitHub language: {getGitHubLanguage(project) || "Not set"}</span>
-                    <span>GitHub pushed at: {formatDate(getGitHubPushedAt(project)) || "Not set"}</span>
-                    {repoUrl && (
-                      <a href={repoUrl} target="_blank" rel="noreferrer">
-                        Repo URL
-                      </a>
-                    )}
-                  </div>
-                )}
                 <div className="admin-actions">
-                  <button className="button button--secondary" type="button" onClick={() => handleEdit(project)}>Edit</button>
-                  <button className="button button--secondary" type="button" onClick={() => handleDelete(projectId)}>Delete</button>
+                  {repoUrl && <a className="text-button" href={repoUrl} target="_blank" rel="noreferrer">Source</a>}
+                  <button className="text-button" type="button" onClick={(event) => { event.stopPropagation(); handleDelete(projectId) }}>Delete</button>
                 </div>
               </article>
             )
           })}
-        </section>
+        </div>
+
+        <form className="secure-form admin-panel admin-inspector" onSubmit={handleSubmit}>
+          <div className="admin-inspector__header">
+            <div>
+              <span className="card-kicker">{editingId ? "Editor" : "New Project"}</span>
+              <h2>{editingId ? form.name || "Selected project" : "Create project"}</h2>
+            </div>
+            <button className="button button--primary" type="submit" disabled={saving}>
+              {saving ? "Saving..." : editingId ? "Save project" : "Create project"}
+            </button>
+          </div>
+
+          {error && <p className="form-status form-status--error">{error}</p>}
+          {success && <p className="form-status form-status--success">{success}</p>}
+
+          <fieldset>
+            <legend>Basics</legend>
+            <label>
+              Name
+              <input name="name" value={form.name} onChange={handleChange} required />
+            </label>
+            <label>
+              Description
+              <textarea name="description" value={form.description} onChange={handleChange} rows="4" />
+            </label>
+            <div className="admin-form-pair">
+              <label>
+                Status
+                <select name="status" value={form.status} onChange={handleChange}>
+                  <option value="draft">Draft</option>
+                  <option value="published">Published</option>
+                  <option value="archived">Archived</option>
+                </select>
+              </label>
+              <label>
+                Type
+                <select name="projectType" value={form.projectType} onChange={handleChange}>
+                  <option value="project">Project</option>
+                  <option value="game">Game</option>
+                </select>
+              </label>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Links</legend>
+            <label>
+              Repo URL
+              <input name="repoUrl" value={form.repoUrl} onChange={handleChange} />
+            </label>
+            <label>
+              Demo URL
+              <input name="demoUrl" value={form.demoUrl} onChange={handleChange} />
+            </label>
+          </fieldset>
+
+          <fieldset>
+            <legend>Visibility</legend>
+            <div className="admin-form-pair">
+              <label>
+                Sort order
+                <input name="sortOrder" type="number" value={form.sortOrder} onChange={handleChange} />
+              </label>
+              <label className="admin-checkbox">
+                <input name="publicVisible" type="checkbox" checked={form.publicVisible} onChange={handleChange} />
+                Public visible
+              </label>
+              <label className="admin-checkbox">
+                <input name="featured" type="checkbox" checked={form.featured} onChange={handleChange} />
+                Featured
+              </label>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Media</legend>
+            <div className="admin-preview-panel">
+              {form.previewImage ? (
+                <img src={form.previewImage} alt={form.name ? `${form.name} preview` : "Project preview"} />
+              ) : (
+                <small>No preview image set.</small>
+              )}
+              <label>
+                Upload preview image
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(event) => setPreviewFile(event.target.files?.[0] || null)}
+                />
+              </label>
+              <button
+                className="button button--secondary"
+                type="button"
+                onClick={handlePreviewUpload}
+                disabled={previewUploading || !previewFile}
+              >
+                {previewUploading ? "Uploading..." : "Upload preview image"}
+              </button>
+              {!editingId && <small>Create or select a project before uploading a preview image.</small>}
+            </div>
+            <label>
+              Preview image URL
+              <input name="previewImage" value={form.previewImage} onChange={handleChange} />
+            </label>
+          </fieldset>
+
+          <fieldset>
+            <legend>Tech stack</legend>
+            <label>
+              Tech stack, comma separated
+              <input name="techStack" value={form.techStack} onChange={handleChange} placeholder="React, Express, MongoDB" />
+            </label>
+          </fieldset>
+
+          {editingProject && isGitHubImported(editingProject) && (
+            <fieldset>
+              <legend>Source metadata</legend>
+              <div className="ruled-rows">
+                <div><span>Source</span><strong>{getSourceKind(editingProject) || "github"}</strong></div>
+                <div><span>Repo</span><strong>{getGitHubFullName(editingProject) || "Not set"}</strong></div>
+                <div><span>Language</span><strong>{getGitHubLanguage(editingProject) || "Not set"}</strong></div>
+                <div><span>Last pushed</span><strong>{formatDate(getGitHubPushedAt(editingProject)) || "Not set"}</strong></div>
+              </div>
+            </fieldset>
+          )}
+
+          {editingId && (
+            <button className="button button--secondary" type="button" onClick={resetForm}>
+              Clear editor
+            </button>
+          )}
+        </form>
       </section>
     </div>
   )

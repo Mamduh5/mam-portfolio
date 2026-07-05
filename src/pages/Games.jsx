@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from "react"
-import { api } from "../services/api"
+import { Link } from "react-router-dom"
+import { fetchProjects } from "../services/projects"
 import CommandHero from "../components/CommandHero"
 import ProjectMissionCard from "../components/ProjectMissionCard"
+import { getProjectId } from "../utils/projectMedia"
 
 function Games() {
   const [games, setGames] = useState([])
@@ -12,10 +14,10 @@ function Games() {
   useEffect(() => {
     const fetchGames = async () => {
       try {
-        const res = await api.get("/projects?type=game")
-        const payload = Array.isArray(res.data) ? res.data : []
+        const data = await fetchProjects({ type: "game" })
+        const payload = Array.isArray(data) ? data : []
         setGames(payload)
-        setSelectedId(payload[0]?._id || null)
+        setSelectedId(getProjectId(payload[0]) || null)
         setError(false)
       } catch (err) {
         console.error(err)
@@ -29,7 +31,7 @@ function Games() {
   }, [])
 
   const selectedGame = useMemo(
-    () => games.find(game => game._id === selectedId) || games[0],
+    () => games.find(game => getProjectId(game) === selectedId) || games[0],
     [games, selectedId]
   )
 
@@ -71,7 +73,11 @@ function Games() {
         eyebrow={<span className="static-chip">Game projects</span>}
         title="Games"
         description="Playable works."
-        actions={<button className="button button--secondary" type="button">View selected</button>}
+        actions={selectedGame ? (
+          <Link className="button button--secondary" to={`/games/${getProjectId(selectedGame)}`}>
+            View selected
+          </Link>
+        ) : null}
       >
         <div className="featured-project">
           <span className="card-kicker">Featured game</span>
@@ -85,8 +91,8 @@ function Games() {
           <ProjectMissionCard
             key={game._id}
             project={game}
-            selected={selectedGame?._id === game._id}
-            onSelect={(item) => setSelectedId(item._id)}
+            selected={getProjectId(selectedGame) === getProjectId(game)}
+            onSelect={(item) => setSelectedId(getProjectId(item))}
           />
         ))}
       </section>

@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from "react"
-import { api } from "../services/api"
+import { Link } from "react-router-dom"
+import { fetchProjects } from "../services/projects"
 import CommandHero from "../components/CommandHero"
 import ProjectMissionCard from "../components/ProjectMissionCard"
+import { getProjectId } from "../utils/projectMedia"
 
 function Projects() {
   const [projects, setProjects] = useState([])
@@ -10,12 +12,12 @@ function Projects() {
   const [error, setError] = useState(false)
 
   useEffect(() => {
-    const fetchProjects = async () => {
+    const loadProjects = async () => {
       try {
-        const res = await api.get("/projects")
-        const payload = Array.isArray(res.data) ? res.data : []
+        const data = await fetchProjects()
+        const payload = Array.isArray(data) ? data : []
         setProjects(payload)
-        setSelectedId(payload[0]?._id || null)
+        setSelectedId(getProjectId(payload[0]) || null)
         setError(false)
       } catch (err) {
         console.error(err)
@@ -25,11 +27,11 @@ function Projects() {
       }
     }
 
-    fetchProjects()
+    loadProjects()
   }, [])
 
   const selectedProject = useMemo(
-    () => projects.find(project => project._id === selectedId) || projects[0],
+    () => projects.find(project => getProjectId(project) === selectedId) || projects[0],
     [projects, selectedId]
   )
 
@@ -86,7 +88,11 @@ function Projects() {
         eyebrow={<span className="static-chip">Work catalog</span>}
         title="Work archive"
         description="Featured portfolio work and selected builds."
-        actions={<button className="button button--secondary" type="button">View selected</button>}
+        actions={selectedProject ? (
+          <Link className="button button--secondary" to={`/projects/${getProjectId(selectedProject)}`}>
+            View selected
+          </Link>
+        ) : null}
       >
         <div className="featured-project">
           <span className="card-kicker">Featured work</span>
@@ -100,8 +106,8 @@ function Projects() {
           <ProjectMissionCard
             key={project._id}
             project={project}
-            selected={selectedProject?._id === project._id}
-            onSelect={(item) => setSelectedId(item._id)}
+            selected={getProjectId(selectedProject) === getProjectId(project)}
+            onSelect={(item) => setSelectedId(getProjectId(item))}
           />
         ))}
       </section>

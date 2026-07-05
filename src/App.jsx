@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom"
 import Projects from "./pages/Projects"
 import Home from "./pages/Home"
 import Games from "./pages/Games"
+import ProjectDetail from "./pages/ProjectDetail"
 import Contact from "./pages/Contact"
 import Login from "./pages/Login"
 import Profile from "./pages/Profile"
@@ -29,7 +30,9 @@ function App() {
       <Route path="/" element={<PublicShell><Home /></PublicShell>} />
       <Route path="/profile" element={<PublicShell><Profile /></PublicShell>} />
       <Route path="/projects" element={<PublicShell><Projects /></PublicShell>} />
+      <Route path="/projects/:id" element={<PublicShell><ProjectDetail mode="project" /></PublicShell>} />
       <Route path="/games" element={<PublicShell><Games /></PublicShell>} />
+      <Route path="/games/:id" element={<PublicShell><ProjectDetail mode="game" /></PublicShell>} />
       <Route path="/contact" element={<PublicShell><Contact /></PublicShell>} />
       <Route path="/login" element={<PublicShell><Login /></PublicShell>} />
       <Route

@@ -52,6 +52,15 @@ const getAssetAltText = (asset) => asset.altText || asset.alt_text || ""
 
 const getAssetCaption = (asset) => asset.caption || ""
 
+const getAssetCreatedAt = (asset) => asset.createdAt || asset.created_at || asset.uploadedAt || asset.uploaded_at || ""
+
+const formatDate = (value) => {
+  if (!value) return "No date"
+
+  const date = new Date(value)
+  return Number.isNaN(date.getTime()) ? String(value) : date.toLocaleString()
+}
+
 const getResultAssetId = (result) => (
   result?.assetId || result?.asset_id || result?.asset?._id || result?.asset?.id || result?.id || ""
 )
@@ -64,6 +73,7 @@ function AdminUploads() {
   const [projects, setProjects] = useState([])
   const [assets, setAssets] = useState([])
   const [assetDrafts, setAssetDrafts] = useState({})
+  const [selectedAssetId, setSelectedAssetId] = useState("")
   const [result, setResult] = useState(null)
   const [uploading, setUploading] = useState(false)
   const [loadingAssets, setLoadingAssets] = useState(true)
@@ -103,6 +113,7 @@ function AdminUploads() {
         }
         return drafts
       }, {}))
+      setSelectedAssetId(current => current || getAssetId(nextAssets[0]) || "")
     } catch (err) {
       console.error(err)
       setAssetError("Failed to load assets.")
@@ -247,7 +258,11 @@ function AdminUploads() {
 
     try {
       await deleteAsset(assetId)
-      setAssets(assets.filter(asset => getAssetId(asset) !== assetId))
+      const nextAssets = assets.filter(asset => getAssetId(asset) !== assetId)
+      setAssets(nextAssets)
+      if (selectedAssetId === assetId) {
+        setSelectedAssetId(getAssetId(nextAssets[0]) || "")
+      }
       setAssetSuccess("Asset deleted.")
     } catch (err) {
       console.error(err)
@@ -257,66 +272,79 @@ function AdminUploads() {
     }
   }
 
+  const selectedAsset = assets.find(asset => getAssetId(asset) === selectedAssetId) || null
+  const selectedDraft = selectedAsset ? assetDrafts[selectedAssetId] || {} : {}
+  const selectedAssetUrl = selectedAsset ? getAssetUrl(selectedAsset) : ""
+
   return (
-    <div className="page-stack">
-      <section className="command-hero admin-hero">
-        <span className="static-chip">Image library</span>
-        <div className="command-hero__copy">
+    <div className="admin-desk">
+      <section className="admin-page-bar">
+        <div>
+          <span className="card-kicker">Image library</span>
           <h1>Uploads</h1>
           <p>Upload media files and manage images used by projects and profile details.</p>
         </div>
       </section>
 
-      <section className="admin-crud-grid admin-upload-grid">
-        <form className="secure-form admin-panel" onSubmit={handleSubmit}>
-          <span className="card-kicker">New image</span>
-          <label>
-            Image file
-            <input type="file" accept="image/*" onChange={(event) => setFile(event.target.files?.[0] || null)} />
-          </label>
-          <label>
-            Entity type
-            <select name="entityType" value={metadata.entityType} onChange={handleMetadataChange}>
-              <option value="">Standalone</option>
-              <option value="project">Project</option>
-            </select>
-          </label>
-          <label>
-            Project
-            <select name="entityId" value={metadata.entityId} onChange={handleMetadataChange}>
-              <option value="">No project</option>
-              {projects.map(project => (
-                <option value={getProjectId(project)} key={getProjectId(project)}>
-                  {project.name}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>
-            Asset role
-            <select name="assetRole" value={metadata.assetRole} onChange={handleMetadataChange}>
-              {assetRoles.map(role => (
-                <option value={role} key={role}>{role}</option>
-              ))}
-            </select>
-          </label>
-          <label>
-            Alt text
-            <input name="altText" value={metadata.altText} onChange={handleMetadataChange} />
-          </label>
-          <label>
-            Caption
-            <textarea name="caption" value={metadata.caption} onChange={handleMetadataChange} rows="3" />
-          </label>
-          <button className="button button--primary" type="submit" disabled={uploading}>
-            {uploading ? "Uploading..." : "Upload image"}
-          </button>
-          {error && <p className="form-status form-status--error">{error}</p>}
-        </form>
+      <section className="admin-workbench admin-workbench--uploads">
+        <div className="admin-main-pane">
+          <form className="secure-form admin-panel admin-upload-form" onSubmit={handleSubmit}>
+            <div className="admin-inspector__header">
+              <div>
+                <span className="card-kicker">New image</span>
+                <h2>Upload</h2>
+              </div>
+              <button className="button button--primary" type="submit" disabled={uploading}>
+                {uploading ? "Uploading..." : "Upload image"}
+              </button>
+            </div>
+            <div className="admin-form-pair">
+              <label>
+                Image file
+                <input type="file" accept="image/*" onChange={(event) => setFile(event.target.files?.[0] || null)} />
+              </label>
+              <label>
+                Role
+                <select name="assetRole" value={metadata.assetRole} onChange={handleMetadataChange}>
+                  {assetRoles.map(role => (
+                    <option value={role} key={role}>{role}</option>
+                  ))}
+                </select>
+              </label>
+            </div>
+            <div className="admin-form-pair">
+              <label>
+                Entity type
+                <select name="entityType" value={metadata.entityType} onChange={handleMetadataChange}>
+                  <option value="">Standalone</option>
+                  <option value="project">Project</option>
+                </select>
+              </label>
+              <label>
+                Project
+                <select name="entityId" value={metadata.entityId} onChange={handleMetadataChange}>
+                  <option value="">No project</option>
+                  {projects.map(project => (
+                    <option value={getProjectId(project)} key={getProjectId(project)}>
+                      {project.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
+            <label>
+              Alt text
+              <input name="altText" value={metadata.altText} onChange={handleMetadataChange} />
+            </label>
+            <label>
+              Caption
+              <textarea name="caption" value={metadata.caption} onChange={handleMetadataChange} rows="2" />
+            </label>
+            {error && <p className="form-status form-status--error">{error}</p>}
+          </form>
 
-        <div className="admin-list">
           {result && (
-            <article className="bento-card admin-upload-result">
+            <article className="admin-panel admin-upload-result">
               <span className="card-kicker">Upload complete</span>
               <h2>{result.filename || result.asset?.filename || "Uploaded file"}</h2>
               <p>{getResultUrl(result)}</p>
@@ -326,14 +354,13 @@ function AdminUploads() {
                   {copied ? "Copied" : "Copy URL"}
                 </button>
               </div>
-              {result.bucket && <small>Bucket: {result.bucket}</small>}
             </article>
           )}
 
-          <section className="admin-list" aria-label="Asset list">
-            <div className="admin-list-card__header">
+          <section className="admin-panel" aria-label="Asset list">
+            <div className="admin-inspector__header">
               <div>
-                <span className="card-kicker">Image library</span>
+                <span className="card-kicker">Contact sheet</span>
                 <h2>Asset catalog</h2>
               </div>
               <button className="button button--secondary" type="button" onClick={loadAssets} disabled={loadingAssets}>
@@ -351,100 +378,110 @@ function AdminUploads() {
                 <p>No uploaded assets yet.</p>
               </article>
             )}
-            {!loadingAssets && assets.map(asset => {
-              const assetId = getAssetId(asset)
-              const draft = assetDrafts[assetId] || {}
-              const assetUrl = getAssetUrl(asset)
+            <div className="asset-contact-sheet">
+              {!loadingAssets && assets.map(asset => {
+                const assetId = getAssetId(asset)
+                const assetUrl = getAssetUrl(asset)
 
-              return (
-                <article className={`admin-list-card admin-asset-card${assetUrl ? "" : " admin-asset-card--no-thumb"}`} key={assetId}>
-                  {assetUrl && (
-                    <img className="admin-asset-thumb" src={assetUrl} alt={getAssetAltText(asset) || ""} />
-                  )}
-                  <div className="admin-asset-body">
-                    <div className="admin-list-card__header">
-                      <div>
-                        <span className="card-kicker">{getAssetRole(asset)}</span>
-                        <h2>{getAssetFilename(asset)}</h2>
-                      </div>
-                      <small>{assetId}</small>
-                    </div>
-                    <div className="admin-meta-grid">
-                      <span>Linked type: {getAssetEntityType(asset) || "standalone"}</span>
-                      <span>Linked item: {getAssetEntityId(asset) || "None"}</span>
-                    </div>
-                    <label>
-                      Role
-                      <select
-                        value={draft.assetRole || "general"}
-                        onChange={(event) => handleAssetDraftChange(assetId, "assetRole", event.target.value)}
-                      >
-                        {assetRoles.map(role => (
-                          <option value={role} key={role}>{role}</option>
-                        ))}
-                      </select>
-                    </label>
-                    <label>
-                      Alt text
-                      <input
-                        value={draft.altText || ""}
-                        onChange={(event) => handleAssetDraftChange(assetId, "altText", event.target.value)}
-                      />
-                    </label>
-                    <label>
-                      Caption
-                      <textarea
-                        value={draft.caption || ""}
-                        rows="2"
-                        onChange={(event) => handleAssetDraftChange(assetId, "caption", event.target.value)}
-                      />
-                    </label>
-                    <label>
-                      Link to project
-                      <select
-                        value={draft.linkEntityId || ""}
-                        onChange={(event) => handleAssetDraftChange(assetId, "linkEntityId", event.target.value)}
-                      >
-                        <option value="">Choose project</option>
-                        {projects.map(project => (
-                          <option value={getProjectId(project)} key={getProjectId(project)}>
-                            {project.name}
-                          </option>
-                        ))}
-                      </select>
-                    </label>
-                    <div className="admin-actions">
-                      <button
-                        className="button button--secondary"
-                        type="button"
-                        disabled={assetActionId === assetId}
-                        onClick={() => handleAssetUpdate(assetId)}
-                      >
-                        Save asset details
-                      </button>
-                      <button
-                        className="button button--secondary"
-                        type="button"
-                        disabled={assetActionId === assetId}
-                        onClick={() => handleAssetLink(assetId)}
-                      >
-                        Link to project
-                      </button>
-                      <button
-                        className="button button--secondary"
-                        type="button"
-                        disabled={assetActionId === assetId}
-                        onClick={() => handleAssetDelete(assetId)}
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </div>
-                </article>
-              )
-            })}
+                return (
+                  <button
+                    className={`asset-tile${selectedAssetId === assetId ? " asset-tile--selected" : ""}`}
+                    type="button"
+                    key={assetId}
+                    onClick={() => setSelectedAssetId(assetId)}
+                  >
+                    {assetUrl ? (
+                      <img src={assetUrl} alt={getAssetAltText(asset) || getAssetFilename(asset)} />
+                    ) : (
+                      <span className="paper-image-placeholder">Image</span>
+                    )}
+                    <span>{getAssetRole(asset)}</span>
+                    <strong>{getAssetFilename(asset)}</strong>
+                    <small>{getAssetEntityType(asset) || "standalone"} - {formatDate(getAssetCreatedAt(asset))}</small>
+                  </button>
+                )
+              })}
+            </div>
           </section>
         </div>
+
+        <aside className="admin-panel admin-inspector">
+          {selectedAsset ? (
+            <>
+              <div className="admin-inspector__header">
+                <div>
+                  <span className="card-kicker">{getAssetRole(selectedAsset)}</span>
+                  <h2>{getAssetFilename(selectedAsset)}</h2>
+                </div>
+              </div>
+              <div className="asset-inspector-preview">
+                {selectedAssetUrl ? (
+                  <img src={selectedAssetUrl} alt={getAssetAltText(selectedAsset) || getAssetFilename(selectedAsset)} />
+                ) : (
+                  <div className="paper-image-placeholder paper-image-placeholder--large">Image</div>
+                )}
+              </div>
+              <div className="admin-meta-grid">
+                <span>Linked type: {getAssetEntityType(selectedAsset) || "standalone"}</span>
+                <span>Linked item: {getAssetEntityId(selectedAsset) || "None"}</span>
+                <span>Created: {formatDate(getAssetCreatedAt(selectedAsset))}</span>
+              </div>
+              <label>
+                Role
+                <select
+                  value={selectedDraft.assetRole || "general"}
+                  onChange={(event) => handleAssetDraftChange(selectedAssetId, "assetRole", event.target.value)}
+                >
+                  {assetRoles.map(role => (
+                    <option value={role} key={role}>{role}</option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                Alt text
+                <input
+                  value={selectedDraft.altText || ""}
+                  onChange={(event) => handleAssetDraftChange(selectedAssetId, "altText", event.target.value)}
+                />
+              </label>
+              <label>
+                Caption
+                <textarea
+                  value={selectedDraft.caption || ""}
+                  rows="2"
+                  onChange={(event) => handleAssetDraftChange(selectedAssetId, "caption", event.target.value)}
+                />
+              </label>
+              <label>
+                Link to project
+                <select
+                  value={selectedDraft.linkEntityId || ""}
+                  onChange={(event) => handleAssetDraftChange(selectedAssetId, "linkEntityId", event.target.value)}
+                >
+                  <option value="">Choose project</option>
+                  {projects.map(project => (
+                    <option value={getProjectId(project)} key={getProjectId(project)}>
+                      {project.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <div className="admin-actions">
+                <button className="button button--secondary" type="button" disabled={assetActionId === selectedAssetId} onClick={() => handleAssetUpdate(selectedAssetId)}>
+                  Save asset details
+                </button>
+                <button className="button button--secondary" type="button" disabled={assetActionId === selectedAssetId} onClick={() => handleAssetLink(selectedAssetId)}>
+                  Link asset
+                </button>
+                <button className="button button--secondary" type="button" disabled={assetActionId === selectedAssetId} onClick={() => handleAssetDelete(selectedAssetId)}>
+                  Delete
+                </button>
+              </div>
+            </>
+          ) : (
+            <p>Select an asset to edit its details.</p>
+          )}
+        </aside>
       </section>
     </div>
   )

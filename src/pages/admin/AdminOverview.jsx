@@ -13,10 +13,10 @@ function AdminOverview() {
   const admin = getAdminUser()
 
   return (
-    <div className="page-stack">
-      <section className="command-hero admin-hero">
-        <span className="static-chip">Private workspace</span>
-        <div className="command-hero__copy">
+    <div className="admin-desk">
+      <section className="admin-page-bar">
+        <div>
+          <span className="card-kicker">Private workspace</span>
           <h1>Dashboard</h1>
           <p>Private workspace for portfolio management, project updates, uploads, messages, and profile details.</p>
         </div>
@@ -32,9 +32,9 @@ function AdminOverview() {
         </div>
       </section>
 
-      <section className="bento-grid bento-grid--two" aria-label="Admin dashboard areas">
+      <section className="admin-compact-grid" aria-label="Admin dashboard areas">
         {cards.map(card => (
-          <Link className="bento-card admin-card-link" key={card.to} to={card.to}>
+          <Link className="admin-panel admin-card-link" key={card.to} to={card.to}>
             <span className="card-kicker">Module</span>
             <h2>{card.title}</h2>
             <p>{card.copy}</p>

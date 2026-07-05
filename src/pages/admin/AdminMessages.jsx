@@ -6,6 +6,7 @@ function AdminMessages() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
   const [actionId, setActionId] = useState("")
+  const [selectedMessageId, setSelectedMessageId] = useState("")
 
   const loadMessages = async () => {
     setLoading(true)
@@ -13,7 +14,9 @@ function AdminMessages() {
 
     try {
       const data = await fetchAdminMessages()
-      setMessages(Array.isArray(data) ? data : [])
+      const nextMessages = Array.isArray(data) ? data : []
+      setMessages(nextMessages)
+      setSelectedMessageId(current => current || nextMessages[0]?._id || "")
     } catch (err) {
       console.error(err)
       setError("Failed to load messages.")
@@ -47,7 +50,11 @@ function AdminMessages() {
 
     try {
       await deleteMessage(messageId)
-      setMessages(messages.filter(message => message._id !== messageId))
+      const nextMessages = messages.filter(message => message._id !== messageId)
+      setMessages(nextMessages)
+      if (selectedMessageId === messageId) {
+        setSelectedMessageId(nextMessages[0]?._id || "")
+      }
     } catch (err) {
       console.error(err)
       setError("Failed to delete message.")
@@ -56,11 +63,13 @@ function AdminMessages() {
     }
   }
 
+  const selectedMessage = messages.find(message => message._id === selectedMessageId) || null
+
   return (
-    <div className="page-stack">
-      <section className="command-hero admin-hero">
-        <span className="static-chip">Private inbox</span>
-        <div className="command-hero__copy">
+    <div className="admin-desk">
+      <section className="admin-page-bar">
+        <div>
+          <span className="card-kicker">Private inbox</span>
           <h1>Messages</h1>
           <p>Owner-only inbox for contact form submissions. Mark messages as read or remove stale entries.</p>
         </div>
@@ -88,30 +97,57 @@ function AdminMessages() {
       )}
 
       {!loading && messages.length > 0 && (
-        <section className="admin-list" aria-label="Contact messages">
-          {messages.map(message => (
-            <article className={`admin-list-card${message.read ? "" : " admin-list-card--unread"}`} key={message._id}>
-              <div className="admin-list-card__header">
+        <section className="admin-workbench admin-workbench--messages" aria-label="Contact messages">
+          <div className="admin-main-pane">
+            {messages.map(message => (
+              <button
+                className={`admin-ruled-row admin-message-row${message.read ? "" : " admin-list-card--unread"}${selectedMessageId === message._id ? " admin-ruled-row--selected" : ""}`}
+                type="button"
+                key={message._id}
+                onClick={() => setSelectedMessageId(message._id)}
+              >
                 <div>
                   <span className="card-kicker">{message.read ? "Read" : "Unread"}</span>
                   <h2>{message.name || "Unknown sender"}</h2>
                   <p>{message.email || "No email"}</p>
                 </div>
                 <small>{message.createdAt ? new Date(message.createdAt).toLocaleString() : "No date"}</small>
-              </div>
-              <p>{message.message}</p>
-              <div className="admin-actions">
-                {!message.read && (
-                  <button className="button button--secondary" type="button" disabled={actionId === message._id} onClick={() => handleMarkRead(message._id)}>
-                    Mark as read
+              </button>
+            ))}
+          </div>
+
+          <aside className="admin-panel admin-inspector">
+            {selectedMessage ? (
+              <>
+                <div className="admin-inspector__header">
+                  <div>
+                    <span className="card-kicker">{selectedMessage.read ? "Read" : "Unread"}</span>
+                    <h2>{selectedMessage.name || "Unknown sender"}</h2>
+                    <p>{selectedMessage.email || "No email"}</p>
+                  </div>
+                  <small>{selectedMessage.createdAt ? new Date(selectedMessage.createdAt).toLocaleString() : "No date"}</small>
+                </div>
+                <div className="message-detail-paper">
+                  <p>{selectedMessage.message}</p>
+                </div>
+                <div className="admin-actions">
+                  {!selectedMessage.read && (
+                    <button className="button button--secondary" type="button" disabled={actionId === selectedMessage._id} onClick={() => handleMarkRead(selectedMessage._id)}>
+                      Mark as read
+                    </button>
+                  )}
+                  <a className="button button--secondary" href={`mailto:${selectedMessage.email || ""}`}>
+                    Reply
+                  </a>
+                  <button className="button button--secondary" type="button" disabled={actionId === selectedMessage._id} onClick={() => handleDelete(selectedMessage._id)}>
+                    Delete
                   </button>
-                )}
-                <button className="button button--secondary" type="button" disabled={actionId === message._id} onClick={() => handleDelete(message._id)}>
-                  Delete
-                </button>
-              </div>
-            </article>
-          ))}
+                </div>
+              </>
+            ) : (
+              <p>Select a message to read it.</p>
+            )}
+          </aside>
         </section>
       )}
     </div>
