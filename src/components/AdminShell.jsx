@@ -30,7 +30,7 @@ function AdminShell() {
       <aside className="admin-sidebar" aria-label="Dashboard navigation">
         <div>
           <span className="admin-kicker">Workspace</span>
-          <h1>Mam Admin</h1>
+          <h1>Admin</h1>
           <p>{admin?.username ? `Signed in as ${admin.username}` : "Private dashboard"}</p>
         </div>
 
