@@ -36,7 +36,7 @@ function Login() {
     <div className="page-stack login-page">
       <CommandHero
         eyebrow={<span className="static-chip">Private access</span>}
-        title="Owner sign in"
+        title="Sign in"
         description="Private access for portfolio updates, uploads, messages, and focus notes."
       >
         <form className="secure-form login-form" onSubmit={handleSubmit}>

@@ -392,7 +392,7 @@ function AdminProjects() {
           </label>
           <label>
             Description
-            <textarea name="description" value={form.description} onChange={handleChange} rows="4" required />
+            <textarea name="description" value={form.description} onChange={handleChange} rows="4" />
           </label>
           <label>
             Status

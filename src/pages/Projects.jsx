@@ -63,7 +63,7 @@ function Projects() {
           className="page-compact-hero"
           eyebrow={<span className="static-chip">Work catalog</span>}
           title="Work archive"
-          description="Projects will appear here after they are published from the owner dashboard."
+          description="Projects will appear here after they are published from the dashboard."
         />
         <article className="empty-state-card">
           <span className="card-kicker">Coming next</span>
@@ -71,7 +71,7 @@ function Projects() {
           <p>Published project cards will appear here once they are ready to share.</p>
           <div className="empty-state-list">
             <span>Projects and games</span>
-            <span>Owner-managed updates</span>
+            <span>Managed updates</span>
             <span>Images, demos, repos, and stack notes</span>
           </div>
         </article>
