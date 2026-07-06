@@ -1148,33 +1148,6 @@ button.admin-ruled-row {
 }
 
 @media (max-width: 760px) {
-  .admin-shell {
-    grid-template-areas:
-      "session"
-      "sidebar"
-      "workspace";
-    grid-template-columns: 1fr;
-  }
-
-  .admin-session-bar {
-    align-items: flex-start;
-    flex-direction: column;
-    min-height: 0;
-    padding: 10px 14px;
-  }
-
-  .admin-sidebar {
-    position: static;
-    height: auto;
-    border-right: 0;
-    border-bottom: 1px solid var(--guide-line);
-  }
-
-  .admin-main {
-    min-height: 0;
-    padding: 12px;
-  }
-
   .admin-page-bar,
   .admin-inspector__header {
     align-items: stretch;

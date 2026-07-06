@@ -634,6 +634,11 @@
   }
 }
 
+
+.admin-project-mobile-actions {
+  display: none;
+}
+
 @media (max-width: 1023px) {
   .admin-shell {
     grid-template-areas:
@@ -797,6 +802,10 @@
   .admin-projects-page-bar .admin-actions {
     align-items: stretch;
   }
+
+  .admin-projects-page-bar {
+  display: none;
+}
 
   .admin-metric-grid {
     grid-template-columns: 1fr;
