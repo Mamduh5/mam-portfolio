@@ -1,11 +1,37 @@
+.admin-shell {
+  display: grid;
+  grid-template-areas:
+    "session session"
+    "sidebar workspace";
+  grid-template-columns: 240px minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr);
+  width: 100%;
+  max-width: none;
+  min-height: 100svh;
+  margin: 0;
+  background: var(--paper-bg);
+}
+
+.admin-session-bar {
+  grid-area: session;
+  min-height: 42px;
+  padding: 0 16px;
+  margin: 0;
+  background: var(--paper-sheet);
+  border-bottom: 1px solid var(--guide-line);
+}
+
 .admin-sidebar {
   position: sticky;
   top: 24px;
+  grid-area: sidebar;
+  align-self: start;
   display: flex;
   flex-direction: column;
   gap: 22px;
   height: calc(100svh - 48px);
   padding: 20px;
+  overflow-y: auto;
   background: var(--paper-sheet);
   border: 1px solid var(--line);
   border-radius: var(--radius-sheet);
@@ -78,7 +104,12 @@
 }
 
 .admin-main {
+  grid-area: workspace;
+  width: 100%;
+  max-width: none;
   min-width: 0;
+  min-height: calc(100svh - 42px);
+  padding: 12px 14px 18px;
 }
 
 .admin-mobile-bar,
@@ -91,6 +122,93 @@
   min-height: 100svh;
   padding: 32px 24px;
   margin: 0 auto;
+}
+
+.admin-desk {
+  display: grid;
+  gap: 12px;
+}
+
+.admin-page-bar,
+.admin-ruled-row {
+  position: relative;
+  background: var(--paper-sheet);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+}
+
+.admin-page-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 0;
+  padding: 12px 14px;
+}
+
+.admin-page-bar h1 {
+  color: var(--ink);
+  font-family: var(--font-voice);
+  font-size: clamp(24px, 2vw, 32px);
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: 0;
+}
+
+.admin-page-bar p,
+.admin-panel p,
+.admin-ruled-row p {
+  color: var(--graphite);
+}
+
+.admin-page-bar .landing-summary {
+  margin: 0;
+}
+
+.admin-page-bar > .admin-meta-grid,
+.admin-page-bar > .form-status {
+  flex-basis: 100%;
+}
+
+.admin-workbench {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(340px, 420px);
+  gap: 12px;
+  align-items: start;
+  width: 100%;
+  max-width: none;
+}
+
+.admin-workbench--projects {
+  grid-template-columns: minmax(0, 1fr) clamp(380px, 28vw, 480px);
+}
+
+.admin-workbench--uploads {
+  grid-template-columns: minmax(300px, 360px) minmax(0, 1fr) minmax(360px, 440px);
+}
+
+.admin-workbench--messages,
+.admin-workbench--profile {
+  grid-template-columns: minmax(0, 1fr) clamp(360px, 30vw, 440px);
+}
+
+.admin-main-pane {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+
+.admin-metric-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.admin-upload-column {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
 }
 
 .admin-hero {
@@ -223,6 +341,7 @@
   font-size: 22px;
   line-height: 1.1;
   letter-spacing: 0;
+  overflow-wrap: anywhere;
 }
 
 .admin-list-card p,
@@ -235,6 +354,7 @@
 .admin-upload-result small {
   color: var(--muted-pencil);
   font: 700 11px/1.4 var(--font-mono);
+  overflow-wrap: anywhere;
 }
 
 .admin-sync-panel {
@@ -276,6 +396,10 @@
 
 .admin-workbench--projects .admin-project-filter-controls,
 .admin-workbench--projects .admin-filter-summary {
+  display: none;
+}
+
+.admin-project-mobile-actions {
   display: none;
 }
 
@@ -324,6 +448,70 @@
   gap: 10px;
 }
 
+.admin-form-pair,
+.admin-compact-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+}
+
+.admin-inspector {
+  position: sticky;
+  top: 12px;
+  display: grid;
+  gap: 12px;
+  max-height: none;
+  overflow: visible;
+}
+
+.admin-inspector__header {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.admin-inspector__header h2,
+.admin-ruled-row h2,
+.admin-panel h2 {
+  color: var(--ink);
+  font-size: 18px;
+  line-height: 1.15;
+}
+
+.admin-ruled-row {
+  display: grid;
+  grid-template-columns: minmax(240px, 1fr) minmax(280px, auto) auto;
+  gap: 12px;
+  align-items: center;
+  width: 100%;
+  min-height: 72px;
+  padding: 10px 12px;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: none;
+}
+
+button.admin-ruled-row {
+  color: inherit;
+  font: inherit;
+}
+
+.admin-ruled-row::after {
+  position: absolute;
+  right: 10px;
+  bottom: -2px;
+  left: 10px;
+  height: 1px;
+  content: "";
+  background: var(--guide-line);
+}
+
+.admin-ruled-row--selected {
+  border-color: var(--ink);
+  outline: 2px solid rgba(58, 54, 47, 0.08);
+}
+
 .admin-checkbox {
   display: flex !important;
   align-items: center;
@@ -359,6 +547,125 @@
 
 .admin-preview-panel small {
   color: var(--muted-pencil);
+}
+
+.secure-form fieldset {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--guide-line);
+  border-radius: 6px;
+}
+
+.secure-form legend {
+  padding: 0 6px;
+  color: var(--muted-pencil);
+  font: 750 11px/1 var(--font-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.secure-form select,
+.secure-form input,
+.secure-form textarea {
+  min-width: 0;
+}
+
+.secure-form select {
+  min-height: 40px;
+  padding: 0 10px;
+  color: var(--ink);
+  font: inherit;
+  background: rgba(255, 255, 255, 0.42);
+  border: 1px solid var(--line);
+  border-radius: 5px;
+}
+
+.asset-contact-sheet {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.asset-tile {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  padding: 8px;
+  color: inherit;
+  text-align: left;
+  background: var(--paper-sheet);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+
+.asset-tile--selected {
+  border-color: var(--ink);
+}
+
+.asset-tile img,
+.asset-inspector-preview {
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--paper-stack);
+  border: 1px solid var(--guide-line);
+  border-radius: 5px;
+}
+
+.asset-tile span {
+  color: var(--muted-pencil);
+  font: 750 10px/1 var(--font-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.asset-tile strong {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--ink);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.asset-tile small {
+  color: var(--graphite);
+}
+
+.asset-inspector-preview img {
+  height: 100%;
+}
+
+.asset-inspector-preview,
+.admin-workbench--uploads label,
+.admin-workbench--uploads input,
+.admin-workbench--uploads select,
+.admin-workbench--uploads textarea {
+  max-width: 100%;
+  min-width: 0;
+}
+
+.message-detail-paper {
+  min-height: 180px;
+  padding: 14px;
+  background:
+    repeating-linear-gradient(to bottom, transparent 0, transparent 29px, rgba(232, 226, 212, 0.72) 30px),
+    var(--paper-stack);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+
+.profile-preview-image {
+  aspect-ratio: 1 / 1;
+  max-height: 220px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+
+.admin-compact-section,
+.admin-focus-grid {
+  gap: 12px;
 }
 
 .admin-asset-card {
@@ -566,6 +873,8 @@
 
 .admin-table-wrap {
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
   overflow-x: auto;
 }
 
@@ -593,6 +902,7 @@
 .admin-table strong,
 .admin-table span {
   display: block;
+  overflow-wrap: anywhere;
 }
 
 .admin-table span {
@@ -613,6 +923,21 @@
 
 .security-settings-form {
   gap: 10px;
+}
+
+@media (max-width: 1180px) {
+  .admin-workbench,
+  .admin-workbench--projects,
+  .admin-workbench--uploads,
+  .admin-workbench--messages,
+  .admin-workbench--profile {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .admin-inspector {
+    position: static;
+    max-height: none;
+  }
 }
 
 @media (max-width: 900px) {
@@ -794,13 +1119,32 @@
     font-size: 14px;
   }
 
+  .admin-inspector__header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .admin-ruled-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+    min-height: 0;
+    padding: 10px;
+  }
+
+  .admin-ruled-row h2,
+  .admin-ruled-row p,
+  .admin-ruled-row small {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
   .admin-projects-page-bar .admin-actions {
     align-items: stretch;
   }
 
   .admin-projects-page-bar {
-  display: none;
-}
+    display: none;
+  }
 
   .admin-metric-grid {
     grid-template-columns: 1fr;
@@ -810,7 +1154,11 @@
     position: static;
     display: grid;
     grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+    align-content: start;
+    justify-content: start;
     gap: 10px;
+    min-height: 0;
     padding: 12px;
   }
 
@@ -824,8 +1172,19 @@
     gap: 10px;
   }
 
-  .admin-workbench--projects .admin-project-filter-controls .button {
+  .admin-workbench--projects .admin-project-mobile-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .admin-workbench--projects .admin-project-filter-controls .button,
+  .admin-workbench--projects .admin-project-mobile-actions .button {
     min-height: 34px;
+  }
+
+  .admin-workbench--projects .admin-project-mobile-actions .button {
+    flex: 1 1 150px;
   }
 
   .admin-workbench--projects .admin-project-filter-toggle {
@@ -892,11 +1251,14 @@
   }
 
   .admin-workbench--uploads .asset-contact-sheet {
-    grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
   }
 
   .admin-workbench--uploads .asset-tile strong,
   .admin-workbench--uploads .asset-tile small,
+  .admin-workbench--uploads .admin-upload-result h2,
+  .admin-workbench--uploads .admin-upload-result p,
+  .admin-workbench--uploads .admin-upload-result small,
   .admin-workbench--uploads .admin-inspector h2,
   .admin-workbench--uploads .admin-meta-grid span {
     min-width: 0;
@@ -905,12 +1267,6 @@
 
   .admin-workbench--uploads .asset-tile strong {
     white-space: normal;
-  }
-
-  .admin-workbench--projects .admin-inspector__header,
-  .admin-workbench--uploads .admin-inspector__header {
-    align-items: stretch;
-    flex-direction: column;
   }
 
   .admin-workbench--projects .secure-form fieldset {
@@ -952,8 +1308,11 @@
   .admin-actions > *,
   .admin-select {
     max-width: 100%;
+    min-width: 0;
+    white-space: normal;
   }
 
+  .admin-form-pair,
   .admin-workbench--projects .admin-form-pair,
   .admin-workbench--uploads .admin-form-pair {
     grid-template-columns: 1fr;

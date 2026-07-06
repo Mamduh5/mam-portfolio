@@ -454,6 +454,15 @@ function AdminProjects() {
               <input name="search" value={filters.search} onChange={handleFilterChange} placeholder="Name, repo, language" />
             </label>
 
+            <div className="admin-project-mobile-actions">
+              <button className="button button--secondary" type="button" onClick={resetForm}>
+                New Project
+              </button>
+              <button className="button button--primary" type="button" onClick={handleSync} disabled={syncing}>
+                {syncing ? "Syncing..." : "Sync GitHub Projects"}
+              </button>
+            </div>
+
             <div className="admin-project-filter-controls">
               <button
                 className="button button--secondary admin-project-filter-toggle"
