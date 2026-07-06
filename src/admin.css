@@ -3,7 +3,7 @@
   grid-template-areas:
     "session session"
     "sidebar workspace";
-  grid-template-columns: 240px minmax(0, 1fr);
+  grid-template-columns: 200px minmax(0, 1fr);
   grid-template-rows: auto minmax(0, 1fr);
   width: 100%;
   max-width: none;
@@ -23,14 +23,14 @@
 
 .admin-sidebar {
   position: sticky;
-  top: 24px;
+  top: 42px;
   grid-area: sidebar;
   align-self: start;
   display: flex;
   flex-direction: column;
-  gap: 22px;
-  height: calc(100svh - 48px);
-  padding: 20px;
+  gap: 14px;
+  height: calc(100svh - 42px);
+  padding: 12px;
   overflow-y: auto;
   background: var(--paper-sheet);
   border: 1px solid var(--line);
@@ -60,7 +60,7 @@
   margin-bottom: 8px;
   color: var(--ink);
   font-family: var(--font-voice);
-  font-size: 34px;
+  font-size: 28px;
   font-weight: 500;
   line-height: 1;
   letter-spacing: 0;
@@ -74,16 +74,17 @@
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: 8px;
+  gap: 6px;
 }
 
 .admin-nav__link {
   display: flex;
   align-items: center;
   width: 100%;
-  min-height: 36px;
-  padding: 0 12px;
+  min-height: 32px;
+  padding: 0 10px;
   color: var(--graphite);
+  font-size: 14px;
   font-weight: 750;
   background: var(--paper-sheet);
   border: 1px solid var(--line);
@@ -185,7 +186,13 @@
 }
 
 .admin-workbench--uploads {
-  grid-template-columns: minmax(300px, 360px) minmax(0, 1fr) minmax(360px, 440px);
+  grid-template-columns: minmax(240px, 300px) minmax(0, 1fr) minmax(280px, 340px);
+}
+
+.admin-workbench--uploads .admin-upload-column,
+.admin-workbench--uploads .admin-asset-catalog,
+.admin-workbench--uploads .admin-inspector {
+  min-width: 0;
 }
 
 .admin-workbench--messages,
@@ -584,7 +591,7 @@ button.admin-ruled-row {
 
 .asset-contact-sheet {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
   gap: 10px;
   margin-top: 12px;
 }
@@ -607,6 +614,7 @@ button.admin-ruled-row {
 
 .asset-tile img,
 .asset-inspector-preview {
+  max-height: 190px;
   aspect-ratio: 4 / 3;
   overflow: hidden;
   background: var(--paper-stack);
@@ -634,7 +642,10 @@ button.admin-ruled-row {
 }
 
 .asset-inspector-preview img {
+  width: 100%;
   height: 100%;
+  max-height: 190px;
+  object-fit: contain;
 }
 
 .asset-inspector-preview,
@@ -1050,10 +1061,10 @@ button.admin-ruled-row {
     left: 0;
     z-index: 40;
     grid-area: auto;
-    width: min(82vw, 320px);
+    width: min(76vw, 280px);
     height: 100svh;
-    max-width: calc(100vw - 28px);
-    padding: 18px;
+    max-width: calc(100vw - 36px);
+    padding: 14px;
     overflow-y: auto;
     border: 0;
     border-right: 1px solid var(--guide-line);
@@ -1251,7 +1262,8 @@ button.admin-ruled-row {
   }
 
   .admin-workbench--uploads .asset-contact-sheet {
-    grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(104px, 1fr));
+    gap: 8px;
   }
 
   .admin-workbench--uploads .asset-tile strong,
@@ -1324,7 +1336,7 @@ button.admin-ruled-row {
   }
 
   .admin-workbench--uploads .asset-tile {
-    padding: 7px;
+    padding: 6px;
   }
 
   .admin-table {
