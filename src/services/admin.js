@@ -160,3 +160,44 @@ export const fetchVisitAnalyticsAgents = async (params = {}) => {
   })
   return res.data
 }
+
+export const fetchSecuritySummary = async (params = {}) => {
+  const res = await api.get("/security/summary", {
+    ...authConfig(),
+    params
+  })
+  return res.data
+}
+
+export const fetchSecurityEvents = async (params = {}) => {
+  const res = await api.get("/security/events", {
+    ...authConfig(),
+    params
+  })
+  return res.data
+}
+
+export const fetchSecurityBlocks = async () => {
+  const res = await api.get("/security/blocks", authConfig())
+  return res.data
+}
+
+export const createSecurityBlock = async (payload) => {
+  const res = await api.post("/security/blocks", payload, authConfig())
+  return res.data
+}
+
+export const deleteSecurityBlock = async (blockId) => {
+  const res = await api.delete(`/security/blocks/${blockId}`, authConfig())
+  return res.data
+}
+
+export const fetchSecuritySettings = async () => {
+  const res = await api.get("/security/settings", authConfig())
+  return res.data
+}
+
+export const updateSecuritySettings = async (payload) => {
+  const res = await api.patch("/security/settings", payload, authConfig())
+  return res.data
+}

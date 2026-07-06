@@ -3,6 +3,7 @@ import { getAdminUser } from "../../services/auth"
 
 const cards = [
   { title: "Messages", copy: "Review contact messages and remove stale entries.", to: "/admin/messages" },
+  { title: "Security", copy: "Review login attempts, blocks, and security thresholds.", to: "/admin/security" },
   { title: "Projects", copy: "Manage public project and game records, including GitHub imports.", to: "/admin/projects" },
   { title: "Profile", copy: "Edit the public profile details shown to visitors.", to: "/admin/profile" },
   { title: "Uploads", copy: "Upload standalone images and manage project assets.", to: "/admin/uploads" },

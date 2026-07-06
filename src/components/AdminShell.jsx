@@ -5,6 +5,7 @@ const adminItems = [
   { to: "/admin", label: "Overview", end: true },
   { to: "/admin/messages", label: "Messages" },
   { to: "/admin/analytics", label: "Analytics" },
+  { to: "/admin/security", label: "Security" },
   { to: "/admin/projects", label: "Projects" },
   { to: "/admin/profile", label: "Profile" },
   { to: "/admin/uploads", label: "Uploads" },

@@ -1,13 +1,71 @@
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import CommandHero from "../components/CommandHero"
 import { login } from "../services/auth"
 
 function Login() {
   const navigate = useNavigate()
+  const turnstileRef = useRef(null)
+  const turnstileWidgetId = useRef(null)
   const [form, setForm] = useState({ username: "", password: "" })
+  const [captchaRequired, setCaptchaRequired] = useState(false)
+  const [captchaSiteKey, setCaptchaSiteKey] = useState("")
+  const [captchaToken, setCaptchaToken] = useState("")
   const [status, setStatus] = useState("idle")
   const [error, setError] = useState("")
+
+  useEffect(() => {
+    if (!captchaRequired || !captchaSiteKey) {
+      return undefined
+    }
+
+    let active = true
+
+    const renderTurnstile = () => {
+      if (!active || !window.turnstile || !turnstileRef.current || turnstileWidgetId.current !== null) {
+        return
+      }
+
+      turnstileWidgetId.current = window.turnstile.render(turnstileRef.current, {
+        sitekey: captchaSiteKey,
+        action: "admin-login",
+        callback: (token) => setCaptchaToken(token),
+        "expired-callback": () => setCaptchaToken(""),
+        "error-callback": () => setCaptchaToken("")
+      })
+    }
+
+    const existingScript = document.querySelector("script[data-turnstile-script='true']")
+
+    if (!existingScript) {
+      const script = document.createElement("script")
+      script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
+      script.async = true
+      script.defer = true
+      script.dataset.turnstileScript = "true"
+      script.onload = renderTurnstile
+      document.head.appendChild(script)
+    } else {
+      if (window.turnstile) {
+        renderTurnstile()
+      } else {
+        existingScript.addEventListener("load", renderTurnstile, { once: true })
+      }
+    }
+
+    return () => {
+      active = false
+
+      if (existingScript) {
+        existingScript.removeEventListener("load", renderTurnstile)
+      }
+
+      if (window.turnstile && turnstileWidgetId.current !== null) {
+        window.turnstile.remove(turnstileWidgetId.current)
+        turnstileWidgetId.current = null
+      }
+    }
+  }, [captchaRequired, captchaSiteKey])
 
   const handleChange = (event) => {
     setForm({
@@ -22,13 +80,27 @@ function Login() {
     setError("")
 
     try {
-      await login(form)
+      await login({
+        ...form,
+        ...(captchaRequired && captchaToken ? { captchaToken } : {})
+      })
       setStatus("sent")
       navigate("/admin", { replace: true })
     } catch (err) {
-      console.error(err)
+      const response = err.response?.data || {}
+
+      if (response.captchaRequired) {
+        setCaptchaRequired(true)
+        setCaptchaSiteKey(response.captchaSiteKey || "")
+        setCaptchaToken("")
+
+        if (window.turnstile && turnstileWidgetId.current !== null) {
+          window.turnstile.reset(turnstileWidgetId.current)
+        }
+      }
+
       setStatus("error")
-      setError("Login failed. Check username and password.")
+      setError(response.captchaRequired ? "Login failed. Complete verification and try again." : "Login failed. Check username and password.")
     }
   }
 
@@ -63,6 +135,12 @@ function Login() {
               required
             />
           </label>
+          {captchaRequired && captchaSiteKey && (
+            <div className="turnstile-slot" ref={turnstileRef} />
+          )}
+          {captchaRequired && !captchaSiteKey && (
+            <p className="form-status form-status--error">Verification is required but not configured.</p>
+          )}
           <button className="button button--primary" type="submit" disabled={status === "submitting"}>
             {status === "submitting" ? "Signing in..." : "Sign in"}
           </button>

@@ -484,6 +484,14 @@
   white-space: nowrap;
 }
 
+.turnstile-slot {
+  min-height: 72px;
+}
+
+.security-settings-form {
+  gap: 10px;
+}
+
 @media (max-width: 900px) {
   .admin-shell {
     grid-template-columns: 1fr;

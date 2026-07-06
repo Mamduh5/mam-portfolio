@@ -10,6 +10,7 @@ import Profile from "./pages/Profile"
 import AdminOverview from "./pages/admin/AdminOverview"
 import AdminMessages from "./pages/admin/AdminMessages"
 import AdminAnalytics from "./pages/admin/AdminAnalytics"
+import AdminSecurity from "./pages/admin/AdminSecurity"
 import AdminProjects from "./pages/admin/AdminProjects"
 import AdminProfile from "./pages/admin/AdminProfile"
 import AdminUploads from "./pages/admin/AdminUploads"
@@ -47,6 +48,7 @@ function App() {
         <Route index element={<AdminOverview />} />
         <Route path="messages" element={<AdminMessages />} />
         <Route path="analytics" element={<AdminAnalytics />} />
+        <Route path="security" element={<AdminSecurity />} />
         <Route path="projects" element={<AdminProjects />} />
         <Route path="profile" element={<AdminProfile />} />
         <Route path="uploads" element={<AdminUploads />} />
