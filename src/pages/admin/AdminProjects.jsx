@@ -30,6 +30,34 @@ const emptyFilters = {
   visibility: ""
 }
 
+const filterLabels = {
+  search: "Search",
+  type: "Type",
+  status: "Status",
+  source: "Source",
+  visibility: "Visibility"
+}
+
+const filterValueLabels = {
+  type: {
+    project: "Project",
+    game: "Game"
+  },
+  status: {
+    draft: "Draft",
+    published: "Published",
+    archived: "Archived"
+  },
+  source: {
+    github: "GitHub",
+    manual: "Manual"
+  },
+  visibility: {
+    visible: "Public",
+    hidden: "Hidden"
+  }
+}
+
 const getProjectId = (project) => project._id || project.id
 
 const getProjectType = (project) => (
@@ -172,6 +200,7 @@ function AdminProjects() {
   const [projects, setProjects] = useState([])
   const [form, setForm] = useState(emptyProject)
   const [filters, setFilters] = useState(emptyFilters)
+  const [filtersExpanded, setFiltersExpanded] = useState(false)
   const [previewFile, setPreviewFile] = useState(null)
   const [editingId, setEditingId] = useState("")
   const [loading, setLoading] = useState(true)
@@ -229,6 +258,18 @@ function AdminProjects() {
     projects.find(project => getProjectId(project) === editingId) || null
   ), [editingId, projects])
 
+  const activeFilters = useMemo(() => (
+    Object.entries(filters)
+      .filter(([, value]) => Boolean(String(value || "").trim()))
+      .map(([key, value]) => ({
+        key,
+        label: filterLabels[key],
+        value: filterValueLabels[key]?.[value] || value
+      }))
+  ), [filters])
+
+  const hasActiveFilters = activeFilters.length > 0
+
   const handleChange = (event) => {
     const { name, value, checked, type } = event.target
     setForm({
@@ -243,6 +284,11 @@ function AdminProjects() {
       ...filters,
       [name]: value
     })
+  }
+
+  const clearFilters = () => {
+    setFilters(emptyFilters)
+    setFiltersExpanded(false)
   }
 
   const resetForm = () => {
@@ -402,44 +448,71 @@ function AdminProjects() {
 
       <section className="admin-workbench admin-workbench--projects">
         <div className="admin-main-pane">
-          <div className="admin-panel admin-filter-panel">
-            <label>
+          <div className={`admin-panel admin-filter-panel admin-project-filter-panel${filtersExpanded ? " admin-project-filter-panel--expanded" : ""}`}>
+            <label className="admin-project-search-filter">
               Search
               <input name="search" value={filters.search} onChange={handleFilterChange} placeholder="Name, repo, language" />
             </label>
-            <label>
-              Type
-              <select name="type" value={filters.type} onChange={handleFilterChange}>
-                <option value="">All</option>
-                <option value="project">Project</option>
-                <option value="game">Game</option>
-              </select>
-            </label>
-            <label>
-              Status
-              <select name="status" value={filters.status} onChange={handleFilterChange}>
-                <option value="">All</option>
-                <option value="draft">Draft</option>
-                <option value="published">Published</option>
-                <option value="archived">Archived</option>
-              </select>
-            </label>
-            <label>
-              Source
-              <select name="source" value={filters.source} onChange={handleFilterChange}>
-                <option value="">All</option>
-                <option value="github">GitHub</option>
-                <option value="manual">Manual</option>
-              </select>
-            </label>
-            <label>
-              Visibility
-              <select name="visibility" value={filters.visibility} onChange={handleFilterChange}>
-                <option value="">All</option>
-                <option value="visible">Public</option>
-                <option value="hidden">Hidden</option>
-              </select>
-            </label>
+
+            <div className="admin-project-filter-controls">
+              <button
+                className="button button--secondary admin-project-filter-toggle"
+                type="button"
+                aria-expanded={filtersExpanded}
+                onClick={() => setFiltersExpanded(current => !current)}
+              >
+                Filters
+              </button>
+              {hasActiveFilters && (
+                <button className="button button--secondary" type="button" onClick={clearFilters}>
+                  Clear filters
+                </button>
+              )}
+            </div>
+
+            {hasActiveFilters && (
+              <div className="admin-filter-summary" aria-label="Active filters">
+                {activeFilters.map(filter => (
+                  <span key={filter.key}>{filter.label}: {filter.value}</span>
+                ))}
+              </div>
+            )}
+
+            <div className="admin-project-advanced-filters">
+              <label>
+                Type
+                <select name="type" value={filters.type} onChange={handleFilterChange}>
+                  <option value="">All</option>
+                  <option value="project">Project</option>
+                  <option value="game">Game</option>
+                </select>
+              </label>
+              <label>
+                Status
+                <select name="status" value={filters.status} onChange={handleFilterChange}>
+                  <option value="">All</option>
+                  <option value="draft">Draft</option>
+                  <option value="published">Published</option>
+                  <option value="archived">Archived</option>
+                </select>
+              </label>
+              <label>
+                Source
+                <select name="source" value={filters.source} onChange={handleFilterChange}>
+                  <option value="">All</option>
+                  <option value="github">GitHub</option>
+                  <option value="manual">Manual</option>
+                </select>
+              </label>
+              <label>
+                Visibility
+                <select name="visibility" value={filters.visibility} onChange={handleFilterChange}>
+                  <option value="">All</option>
+                  <option value="visible">Public</option>
+                  <option value="hidden">Hidden</option>
+                </select>
+              </label>
+            </div>
           </div>
 
           {loading && <div className="skeleton" />}
@@ -465,7 +538,7 @@ function AdminProjects() {
 
             return (
               <article
-                className={`admin-ruled-row${editingId === projectId ? " admin-ruled-row--selected" : ""}`}
+                className={`admin-ruled-row admin-project-row${editingId === projectId ? " admin-ruled-row--selected" : ""}`}
                 key={projectId}
                 role="button"
                 tabIndex={0}
@@ -474,7 +547,7 @@ function AdminProjects() {
                   if (event.key === "Enter" || event.key === " ") handleEdit(project)
                 }}
               >
-                <div>
+                <div className="admin-project-row__main">
                   <span className="card-kicker">{projectType}</span>
                   <h2>{project.name}</h2>
                   <p>{formatDate(getUpdatedAt(project)) || "No date"}</p>

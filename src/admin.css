@@ -270,6 +270,15 @@
   font-weight: 700;
 }
 
+.admin-project-advanced-filters {
+  display: contents;
+}
+
+.admin-project-filter-controls,
+.admin-filter-summary {
+  display: none;
+}
+
 .admin-status-row,
 .admin-meta-grid {
   display: flex;
@@ -294,6 +303,19 @@
 .admin-meta-grid a {
   color: var(--ink);
   border-color: var(--line-strong);
+}
+
+.admin-filter-summary span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 5px 7px;
+  color: var(--graphite);
+  font: 700 11px/1 var(--font-mono);
+  overflow-wrap: anywhere;
+  background: var(--paper-stack);
+  border: 1px solid var(--guide-line);
+  border-radius: 4px;
 }
 
 .admin-actions {
@@ -381,6 +403,16 @@
 
 .admin-focus-summary p {
   color: var(--graphite);
+}
+
+.admin-project-row,
+.admin-project-row__main,
+.admin-project-row h2,
+.admin-project-row p,
+.admin-row-tags,
+.admin-row-tags span {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .admin-select {
@@ -774,8 +806,96 @@
     padding: 12px;
   }
 
+  .admin-page-bar p {
+    font-size: 14px;
+  }
+
+  .admin-page-bar .admin-actions {
+    align-items: stretch;
+  }
+
   .admin-metric-grid {
     grid-template-columns: 1fr;
+  }
+
+  .admin-project-filter-panel {
+    position: static;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+    padding: 12px;
+  }
+
+  .admin-project-search-filter {
+    min-width: 0;
+  }
+
+  .admin-project-filter-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .admin-project-filter-controls .button {
+    min-height: 34px;
+  }
+
+  .admin-project-filter-toggle {
+    padding: 0 12px;
+    background: var(--paper-sheet);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+  }
+
+  .admin-filter-summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+  }
+
+  .admin-project-advanced-filters {
+    display: none;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--guide-line);
+  }
+
+  .admin-project-filter-panel--expanded .admin-project-advanced-filters {
+    display: grid;
+  }
+
+  .admin-project-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    min-height: 0;
+    padding: 10px;
+  }
+
+  .admin-project-row h2 {
+    font-size: 17px;
+  }
+
+  .admin-project-row .admin-row-tags,
+  .admin-project-row .admin-actions {
+    gap: 6px;
+  }
+
+  .admin-project-row .admin-actions {
+    align-items: center;
+  }
+
+  .admin-project-row .text-button {
+    min-height: 30px;
+  }
+
+  .admin-inspector__header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .secure-form fieldset {
+    padding: 10px;
   }
 
   .admin-panel-heading {
