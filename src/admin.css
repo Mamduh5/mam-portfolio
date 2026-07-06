@@ -270,12 +270,12 @@
   font-weight: 700;
 }
 
-.admin-project-advanced-filters {
+.admin-workbench--projects .admin-project-advanced-filters {
   display: contents;
 }
 
-.admin-project-filter-controls,
-.admin-filter-summary {
+.admin-workbench--projects .admin-project-filter-controls,
+.admin-workbench--projects .admin-filter-summary {
   display: none;
 }
 
@@ -305,7 +305,7 @@
   border-color: var(--line-strong);
 }
 
-.admin-filter-summary span {
+.admin-workbench--projects .admin-filter-summary span {
   display: inline-flex;
   align-items: center;
   min-height: 28px;
@@ -405,12 +405,12 @@
   color: var(--graphite);
 }
 
-.admin-project-row,
-.admin-project-row__main,
-.admin-project-row h2,
-.admin-project-row p,
-.admin-row-tags,
-.admin-row-tags span {
+.admin-workbench--projects .admin-project-row,
+.admin-workbench--projects .admin-project-row__main,
+.admin-workbench--projects .admin-project-row h2,
+.admin-workbench--projects .admin-project-row p,
+.admin-workbench--projects .admin-row-tags,
+.admin-workbench--projects .admin-row-tags span {
   min-width: 0;
   overflow-wrap: anywhere;
 }
@@ -616,25 +616,6 @@
 }
 
 @media (max-width: 900px) {
-  .admin-shell {
-    grid-template-columns: 1fr;
-    padding: 18px 14px 56px;
-  }
-
-  .admin-sidebar {
-    position: relative;
-    top: 0;
-    height: auto;
-  }
-
-  .admin-nav {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .admin-logout {
-    margin-top: 0;
-  }
-
   .admin-crud-grid,
   .admin-crud-grid--single,
   .admin-upload-grid,
@@ -659,9 +640,11 @@
       "mobilebar"
       "workspace";
     grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    align-content: start;
     width: 100%;
     min-width: 0;
+    min-height: 0;
     overflow-x: hidden;
     padding: 0;
   }
@@ -772,7 +755,7 @@
     width: 100%;
     max-width: 100vw;
     min-width: 0;
-    min-height: calc(100svh - 54px);
+    min-height: 0;
     padding: 10px;
     overflow-x: hidden;
   }
@@ -803,6 +786,7 @@
   .admin-page-bar {
     align-items: stretch;
     flex-direction: column;
+    min-height: 0;
     padding: 12px;
   }
 
@@ -810,7 +794,7 @@
     font-size: 14px;
   }
 
-  .admin-page-bar .admin-actions {
+  .admin-projects-page-bar .admin-actions {
     align-items: stretch;
   }
 
@@ -818,7 +802,7 @@
     grid-template-columns: 1fr;
   }
 
-  .admin-project-filter-panel {
+  .admin-workbench--projects .admin-project-filter-panel {
     position: static;
     display: grid;
     grid-template-columns: minmax(0, 1fr);
@@ -826,34 +810,34 @@
     padding: 12px;
   }
 
-  .admin-project-search-filter {
+  .admin-workbench--projects .admin-project-search-filter {
     min-width: 0;
   }
 
-  .admin-project-filter-controls {
+  .admin-workbench--projects .admin-project-filter-controls {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
   }
 
-  .admin-project-filter-controls .button {
+  .admin-workbench--projects .admin-project-filter-controls .button {
     min-height: 34px;
   }
 
-  .admin-project-filter-toggle {
+  .admin-workbench--projects .admin-project-filter-toggle {
     padding: 0 12px;
     background: var(--paper-sheet);
     border: 1px solid var(--line);
     border-radius: 6px;
   }
 
-  .admin-filter-summary {
+  .admin-workbench--projects .admin-filter-summary {
     display: flex;
     flex-wrap: wrap;
     gap: 7px;
   }
 
-  .admin-project-advanced-filters {
+  .admin-workbench--projects .admin-project-advanced-filters {
     display: none;
     grid-template-columns: minmax(0, 1fr);
     gap: 10px;
@@ -861,40 +845,71 @@
     border-top: 1px solid var(--guide-line);
   }
 
-  .admin-project-filter-panel--expanded .admin-project-advanced-filters {
+  .admin-workbench--projects .admin-project-filter-panel--expanded .admin-project-advanced-filters {
     display: grid;
   }
 
-  .admin-project-row {
+  .admin-workbench--projects .admin-project-row {
     grid-template-columns: 1fr;
     gap: 8px;
     min-height: 0;
     padding: 10px;
   }
 
-  .admin-project-row h2 {
+  .admin-workbench--projects .admin-project-row h2 {
     font-size: 17px;
   }
 
-  .admin-project-row .admin-row-tags,
-  .admin-project-row .admin-actions {
+  .admin-workbench--projects .admin-project-row .admin-row-tags,
+  .admin-workbench--projects .admin-project-row .admin-actions {
     gap: 6px;
   }
 
-  .admin-project-row .admin-actions {
+  .admin-workbench--projects .admin-project-row .admin-actions {
     align-items: center;
   }
 
-  .admin-project-row .text-button {
+  .admin-workbench--projects .admin-project-row .text-button {
     min-height: 30px;
   }
 
-  .admin-inspector__header {
+  .admin-workbench--uploads {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .admin-workbench--uploads .admin-upload-column,
+  .admin-workbench--uploads .admin-asset-catalog,
+  .admin-workbench--uploads .admin-inspector,
+  .admin-workbench--uploads .asset-contact-sheet,
+  .admin-workbench--uploads .asset-tile {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .admin-workbench--uploads .asset-contact-sheet {
+    grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+  }
+
+  .admin-workbench--uploads .asset-tile strong,
+  .admin-workbench--uploads .asset-tile small,
+  .admin-workbench--uploads .admin-inspector h2,
+  .admin-workbench--uploads .admin-meta-grid span {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .admin-workbench--uploads .asset-tile strong {
+    white-space: normal;
+  }
+
+  .admin-workbench--projects .admin-inspector__header,
+  .admin-workbench--uploads .admin-inspector__header {
     align-items: stretch;
     flex-direction: column;
   }
 
-  .secure-form fieldset {
+  .admin-workbench--projects .secure-form fieldset {
     padding: 10px;
   }
 
@@ -933,6 +948,20 @@
   .admin-actions > *,
   .admin-select {
     max-width: 100%;
+  }
+
+  .admin-workbench--projects .admin-form-pair,
+  .admin-workbench--uploads .admin-form-pair {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-workbench--uploads .asset-contact-sheet {
+    grid-template-columns: repeat(auto-fit, minmax(128px, 1fr));
+    gap: 8px;
+  }
+
+  .admin-workbench--uploads .asset-tile {
+    padding: 7px;
   }
 
   .admin-table {

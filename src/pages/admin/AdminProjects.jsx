@@ -420,7 +420,7 @@ function AdminProjects() {
 
   return (
     <div className="admin-desk">
-      <section className="admin-page-bar">
+      <section className="admin-page-bar admin-projects-page-bar">
         <div>
           <span className="card-kicker">Project collection</span>
           <h1>Projects</h1>
