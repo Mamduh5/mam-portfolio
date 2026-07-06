@@ -634,11 +634,6 @@
   }
 }
 
-
-.admin-project-mobile-actions {
-  display: none;
-}
-
 @media (max-width: 1023px) {
   .admin-shell {
     grid-template-areas:

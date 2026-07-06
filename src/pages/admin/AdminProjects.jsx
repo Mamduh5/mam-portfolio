@@ -426,7 +426,7 @@ function AdminProjects() {
           <h1>Projects</h1>
           <p>Create and update the work and game cards shown on the portfolio.</p>
         </div>
-        <div className="admin-project-mobile-actions">
+        <div className="admin-actions">
           <button className="button button--secondary" type="button" onClick={resetForm}>
             New Project
           </button>
