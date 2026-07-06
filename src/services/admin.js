@@ -128,3 +128,35 @@ export const syncGitHubActivity = async (payload = {}) => {
   const res = await api.post("/activity/sync/github", payload, authConfig())
   return res.data
 }
+
+export const fetchVisitAnalyticsSummary = async (params = {}) => {
+  const res = await api.get("/analytics/visits/summary", {
+    ...authConfig(),
+    params
+  })
+  return res.data
+}
+
+export const fetchVisitAnalyticsGeo = async (params = {}) => {
+  const res = await api.get("/analytics/visits/geo", {
+    ...authConfig(),
+    params
+  })
+  return res.data
+}
+
+export const fetchVisitAnalyticsPaths = async (params = {}) => {
+  const res = await api.get("/analytics/visits/paths", {
+    ...authConfig(),
+    params
+  })
+  return res.data
+}
+
+export const fetchVisitAnalyticsAgents = async (params = {}) => {
+  const res = await api.get("/analytics/visits/agents", {
+    ...authConfig(),
+    params
+  })
+  return res.data
+}

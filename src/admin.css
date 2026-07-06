@@ -378,6 +378,112 @@
   color: var(--graphite);
 }
 
+.admin-select {
+  min-height: 34px;
+  padding: 0 10px;
+  color: var(--ink);
+  background: var(--paper-sheet);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+
+.admin-analytics-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(340px, 0.85fr);
+  gap: 12px;
+  align-items: start;
+}
+
+.admin-panel-heading {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.admin-panel-heading strong {
+  color: var(--graphite);
+  font: 750 11px/1 var(--font-mono);
+  text-transform: uppercase;
+}
+
+.analytics-map {
+  position: relative;
+  min-height: 320px;
+  overflow: hidden;
+  background:
+    linear-gradient(90deg, rgba(218, 212, 197, 0.42) 1px, transparent 1px),
+    linear-gradient(rgba(218, 212, 197, 0.42) 1px, transparent 1px),
+    repeating-linear-gradient(to bottom, transparent 0, transparent 31px, rgba(232, 226, 212, 0.52) 32px),
+    var(--paper-warm);
+  background-size: 44px 44px, 44px 44px, auto, auto;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+
+.analytics-map::before {
+  position: absolute;
+  inset: 12%;
+  content: "";
+  border: 1px dashed var(--line-strong);
+  border-radius: 50%;
+}
+
+.analytics-map__point {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: var(--ink);
+  border: 2px solid var(--paper-sheet);
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px rgba(28, 26, 22, 0.12);
+  transform: translate(-50%, -50%);
+}
+
+.admin-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.admin-table {
+  width: 100%;
+  min-width: 520px;
+  border-collapse: collapse;
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 10px 8px;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--guide-line);
+}
+
+.admin-table th {
+  color: var(--muted-pencil);
+  font: 750 11px/1 var(--font-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.admin-table strong,
+.admin-table span {
+  display: block;
+}
+
+.admin-table span {
+  color: var(--graphite);
+  font-size: 13px;
+}
+
+.admin-table__truncate {
+  max-width: 420px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 @media (max-width: 900px) {
   .admin-shell {
     grid-template-columns: 1fr;
@@ -401,6 +507,7 @@
   .admin-crud-grid,
   .admin-crud-grid--single,
   .admin-upload-grid,
+  .admin-analytics-grid,
   .admin-focus-grid,
   .admin-profile-form {
     grid-template-columns: 1fr;
