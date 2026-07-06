@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react"
 import { Link } from "react-router-dom"
 import { fetchProjects } from "../services/projects"
-import CommandHero from "../components/CommandHero"
+import PublicHero from "../components/PublicHero"
 import ProjectMissionCard from "../components/ProjectMissionCard"
 import { getProjectId } from "../utils/projectMedia"
 
@@ -49,7 +49,7 @@ function Projects() {
 
   if (error) {
     return (
-      <CommandHero
+      <PublicHero
         className="page-compact-hero"
         eyebrow={<span className="static-chip">Work catalog</span>}
         title="Work unavailable"
@@ -61,7 +61,7 @@ function Projects() {
   if (projects.length === 0) {
     return (
       <div className="empty-state-grid">
-        <CommandHero
+        <PublicHero
           className="page-compact-hero"
           eyebrow={<span className="static-chip">Work catalog</span>}
           title="Work archive"
@@ -83,7 +83,7 @@ function Projects() {
 
   return (
     <div className="page-stack">
-      <CommandHero
+      <PublicHero
         className="page-compact-hero"
         eyebrow={<span className="static-chip">Work catalog</span>}
         title="Work archive"
@@ -99,7 +99,7 @@ function Projects() {
           <h2>{selectedProject.name}</h2>
           <p>{selectedProject.description || "No project description yet."}</p>
         </div>
-      </CommandHero>
+      </PublicHero>
 
       <section className="mission-grid" aria-label="Project cards">
         {projects.map(project => (

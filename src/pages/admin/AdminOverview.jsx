@@ -324,10 +324,10 @@ function AdminOverview() {
                 </div>
                 <Link className="button button--secondary" to="/admin/analytics">Open</Link>
               </div>
-              <div className="analytics-map analytics-map--compact" aria-label="Traffic geography">
+              <div className="admin-analytics-map admin-analytics-map--compact" aria-label="Traffic geography">
                 {mapLocations.map((location, index) => (
                   <span
-                    className="analytics-map__point"
+                    className="admin-analytics-map__point"
                     key={`${location.country}-${location.region}-${location.city}-${index}`}
                     style={location.pointStyle}
                     title={`${location.city || "Unknown city"}, ${location.country || "Unknown country"}: ${location.visits} visits`}

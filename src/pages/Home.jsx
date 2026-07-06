@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom"
-import CommandHero from "../components/CommandHero"
+import PublicHero from "../components/PublicHero"
 
 const skills = [
   "React interfaces",
@@ -14,7 +14,7 @@ function Home() {
   return (
     <div className="landing-page">
       <section className="landing-hero-grid">
-        <CommandHero
+        <PublicHero
           eyebrow={<span className="static-chip">Developer portfolio</span>}
           title="Hi, I'm Mam."
           description="Full-stack builder focused on clean React frontends, Node services, practical game projects, and deployable portfolio systems."
@@ -35,7 +35,7 @@ function Home() {
               <strong>Clean UI, reliable data, deploy-ready</strong>
             </div>
           </div>
-        </CommandHero>
+        </PublicHero>
 
         <aside className="landing-status-stack" aria-label="Portfolio capability summary">
           <article className="landing-side-card landing-side-card--feature">

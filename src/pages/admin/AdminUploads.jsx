@@ -375,20 +375,20 @@ function AdminUploads() {
           {assetSuccess && <p className="form-status form-status--success">{assetSuccess}</p>}
           {loadingAssets && <div className="skeleton" />}
           {!loadingAssets && assets.length === 0 && (
-            <article className="bento-card bento-card--quiet">
+            <article className="admin-panel admin-empty-card">
               <span className="card-kicker">Empty</span>
               <h2>No assets yet</h2>
               <p>No uploaded assets yet.</p>
             </article>
           )}
-          <div className="asset-contact-sheet">
+          <div className="admin-asset-contact-sheet">
             {!loadingAssets && assets.map(asset => {
               const assetId = getAssetId(asset)
               const assetUrl = getAssetUrl(asset)
 
               return (
                 <button
-                  className={`asset-tile${selectedAssetId === assetId ? " asset-tile--selected" : ""}`}
+                  className={`admin-asset-tile${selectedAssetId === assetId ? " admin-asset-tile--selected" : ""}`}
                   type="button"
                   key={assetId}
                   onClick={() => setSelectedAssetId(assetId)}
@@ -416,7 +416,7 @@ function AdminUploads() {
                   <h2>{getAssetFilename(selectedAsset)}</h2>
                 </div>
               </div>
-              <div className="asset-inspector-preview">
+              <div className="admin-asset-inspector-preview">
                 {selectedAssetUrl ? (
                   <img src={selectedAssetUrl} alt={getAssetAltText(selectedAsset) || getAssetFilename(selectedAsset)} />
                 ) : (

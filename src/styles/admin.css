@@ -163,10 +163,6 @@
   color: var(--graphite);
 }
 
-.admin-page-bar .landing-summary {
-  margin: 0;
-}
-
 .admin-page-bar > .admin-meta-grid,
 .admin-page-bar > .form-status {
   flex-basis: 100%;
@@ -257,7 +253,8 @@
 }
 
 .admin-panel,
-.admin-list-card {
+.admin-list-card,
+.admin-empty-card {
   position: relative;
   padding: 20px;
   background: var(--paper-sheet);
@@ -266,7 +263,8 @@
 }
 
 .admin-panel::before,
-.admin-list-card::before {
+.admin-list-card::before,
+.admin-empty-card::before {
   position: absolute;
   inset: 4px -5px -5px 4px;
   z-index: -1;
@@ -308,6 +306,26 @@
 
 .admin-list-card textarea {
   resize: vertical;
+}
+
+.admin-empty-card {
+  display: grid;
+  gap: 8px;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 31px,
+      rgba(232, 226, 212, 0.45) 32px
+    ),
+    var(--paper-sheet);
+}
+
+.admin-empty-card h2 {
+  color: var(--ink);
+  font-size: 22px;
+  line-height: 1.15;
+  letter-spacing: 0;
 }
 
 .admin-profile-form {
@@ -411,7 +429,8 @@
 }
 
 .admin-status-row,
-.admin-meta-grid {
+.admin-meta-grid,
+.admin-summary-grid {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
@@ -419,7 +438,8 @@
 
 .admin-status-row span,
 .admin-meta-grid span,
-.admin-meta-grid a {
+.admin-meta-grid a,
+.admin-summary-grid span {
   display: inline-flex;
   align-items: center;
   min-height: 28px;
@@ -434,6 +454,25 @@
 .admin-meta-grid a {
   color: var(--ink);
   border-color: var(--line-strong);
+}
+
+.admin-summary-grid {
+  margin: 0;
+}
+
+.admin-summary-grid div {
+  display: grid;
+  gap: 4px;
+  min-width: 86px;
+  padding: 10px 12px;
+  background: var(--paper-sheet);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+}
+
+.admin-summary-grid strong {
+  color: var(--ink);
+  font-weight: 750;
 }
 
 .admin-workbench--projects .admin-filter-summary span {
@@ -556,7 +595,7 @@ button.admin-ruled-row {
   color: var(--muted-pencil);
 }
 
-.secure-form fieldset {
+.admin-shell .secure-form fieldset {
   display: grid;
   gap: 10px;
   min-width: 0;
@@ -565,7 +604,7 @@ button.admin-ruled-row {
   border-radius: 6px;
 }
 
-.secure-form legend {
+.admin-shell .secure-form legend {
   padding: 0 6px;
   color: var(--muted-pencil);
   font: 750 11px/1 var(--font-mono);
@@ -573,13 +612,13 @@ button.admin-ruled-row {
   text-transform: uppercase;
 }
 
-.secure-form select,
-.secure-form input,
-.secure-form textarea {
+.admin-shell .secure-form select,
+.admin-shell .secure-form input,
+.admin-shell .secure-form textarea {
   min-width: 0;
 }
 
-.secure-form select {
+.admin-shell .secure-form select {
   min-height: 40px;
   padding: 0 10px;
   color: var(--ink);
@@ -589,14 +628,14 @@ button.admin-ruled-row {
   border-radius: 5px;
 }
 
-.asset-contact-sheet {
+.admin-asset-contact-sheet {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
   gap: 10px;
   margin-top: 12px;
 }
 
-.asset-tile {
+.admin-asset-tile {
   display: grid;
   gap: 6px;
   min-width: 0;
@@ -608,12 +647,21 @@ button.admin-ruled-row {
   border-radius: 6px;
 }
 
-.asset-tile--selected {
+.admin-asset-tile--selected {
   border-color: var(--ink);
 }
 
-.asset-tile img,
-.asset-inspector-preview {
+.admin-asset-tile img,
+.admin-asset-inspector-preview img,
+.admin-profile-preview-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.admin-asset-tile img,
+.admin-asset-inspector-preview {
   max-height: 190px;
   aspect-ratio: 4 / 3;
   overflow: hidden;
@@ -622,14 +670,14 @@ button.admin-ruled-row {
   border-radius: 5px;
 }
 
-.asset-tile span {
+.admin-asset-tile span {
   color: var(--muted-pencil);
   font: 750 10px/1 var(--font-mono);
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
-.asset-tile strong {
+.admin-asset-tile strong {
   min-width: 0;
   overflow: hidden;
   color: var(--ink);
@@ -637,18 +685,18 @@ button.admin-ruled-row {
   white-space: nowrap;
 }
 
-.asset-tile small {
+.admin-asset-tile small {
   color: var(--graphite);
 }
 
-.asset-inspector-preview img {
+.admin-asset-inspector-preview img {
   width: 100%;
   height: 100%;
   max-height: 190px;
   object-fit: contain;
 }
 
-.asset-inspector-preview,
+.admin-asset-inspector-preview,
 .admin-workbench--uploads label,
 .admin-workbench--uploads input,
 .admin-workbench--uploads select,
@@ -667,7 +715,7 @@ button.admin-ruled-row {
   border-radius: 6px;
 }
 
-.profile-preview-image {
+.admin-profile-preview-image {
   aspect-ratio: 1 / 1;
   max-height: 220px;
   border: 1px solid var(--line);
@@ -799,7 +847,7 @@ button.admin-ruled-row {
   text-transform: uppercase;
 }
 
-.analytics-map {
+.admin-analytics-map {
   position: relative;
   min-height: 320px;
   overflow: hidden;
@@ -813,7 +861,7 @@ button.admin-ruled-row {
   border-radius: 6px;
 }
 
-.analytics-map::before {
+.admin-analytics-map::before {
   position: absolute;
   inset: 12%;
   content: "";
@@ -821,7 +869,7 @@ button.admin-ruled-row {
   border-radius: 50%;
 }
 
-.analytics-map__point {
+.admin-analytics-map__point {
   position: absolute;
   width: 12px;
   height: 12px;
@@ -832,7 +880,7 @@ button.admin-ruled-row {
   transform: translate(-50%, -50%);
 }
 
-.analytics-map--compact {
+.admin-analytics-map--compact {
   min-height: 180px;
   margin-bottom: 12px;
 }
@@ -1254,20 +1302,20 @@ button.admin-ruled-row {
   .admin-workbench--uploads .admin-upload-column,
   .admin-workbench--uploads .admin-asset-catalog,
   .admin-workbench--uploads .admin-inspector,
-  .admin-workbench--uploads .asset-contact-sheet,
-  .admin-workbench--uploads .asset-tile {
+  .admin-workbench--uploads .admin-asset-contact-sheet,
+  .admin-workbench--uploads .admin-asset-tile {
     width: 100%;
     max-width: 100%;
     min-width: 0;
   }
 
-  .admin-workbench--uploads .asset-contact-sheet {
+  .admin-workbench--uploads .admin-asset-contact-sheet {
     grid-template-columns: repeat(auto-fit, minmax(104px, 1fr));
     gap: 8px;
   }
 
-  .admin-workbench--uploads .asset-tile strong,
-  .admin-workbench--uploads .asset-tile small,
+  .admin-workbench--uploads .admin-asset-tile strong,
+  .admin-workbench--uploads .admin-asset-tile small,
   .admin-workbench--uploads .admin-upload-result h2,
   .admin-workbench--uploads .admin-upload-result p,
   .admin-workbench--uploads .admin-upload-result small,
@@ -1277,7 +1325,7 @@ button.admin-ruled-row {
     overflow-wrap: anywhere;
   }
 
-  .admin-workbench--uploads .asset-tile strong {
+  .admin-workbench--uploads .admin-asset-tile strong {
     white-space: normal;
   }
 
@@ -1290,11 +1338,11 @@ button.admin-ruled-row {
     flex-direction: column;
   }
 
-  .analytics-map {
+  .admin-analytics-map {
     min-height: 220px;
   }
 
-  .analytics-map--compact {
+  .admin-analytics-map--compact {
     min-height: 170px;
   }
 }
@@ -1330,12 +1378,12 @@ button.admin-ruled-row {
     grid-template-columns: 1fr;
   }
 
-  .admin-workbench--uploads .asset-contact-sheet {
+  .admin-workbench--uploads .admin-asset-contact-sheet {
     grid-template-columns: repeat(auto-fit, minmax(128px, 1fr));
     gap: 8px;
   }
 
-  .admin-workbench--uploads .asset-tile {
+  .admin-workbench--uploads .admin-asset-tile {
     padding: 6px;
   }
 

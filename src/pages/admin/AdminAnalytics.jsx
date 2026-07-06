@@ -150,10 +150,10 @@ function AdminAnalytics() {
                 </div>
                 <strong>{formatNumber(summary.countries)} countries</strong>
               </div>
-              <div className="analytics-map" aria-label="Approximate visitor map">
+              <div className="admin-analytics-map" aria-label="Approximate visitor map">
                 {mapLocations.map((location, index) => (
                   <span
-                    className="analytics-map__point"
+                    className="admin-analytics-map__point"
                     key={`${location.country}-${location.region}-${location.city}-${index}`}
                     style={location.pointStyle}
                     title={`${location.city || "Unknown city"}, ${location.country || "Unknown country"}: ${location.visits} visits`}

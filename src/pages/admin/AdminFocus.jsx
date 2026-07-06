@@ -356,7 +356,7 @@ function AdminFocus() {
               </article>
 
               {snapshots.length === 0 && (
-                <article className="bento-card bento-card--quiet">
+                <article className="admin-panel admin-empty-card">
                   <span className="card-kicker">Empty</span>
                   <h2>No snapshots yet</h2>
                   <p>No focus snapshots yet.</p>

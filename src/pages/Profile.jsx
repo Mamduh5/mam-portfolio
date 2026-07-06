@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { api } from "../services/api"
-import CommandHero from "../components/CommandHero"
+import PublicHero from "../components/PublicHero"
 
 function Profile() {
   const [profile, setProfile] = useState(null)
@@ -26,7 +26,7 @@ function Profile() {
 
   if (error || !profile) {
     return (
-      <CommandHero
+      <PublicHero
         className="page-compact-hero"
         eyebrow={<span className="static-chip">Profile</span>}
         title="Profile unavailable"
@@ -37,7 +37,7 @@ function Profile() {
 
   return (
     <div className="page-stack">
-      <CommandHero
+      <PublicHero
         eyebrow={<span className="static-chip">Profile</span>}
         title={profile.name || "Mam"}
         description={profile.title || profile.introduction || "Full-stack developer"}

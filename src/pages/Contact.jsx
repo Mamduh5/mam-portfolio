@@ -1,16 +1,16 @@
-import CommandHero from "../components/CommandHero"
+import PublicHero from "../components/PublicHero"
 import SecureContactForm from "../components/SecureContactForm"
 
 function Contact() {
   return (
     <div className="page-stack">
-      <CommandHero
+      <PublicHero
         eyebrow={<span className="static-chip">Direct message</span>}
         title="Contact"
         description="Send me a message about a project, collaboration, or question."
       >
         <SecureContactForm />
-      </CommandHero>
+      </PublicHero>
 
       <section className="bento-grid bento-grid--two" aria-label="Contact support cards">
         <article className="bento-card bento-card--focus">

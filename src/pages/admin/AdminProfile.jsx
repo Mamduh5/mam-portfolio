@@ -172,7 +172,7 @@ function AdminProfile() {
 
           <aside className="admin-panel admin-inspector">
             <span className="card-kicker">Preview</span>
-            {form.avatarUrl && <img className="profile-preview-image" src={form.avatarUrl} alt={form.name || "Profile preview"} />}
+            {form.avatarUrl && <img className="admin-profile-preview-image" src={form.avatarUrl} alt={form.name || "Profile preview"} />}
             <h2>{form.name || "Mam"}</h2>
             <p>{form.title || "Title not set"}</p>
             <div className="ruled-rows">

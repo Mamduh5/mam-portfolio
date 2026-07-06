@@ -1,0 +1,107 @@
+:root {
+  --paper-bg: #faf7f0;
+  --paper-sheet: #ffffff;
+  --paper-soft: #f4f0e6;
+  --paper-stack: #f1ede1;
+  --paper-warm: #fbf9f3;
+  --ink: #1c1a16;
+  --graphite: #6b6656;
+  --muted-pencil: #8a8577;
+  --line: #dad4c5;
+  --line-strong: #b9b3a0;
+  --guide-line: #e8e2d4;
+  --radius-card: 8px;
+  --radius-sheet: 14px;
+  --radius-xl: var(--radius-sheet);
+  --radius-2xl: 18px;
+  --shadow: 5px 5px 0 var(--paper-stack);
+  --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-voice: Georgia, "Times New Roman", serif;
+  --font-mono: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+
+  --background: var(--paper-bg);
+  --surface: var(--paper-sheet);
+  --surface-2: var(--paper-soft);
+  --border: var(--line);
+  --foreground: var(--ink);
+  --muted-foreground: var(--graphite);
+  --dim-foreground: var(--muted-pencil);
+  --primary: var(--ink);
+  --secondary: var(--graphite);
+  --focus: var(--line-strong);
+  --success: var(--ink);
+  --warning: var(--ink);
+
+  font: 16px/1.5 var(--font-sans);
+  color: var(--ink);
+  background: var(--paper-bg);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+  background: var(--paper-bg);
+}
+
+body {
+  min-width: 320px;
+  min-height: 100svh;
+  margin: 0;
+  background:
+    linear-gradient(90deg, rgba(218, 212, 197, 0.32) 1px, transparent 1px),
+    linear-gradient(rgba(218, 212, 197, 0.26) 1px, transparent 1px),
+    var(--paper-bg);
+  background-size: 34px 34px;
+}
+
+body::before {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  content: "";
+  pointer-events: none;
+  background:
+    linear-gradient(115deg, rgba(255, 255, 255, 0.78), transparent 42%),
+    radial-gradient(circle at 20% 10%, rgba(255, 255, 255, 0.7), transparent 24%);
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+p,
+h1,
+h2,
+h3 {
+  margin: 0;
+}
+
+button {
+  border: 0;
+}
+
+#root {
+  position: relative;
+  z-index: 1;
+  min-height: 100svh;
+}

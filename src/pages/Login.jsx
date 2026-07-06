@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import CommandHero from "../components/CommandHero"
+import PublicHero from "../components/PublicHero"
 import { login } from "../services/auth"
 
 function Login() {
@@ -106,7 +106,7 @@ function Login() {
 
   return (
     <div className="page-stack login-page">
-      <CommandHero
+      <PublicHero
         eyebrow={<span className="static-chip">Private access</span>}
         title="Sign in"
         description="Private access for portfolio updates, uploads, messages, and focus notes."
@@ -146,7 +146,7 @@ function Login() {
           </button>
           {status === "error" && <p className="form-status form-status--error">{error}</p>}
         </form>
-      </CommandHero>
+      </PublicHero>
     </div>
   )
 }

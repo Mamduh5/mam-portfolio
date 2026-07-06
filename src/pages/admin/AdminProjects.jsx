@@ -526,14 +526,14 @@ function AdminProjects() {
 
           {loading && <div className="skeleton" />}
           {!loading && projects.length === 0 && (
-            <article className="bento-card bento-card--quiet">
+            <article className="admin-panel admin-empty-card">
               <span className="card-kicker">Empty</span>
               <h2>No projects yet</h2>
               <p>Create the first portfolio project from the form.</p>
             </article>
           )}
           {!loading && projects.length > 0 && filteredProjects.length === 0 && (
-            <article className="bento-card bento-card--quiet">
+            <article className="admin-panel admin-empty-card">
               <span className="card-kicker">No matches</span>
               <h2>No projects match these filters</h2>
               <p>Clear filters to return to the full catalog.</p>

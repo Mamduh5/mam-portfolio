@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react"
 import { Link } from "react-router-dom"
 import { fetchProjects } from "../services/projects"
-import CommandHero from "../components/CommandHero"
+import PublicHero from "../components/PublicHero"
 import ProjectMissionCard from "../components/ProjectMissionCard"
 import { getProjectId } from "../utils/projectMedia"
 
@@ -49,7 +49,7 @@ function Games() {
 
   if (error) {
     return (
-      <CommandHero
+      <PublicHero
         eyebrow={<span className="static-chip">Game projects</span>}
         title="Games unavailable"
         description="Games could not be loaded right now. Try again in a moment."
@@ -59,7 +59,7 @@ function Games() {
 
   if (games.length === 0) {
     return (
-      <CommandHero
+      <PublicHero
         eyebrow={<span className="static-chip">Game projects</span>}
         title="Games"
         description="No games selected yet."
@@ -69,7 +69,7 @@ function Games() {
 
   return (
     <div className="page-stack">
-      <CommandHero
+      <PublicHero
         eyebrow={<span className="static-chip">Game projects</span>}
         title="Games"
         description="Playable works."
@@ -84,7 +84,7 @@ function Games() {
           <h2>{selectedGame.name}</h2>
           <p>{selectedGame.description || "No game description yet."}</p>
         </div>
-      </CommandHero>
+      </PublicHero>
 
       <section className="mission-grid" aria-label="Game cards">
         {games.map(game => (

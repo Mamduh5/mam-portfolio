@@ -73,7 +73,7 @@ function AdminMessages() {
           <h1>Messages</h1>
           <p>Owner-only inbox for contact form submissions. Mark messages as read or remove stale entries.</p>
         </div>
-        <div className="landing-summary">
+        <div className="admin-summary-grid">
           <div>
             <span>Total</span>
             <strong>{messages.length}</strong>
@@ -94,7 +94,7 @@ function AdminMessages() {
       {loading && <div className="skeleton" />}
 
       {!loading && messages.length === 0 && (
-        <article className="bento-card bento-card--quiet">
+        <article className="admin-panel admin-empty-card">
           <span className="card-kicker">Inbox clear</span>
           <h2>No messages yet</h2>
           <p>New contact form submissions will appear here.</p>
