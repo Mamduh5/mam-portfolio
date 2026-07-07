@@ -715,6 +715,134 @@ button.admin-ruled-row {
   border-radius: 6px;
 }
 
+.message-detail-paper strong,
+.message-detail-paper p {
+  overflow-wrap: anywhere;
+}
+
+.admin-message-workflow {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+
+.admin-message-filters {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 320px);
+  gap: 12px;
+  align-items: end;
+  min-width: 0;
+  padding: 14px;
+  background: var(--paper-sheet);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+}
+
+.admin-message-filters label,
+.admin-message-note {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  color: var(--graphite);
+  font-weight: 700;
+}
+
+.admin-message-filters input,
+.admin-message-note textarea {
+  width: 100%;
+  min-width: 0;
+  padding: 10px 12px;
+  color: var(--ink);
+  background: var(--paper-sheet);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+
+.admin-message-note textarea {
+  resize: vertical;
+}
+
+.admin-message-filter-buttons,
+.admin-message-actions,
+.admin-message-card__meta,
+.admin-message-detail__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-width: 0;
+}
+
+.admin-message-list {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+
+.admin-message-card {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+  padding: 12px;
+  color: inherit;
+  text-align: left;
+  background: var(--paper-sheet);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+}
+
+.admin-message-card--selected,
+.admin-message-card:hover {
+  border-color: var(--ink);
+}
+
+.admin-message-card--new {
+  box-shadow: inset 4px 0 0 var(--ink);
+}
+
+.admin-message-card--high {
+  background:
+    repeating-linear-gradient(to bottom, transparent 0, transparent 31px, rgba(232, 226, 212, 0.48) 32px),
+    var(--paper-warm);
+}
+
+.admin-message-card__header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: flex-start;
+  justify-content: space-between;
+  min-width: 0;
+}
+
+.admin-message-card__header > div,
+.admin-message-detail {
+  min-width: 0;
+}
+
+.admin-message-card h2,
+.admin-message-card p,
+.admin-message-card strong,
+.admin-message-detail h2,
+.admin-message-detail p,
+.admin-message-note textarea {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.admin-message-card small,
+.admin-message-card__meta span,
+.admin-message-detail__meta span,
+.admin-notification-status {
+  color: var(--muted-pencil);
+  font: 700 11px/1.4 var(--font-mono);
+  overflow-wrap: anywhere;
+}
+
+.admin-message-actions .button {
+  flex: 0 1 auto;
+  white-space: normal;
+}
+
 .admin-profile-preview-image {
   aspect-ratio: 1 / 1;
   max-height: 220px;
@@ -1165,6 +1293,7 @@ button.admin-ruled-row {
   .admin-analytics-grid,
   .admin-control-grid,
   .admin-split-list,
+  .admin-message-filters,
   .admin-focus-grid,
   .admin-profile-form {
     grid-template-columns: 1fr;
@@ -1306,6 +1435,11 @@ button.admin-ruled-row {
   .admin-desk,
   .admin-main-pane,
   .admin-panel,
+  .admin-message-workflow,
+  .admin-message-filters,
+  .admin-message-list,
+  .admin-message-card,
+  .admin-message-detail,
   .admin-security-attention,
   .admin-security-attention-card,
   .admin-list-card,
@@ -1528,10 +1662,18 @@ button.admin-ruled-row {
   }
 
   .admin-actions > *,
+  .admin-message-filter-buttons .button,
+  .admin-message-actions .button,
   .admin-select {
     max-width: 100%;
     min-width: 0;
     white-space: normal;
+  }
+
+  .admin-message-actions .button,
+  .admin-message-actions a,
+  .admin-message-filter-buttons .button {
+    flex: 1 1 128px;
   }
 
   .admin-form-pair,

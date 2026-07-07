@@ -3,13 +3,36 @@ import { getAuthHeaders } from "./auth"
 
 const authConfig = () => ({ headers: getAuthHeaders() })
 
-export const fetchAdminMessages = async () => {
-  const res = await api.get("/messages", authConfig())
+export const fetchAdminMessages = async (params = {}) => {
+  const res = await api.get("/messages", {
+    ...authConfig(),
+    params
+  })
+  return res.data
+}
+
+export const updateAdminMessage = async (messageId, payload) => {
+  const res = await api.patch(`/messages/${messageId}`, payload, authConfig())
   return res.data
 }
 
 export const markMessageRead = async (messageId) => {
   const res = await api.patch(`/messages/${messageId}/read`, {}, authConfig())
+  return res.data
+}
+
+export const markMessageReplied = async (messageId) => {
+  const res = await api.patch(`/messages/${messageId}/replied`, {}, authConfig())
+  return res.data
+}
+
+export const archiveMessage = async (messageId) => {
+  const res = await api.patch(`/messages/${messageId}/archive`, {}, authConfig())
+  return res.data
+}
+
+export const unarchiveMessage = async (messageId) => {
+  const res = await api.patch(`/messages/${messageId}/unarchive`, {}, authConfig())
   return res.data
 }
 
