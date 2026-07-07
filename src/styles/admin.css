@@ -1255,7 +1255,7 @@ button.admin-ruled-row {
 
 .turnstile-field {
   display: grid;
-  gap: 8px;
+  gap: 4px;
   max-width: 100%;
   min-width: 0;
   justify-items: start;
@@ -1265,7 +1265,9 @@ button.admin-ruled-row {
   width: fit-content;
   max-width: 100%;
   min-width: 0;
-  overflow: hidden;
+  min-height: 0;
+  height: 0;
+  overflow: visible;
 }
 
 .security-settings-form {
