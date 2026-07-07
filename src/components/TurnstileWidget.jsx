@@ -77,6 +77,9 @@ const TurnstileWidget = forwardRef(function TurnstileWidget({
         widgetIdRef.current = turnstile.render(containerRef.current, {
           sitekey: siteKey,
           action,
+          theme: "light",
+          size: "compact",
+          appearance: "interaction-only",
           callback: (token) => {
             setStatus("ready")
             onToken?.(token)
