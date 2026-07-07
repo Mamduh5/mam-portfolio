@@ -30,6 +30,13 @@ const emptyFilters = {
   visibility: ""
 }
 
+const healthFilterOptions = [
+  { value: "all", label: "All issues" },
+  { value: "critical", label: "Critical" },
+  { value: "warning", label: "Warning" },
+  { value: "healthy", label: "Healthy" }
+]
+
 const filterLabels = {
   search: "Search",
   type: "Type",
@@ -81,6 +88,8 @@ const getDemoUrl = (project) => project.demoUrl || project.demo_url || ""
 const getPreviewImage = (project) => (
   project.previewImage || project.preview_image || project.imageUrl || project.image_url || ""
 )
+
+const getProjectDescription = (project) => project.description || ""
 
 const getTechStack = (project) => {
   const value = project.techStack || project.tech_stack || project.tech_stack_json || project.stack
@@ -196,10 +205,95 @@ const getSyncValue = (result, keys) => {
 
 const getUploadUrl = (result) => result?.url || result?.asset?.url || result?.previewImage || result?.preview_image || ""
 
+const severityRank = {
+  healthy: 0,
+  info: 1,
+  warning: 2,
+  critical: 3
+}
+
+const maxSeverity = (current, next) => (
+  severityRank[next] > severityRank[current] ? next : current
+)
+
+const isMissingValue = (value) => value === undefined || value === null || String(value).trim() === ""
+
+const isStaleDate = (value, maxAgeDays = 180) => {
+  if (!value) return false
+  const timestamp = new Date(value).getTime()
+
+  if (!Number.isFinite(timestamp)) return false
+
+  return Date.now() - timestamp > maxAgeDays * 24 * 60 * 60 * 1000
+}
+
+const addHealthIssue = (issues, severity, label) => {
+  issues.push({ severity, label })
+}
+
+const getProjectHealthItem = (project) => {
+  const issues = []
+  const projectId = getProjectId(project)
+  const status = String(project.status || "draft").toLowerCase()
+  const publicVisible = getPublicVisible(project)
+  const publicProject = publicVisible && status === "published"
+  const description = getProjectDescription(project).trim()
+  const previewImage = getPreviewImage(project).trim()
+  const repoUrl = (getRepoUrl(project) || getGitHubRepoUrl(project)).trim()
+  const demoUrl = getDemoUrl(project).trim()
+  const techStack = getTechStack(project).trim()
+  const sourceKind = getSourceKind(project).toLowerCase()
+  const githubImported = isGitHubImported(project)
+  const sortOrder = getSortOrder(project)
+  let severity = "healthy"
+
+  if (!previewImage) addHealthIssue(issues, publicProject ? "critical" : "warning", "Missing preview image")
+  if (!description) addHealthIssue(issues, publicProject ? "critical" : "warning", "Missing description")
+  if (description && description.length < 80) addHealthIssue(issues, "info", "Weak description")
+  if ((githubImported || sourceKind === "manual") && !repoUrl) addHealthIssue(issues, "warning", "Missing repo URL")
+  if (publicProject && !demoUrl) addHealthIssue(issues, "warning", "Missing demo URL")
+  if (!techStack) addHealthIssue(issues, "warning", "Missing tech stack")
+  if (!publicVisible) addHealthIssue(issues, "info", "Hidden public project")
+  if (status === "draft") addHealthIssue(issues, "info", "Draft project")
+  if (status === "archived") addHealthIssue(issues, "info", "Archived project")
+  if (isStaleDate(getGitHubPushedAt(project))) addHealthIssue(issues, "warning", "Stale GitHub metadata")
+  if (sourceKind === "github" && (!getGitHubFullName(project) || !getGitHubRepoUrl(project))) {
+    addHealthIssue(issues, "warning", "Missing GitHub metadata")
+  }
+  if (isMissingValue(sortOrder)) addHealthIssue(issues, "info", "Missing sort order")
+  if (project.featured && !previewImage) addHealthIssue(issues, "critical", "Featured without preview")
+  if (publicProject && (!previewImage || !description)) addHealthIssue(issues, "critical", "Public content incomplete")
+
+  issues.forEach(issue => {
+    severity = maxSeverity(severity, issue.severity)
+  })
+
+  return {
+    project,
+    projectId,
+    name: project.name || "Untitled project",
+    severity,
+    issues
+  }
+}
+
+const getProjectHealthSummary = (items) => ({
+  total: items.length,
+  healthy: items.filter(item => item.severity === "healthy").length,
+  critical: items.filter(item => item.severity === "critical").length,
+  warning: items.filter(item => item.severity === "warning").length,
+  draftHidden: items.filter(item => {
+    const status = String(item.project.status || "draft").toLowerCase()
+    return status === "draft" || !getPublicVisible(item.project)
+  }).length
+})
+
 function AdminProjects() {
   const [projects, setProjects] = useState([])
   const [form, setForm] = useState(emptyProject)
   const [filters, setFilters] = useState(emptyFilters)
+  const [healthFilter, setHealthFilter] = useState("all")
+  const [healthExpanded, setHealthExpanded] = useState(true)
   const [filtersExpanded, setFiltersExpanded] = useState(false)
   const [previewFile, setPreviewFile] = useState(null)
   const [editingId, setEditingId] = useState("")
@@ -253,6 +347,24 @@ function AdminProjects() {
       return true
     })
   ), [filters, projects])
+
+  const projectHealthItems = useMemo(() => (
+    projects.map(getProjectHealthItem)
+  ), [projects])
+
+  const projectHealthSummary = useMemo(() => (
+    getProjectHealthSummary(projectHealthItems)
+  ), [projectHealthItems])
+
+  const visibleHealthItems = useMemo(() => {
+    const filteredItems = projectHealthItems.filter(item => {
+      if (healthFilter === "all") return item.issues.length > 0
+      if (healthFilter === "healthy") return item.severity === "healthy"
+      return item.severity === healthFilter
+    })
+
+    return filteredItems.sort((a, b) => severityRank[b.severity] - severityRank[a.severity] || a.name.localeCompare(b.name))
+  }, [healthFilter, projectHealthItems])
 
   const editingProject = useMemo(() => (
     projects.find(project => getProjectId(project) === editingId) || null
@@ -523,6 +635,106 @@ function AdminProjects() {
               </label>
             </div>
           </div>
+
+          <section className="admin-panel admin-project-health" aria-label="Project health checker">
+            <div className="admin-project-health__header">
+              <div>
+                <span className="card-kicker">Project Health</span>
+                <h2>Cleanup checker</h2>
+                <p>Client-side checks for missing content, stale metadata, hidden projects, and incomplete public cards.</p>
+              </div>
+              <div className="admin-project-health-actions">
+                <button className="button button--secondary" type="button" onClick={() => setHealthExpanded(current => !current)}>
+                  {healthExpanded ? "Hide issues" : "Show issues"}
+                </button>
+              </div>
+            </div>
+
+            <div className="admin-project-health-summary" aria-label="Project health summary">
+              <div className="admin-project-health-card">
+                <span>Total</span>
+                <strong>{projectHealthSummary.total}</strong>
+              </div>
+              <div className="admin-project-health-card">
+                <span>Healthy</span>
+                <strong>{projectHealthSummary.healthy}</strong>
+              </div>
+              <div className="admin-project-health-card admin-project-health-card--critical">
+                <span>Critical</span>
+                <strong>{projectHealthSummary.critical}</strong>
+              </div>
+              <div className="admin-project-health-card admin-project-health-card--warning">
+                <span>Warnings</span>
+                <strong>{projectHealthSummary.warning}</strong>
+              </div>
+              <div className="admin-project-health-card">
+                <span>Draft/hidden</span>
+                <strong>{projectHealthSummary.draftHidden}</strong>
+              </div>
+            </div>
+
+            <div className="admin-project-health-actions" role="group" aria-label="Project health filters">
+              {healthFilterOptions.map(option => (
+                <button
+                  className={`button ${healthFilter === option.value ? "button--primary" : "button--secondary"}`}
+                  type="button"
+                  key={option.value}
+                  onClick={() => {
+                    setHealthFilter(option.value)
+                    setHealthExpanded(true)
+                  }}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
+
+            {healthExpanded && (
+              <div className="admin-project-health-list">
+                {visibleHealthItems.slice(0, 12).map(item => (
+                  <article className={`admin-project-health-item admin-project-health-item--${item.severity}`} key={item.projectId}>
+                    <div>
+                      <span className={`admin-health-pill admin-health-pill--${item.severity}`}>{item.severity}</span>
+                      <h3>{item.name}</h3>
+                      <div className="admin-project-health-issues">
+                        {item.issues.length ? item.issues.map(issue => (
+                          <button
+                            className={`admin-health-pill admin-health-pill--${issue.severity}`}
+                            type="button"
+                            key={`${item.projectId}-${issue.label}`}
+                            onClick={() => handleEdit(item.project)}
+                          >
+                            {issue.label}
+                          </button>
+                        )) : (
+                          <span className="admin-health-pill admin-health-pill--healthy">No issues</span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="admin-project-health-actions">
+                      <button className="button button--secondary" type="button" onClick={() => handleEdit(item.project)}>
+                        Edit
+                      </button>
+                    </div>
+                  </article>
+                ))}
+
+                {visibleHealthItems.length === 0 && (
+                  <article className="admin-project-health-item">
+                    <div>
+                      <span className="admin-health-pill admin-health-pill--healthy">Healthy</span>
+                      <h3>No project health issues in this view</h3>
+                      <p>{projects.length === 0 ? "Create projects to start checking content health." : "Change the health filter to inspect another group."}</p>
+                    </div>
+                  </article>
+                )}
+
+                {visibleHealthItems.length > 12 && (
+                  <p className="admin-project-health-note">Showing the first 12 matching projects. Use the health filters or existing search filters to narrow the list.</p>
+                )}
+              </div>
+            )}
+          </section>
 
           {loading && <div className="skeleton" />}
           {!loading && projects.length === 0 && (
