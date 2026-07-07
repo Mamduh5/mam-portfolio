@@ -1,5 +1,6 @@
-import { useState } from "react"
+import { useRef, useState } from "react"
 import { api } from "../services/api"
+import TurnstileWidget from "./TurnstileWidget"
 
 const initialForm = {
   name: "",
@@ -8,7 +9,9 @@ const initialForm = {
 }
 
 function SecureContactForm() {
+  const turnstileRef = useRef(null)
   const [form, setForm] = useState(initialForm)
+  const [turnstileToken, setTurnstileToken] = useState("")
   const [status, setStatus] = useState("idle")
   const [error, setError] = useState("")
 
@@ -25,13 +28,23 @@ function SecureContactForm() {
     setError("")
 
     try {
-      await api.post("/messages", form)
+      await api.post("/messages", {
+        ...form,
+        ...(turnstileToken ? { turnstileToken } : {})
+      })
       setStatus("sent")
       setForm(initialForm)
+      setTurnstileToken("")
+      turnstileRef.current?.reset()
     } catch (err) {
-      console.error(err)
+      console.error("contact submit failed", err.response?.status || err.message)
+      const response = err.response?.data || {}
       setStatus("error")
-      setError("Message failed. Keep your text and try again.")
+      setTurnstileToken("")
+      turnstileRef.current?.reset()
+      setError(response.error === "turnstile_failed"
+        ? response.message || "Verification failed. Please try again."
+        : "Message failed. Keep your text and try again.")
     }
   }
 
@@ -69,6 +82,7 @@ function SecureContactForm() {
           required
         />
       </label>
+      <TurnstileWidget action="contact-message" onToken={setTurnstileToken} ref={turnstileRef} />
       <button className="button button--primary" type="submit" disabled={status === "submitting"}>
         {status === "submitting" ? "Sending..." : "Send message"}
       </button>

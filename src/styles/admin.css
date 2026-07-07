@@ -1253,6 +1253,13 @@ button.admin-ruled-row {
   min-height: 72px;
 }
 
+.turnstile-field {
+  display: grid;
+  gap: 8px;
+  max-width: 100%;
+  min-width: 0;
+}
+
 .security-settings-form {
   gap: 10px;
 }
