@@ -64,6 +64,7 @@ const normalizeAttentionResponse = (data) => {
 
   const candidates = [
     data?.events,
+    data?.attention,
     data?.attentionEvents,
     data?.attention_events,
     data?.items,
@@ -160,11 +161,13 @@ function AdminSecurity() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [attentionActionId, setAttentionActionId] = useState("")
+  const [attentionError, setAttentionError] = useState("")
   const [error, setError] = useState("")
 
   const loadSecurity = useCallback(async () => {
     setLoading(true)
     setError("")
+    setAttentionError("")
 
     try {
       const params = { days }
@@ -182,7 +185,11 @@ function AdminSecurity() {
       if (nextAttentionResult.err) {
         console.error(nextAttentionResult.err)
         setAttentionEvents([])
-        setError("Security attention could not be loaded. Other security sections are available.")
+        setAttentionError(
+          nextAttentionResult.err?.response?.status === 404
+            ? "Attention endpoint unavailable."
+            : "Security attention could not be loaded."
+        )
       } else {
         setAttentionEvents(normalizeAttentionResponse(nextAttentionResult.data))
       }
@@ -310,10 +317,12 @@ function AdminSecurity() {
     setError("")
 
     try {
+      const eventType = getField(event, ["eventType", "event_type", "type", "kind", "category"])
+
       await createSecurityBlock({
         blockType: "ip",
         ipAddress,
-        reason: "security_attention_block",
+        reason: `Blocked from security attention event: ${eventType || "unknown"}`,
         durationMinutes: 60
       })
 
@@ -356,12 +365,35 @@ function AdminSecurity() {
 
       {!loading && (
         <>
+          <section className="admin-metric-grid" aria-label="Security summary">
+            <article className="admin-panel">
+              <span className="card-kicker">Success</span>
+              <h2>{formatNumber(summary?.loginSuccess)}</h2>
+              <p>Successful admin logins.</p>
+            </article>
+            <article className="admin-panel">
+              <span className="card-kicker">Failed</span>
+              <h2>{formatNumber(summary?.loginFailed)}</h2>
+              <p>Invalid credential attempts.</p>
+            </article>
+            <article className="admin-panel">
+              <span className="card-kicker">Blocked</span>
+              <h2>{formatNumber(summary?.loginBlocked)}</h2>
+              <p>Attempts stopped by active blocks.</p>
+            </article>
+            <article className="admin-panel">
+              <span className="card-kicker">Active blocks</span>
+              <h2>{formatNumber(summary?.activeBlocks)}</h2>
+              <p>Temporary blocks still in effect.</p>
+            </article>
+          </section>
+
           <section className="admin-security-attention" aria-label="Security attention needed">
-            <div className="admin-security-attention__heading">
+            <div className="admin-security-attention__header">
               <div>
                 <span className="card-kicker">Attention needed</span>
                 <h2>Security events to review</h2>
-                <p>Public spam, private API probing, and login brute-force events that need an admin decision.</p>
+                <p>Public spam, private API probing, login brute-force, repeated traffic, and notification delivery events that need an admin decision.</p>
               </div>
               <div className="admin-security-attention-actions">
                 <button className="button button--secondary" type="button" onClick={loadSecurity} disabled={loading || saving}>
@@ -369,6 +401,19 @@ function AdminSecurity() {
                 </button>
               </div>
             </div>
+
+            {attentionError && (
+              <article className="admin-security-attention-card admin-security-attention-card--info">
+                <div className="admin-security-attention-card__header">
+                  <div>
+                    <span className="card-kicker">Unavailable</span>
+                    <h3>{attentionError}</h3>
+                  </div>
+                  <span className="admin-security-pill admin-security-attention-status">Non-fatal</span>
+                </div>
+                <p>Existing summary, events, settings, and blocks remain available.</p>
+              </article>
+            )}
 
             <div className="admin-security-attention-grid">
               {attentionEvents.map((attentionEvent, index) => {
@@ -386,6 +431,8 @@ function AdminSecurity() {
                 const count = getAttentionCount(attentionEvent)
                 const windowStart = getField(attentionEvent, ["windowStart", "window_start", "firstSeenAt", "first_seen_at"])
                 const windowEnd = getField(attentionEvent, ["windowEnd", "window_end", "lastSeenAt", "last_seen_at"])
+                const lastSeenAt = getField(attentionEvent, ["lastSeenAt", "last_seen_at"])
+                const userAgent = getField(attentionEvent, ["userAgent", "user_agent", "agent", "requestUserAgent", "request_user_agent"])
                 const country = getField(attentionEvent, ["country", "countryCode", "country_code", "geo.country"])
                 const city = getField(attentionEvent, ["city", "geo.city"])
                 const colo = getField(attentionEvent, ["colo", "cfColo", "cf_colo", "geo.colo"])
@@ -410,7 +457,7 @@ function AdminSecurity() {
                         <span className="card-kicker">{humanize(severity)}</span>
                         <h3>{humanize(eventType, "Attention event")}</h3>
                       </div>
-                      <span className={`admin-security-attention-status admin-security-attention-status--${attentionStatus}`}>
+                      <span className={`admin-security-pill admin-security-attention-status admin-security-attention-status--${attentionStatus}`}>
                         {humanize(attentionStatus)}
                       </span>
                     </div>
@@ -447,6 +494,14 @@ function AdminSecurity() {
                       <div>
                         <dt>Notification</dt>
                         <dd>{displayValue(notificationStatus)}</dd>
+                      </div>
+                      <div>
+                        <dt>User agent</dt>
+                        <dd>{displayValue(userAgent)}</dd>
+                      </div>
+                      <div>
+                        <dt>Last seen</dt>
+                        <dd>{formatAttentionDate(lastSeenAt)}</dd>
                       </div>
                       <div>
                         <dt>Created / updated</dt>
@@ -497,35 +552,12 @@ function AdminSecurity() {
                       <span className="card-kicker">Clear</span>
                       <h3>No attention events</h3>
                     </div>
-                    <span className="admin-security-attention-status admin-security-attention-status--reviewed">Reviewed</span>
+                    <span className="admin-security-pill admin-security-attention-status admin-security-attention-status--reviewed">Reviewed</span>
                   </div>
-                  <p>No public spam, private API probes, or brute-force attention events were returned.</p>
+                  <p>No attention needed.</p>
                 </article>
               )}
             </div>
-          </section>
-
-          <section className="admin-metric-grid" aria-label="Security summary">
-            <article className="admin-panel">
-              <span className="card-kicker">Success</span>
-              <h2>{formatNumber(summary?.loginSuccess)}</h2>
-              <p>Successful admin logins.</p>
-            </article>
-            <article className="admin-panel">
-              <span className="card-kicker">Failed</span>
-              <h2>{formatNumber(summary?.loginFailed)}</h2>
-              <p>Invalid credential attempts.</p>
-            </article>
-            <article className="admin-panel">
-              <span className="card-kicker">Blocked</span>
-              <h2>{formatNumber(summary?.loginBlocked)}</h2>
-              <p>Attempts stopped by active blocks.</p>
-            </article>
-            <article className="admin-panel">
-              <span className="card-kicker">Active blocks</span>
-              <h2>{formatNumber(summary?.activeBlocks)}</h2>
-              <p>Temporary blocks still in effect.</p>
-            </article>
           </section>
 
           <section className="admin-analytics-grid" aria-label="Security geography">

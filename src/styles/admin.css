@@ -994,7 +994,7 @@ button.admin-ruled-row {
   border-radius: var(--radius-card);
 }
 
-.admin-security-attention__heading {
+.admin-security-attention__header {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
@@ -1003,13 +1003,13 @@ button.admin-ruled-row {
   min-width: 0;
 }
 
-.admin-security-attention__heading h2 {
+.admin-security-attention__header h2 {
   color: var(--ink);
   font-size: 22px;
   line-height: 1.15;
 }
 
-.admin-security-attention__heading p,
+.admin-security-attention__header p,
 .admin-security-attention-card p {
   color: var(--graphite);
   overflow-wrap: anywhere;
@@ -1081,6 +1081,10 @@ button.admin-ruled-row {
   background: var(--paper-stack);
   border: 1px solid var(--line);
   border-radius: 4px;
+}
+
+.admin-security-pill {
+  overflow-wrap: anywhere;
 }
 
 .admin-security-attention-status--open,
