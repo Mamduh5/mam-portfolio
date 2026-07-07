@@ -984,6 +984,161 @@ button.admin-ruled-row {
   gap: 10px;
 }
 
+.admin-security-attention {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  padding: 16px;
+  background: var(--paper-sheet);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+}
+
+.admin-security-attention__heading {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-start;
+  justify-content: space-between;
+  min-width: 0;
+}
+
+.admin-security-attention__heading h2 {
+  color: var(--ink);
+  font-size: 22px;
+  line-height: 1.15;
+}
+
+.admin-security-attention__heading p,
+.admin-security-attention-card p {
+  color: var(--graphite);
+  overflow-wrap: anywhere;
+}
+
+.admin-security-attention-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 12px;
+  min-width: 0;
+}
+
+.admin-security-attention-card {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  padding: 14px;
+  background: var(--paper-sheet);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+
+.admin-security-attention-card--critical {
+  border-color: var(--ink);
+  box-shadow: inset 4px 0 0 var(--ink);
+}
+
+.admin-security-attention-card--warning {
+  background:
+    repeating-linear-gradient(to bottom, transparent 0, transparent 31px, rgba(232, 226, 212, 0.45) 32px),
+    var(--paper-warm);
+}
+
+.admin-security-attention-card--info {
+  border-color: var(--guide-line);
+}
+
+.admin-security-attention-card__header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: flex-start;
+  justify-content: space-between;
+  min-width: 0;
+}
+
+.admin-security-attention-card__header > div {
+  min-width: 0;
+}
+
+.admin-security-attention-card h3 {
+  color: var(--ink);
+  font-size: 18px;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+
+.admin-security-attention-status {
+  display: inline-flex;
+  flex: 0 1 auto;
+  align-items: center;
+  min-height: 26px;
+  max-width: 100%;
+  padding: 0 8px;
+  color: var(--graphite);
+  font: 750 11px/1 var(--font-mono);
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+  background: var(--paper-stack);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+}
+
+.admin-security-attention-status--open,
+.admin-security-attention-status--critical {
+  color: var(--ink);
+  border-color: var(--ink);
+}
+
+.admin-security-attention-status--blocked {
+  color: var(--paper-sheet);
+  background: var(--ink);
+  border-color: var(--ink);
+}
+
+.admin-security-attention-meta {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  min-width: 0;
+  margin: 0;
+}
+
+.admin-security-attention-meta div {
+  min-width: 0;
+  padding: 8px;
+  background: var(--paper-stack);
+  border: 1px solid var(--guide-line);
+  border-radius: 5px;
+}
+
+.admin-security-attention-meta dt {
+  color: var(--muted-pencil);
+  font: 750 10px/1.2 var(--font-mono);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.admin-security-attention-meta dd {
+  min-width: 0;
+  margin: 4px 0 0;
+  color: var(--ink);
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.admin-security-attention-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-width: 0;
+}
+
+.admin-security-attention-actions .button {
+  flex: 0 1 auto;
+  white-space: normal;
+}
+
 @media (max-width: 1180px) {
   .admin-workbench,
   .admin-workbench--projects,
@@ -1147,6 +1302,8 @@ button.admin-ruled-row {
   .admin-desk,
   .admin-main-pane,
   .admin-panel,
+  .admin-security-attention,
+  .admin-security-attention-card,
   .admin-list-card,
   .admin-workbench,
   .admin-workbench--projects,
@@ -1353,6 +1510,7 @@ button.admin-ruled-row {
   }
 
   .admin-panel,
+  .admin-security-attention,
   .admin-list-card {
     padding: 12px;
   }
@@ -1389,5 +1547,14 @@ button.admin-ruled-row {
 
   .admin-table {
     min-width: 480px;
+  }
+
+  .admin-security-attention-grid,
+  .admin-security-attention-meta {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .admin-security-attention-actions .button {
+    flex: 1 1 128px;
   }
 }

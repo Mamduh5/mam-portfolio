@@ -177,6 +177,69 @@ export const fetchSecurityEvents = async (params = {}) => {
   return res.data
 }
 
+export const fetchSecurityAttention = async (params = {}) => {
+  const res = await api.get("/security/attention", {
+    ...authConfig(),
+    params
+  })
+  return res.data
+}
+
+const shouldTryAlternateAttentionRequest = (err) => {
+  const status = err?.response?.status
+  return [400, 404, 405, 422].includes(status)
+}
+
+const buildAttentionPayloadVariants = (payload = {}) => {
+  const status = payload.attentionStatus ?? payload.attention_status
+
+  if (!status) {
+    return [payload]
+  }
+
+  const rest = Object.fromEntries(
+    Object.entries(payload).filter(([key]) => !["attentionStatus", "attention_status"].includes(key))
+  )
+
+  return [
+    payload,
+    { ...rest, attention_status: status },
+    { ...rest, attentionStatus: status }
+  ]
+}
+
+export const updateSecurityAttention = async (eventId, payload = {}) => {
+  const url = `/security/events/${eventId}/attention`
+  const variants = buildAttentionPayloadVariants(payload)
+  let lastError
+
+  for (const nextPayload of variants) {
+    try {
+      const res = await api.patch(url, nextPayload, authConfig())
+      return res.data
+    } catch (err) {
+      lastError = err
+
+      if (!shouldTryAlternateAttentionRequest(err)) {
+        throw err
+      }
+    }
+
+    try {
+      const res = await api.post(url, nextPayload, authConfig())
+      return res.data
+    } catch (err) {
+      lastError = err
+
+      if (!shouldTryAlternateAttentionRequest(err)) {
+        throw err
+      }
+    }
+  }
+
+  throw lastError
+}
+
 export const fetchSecurityBlocks = async () => {
   const res = await api.get("/security/blocks", authConfig())
   return res.data
