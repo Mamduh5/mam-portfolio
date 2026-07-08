@@ -139,6 +139,48 @@ export const createFocusSnapshot = async (payload) => {
   return res.data
 }
 
+export const fetchFocusBriefing = async (params = {}) => {
+  const res = await api.get("/focus/briefing", {
+    ...authConfig(),
+    params
+  })
+  return res.data
+}
+
+export const fetchFocusTracking = async (params = {}) => {
+  const res = await api.get("/focus/tracking", {
+    ...authConfig(),
+    params
+  })
+  return res.data
+}
+
+export const fetchFocusWorkEvents = async (params = {}) => {
+  const res = await api.get("/focus/work-events", {
+    ...authConfig(),
+    params
+  })
+  return res.data
+}
+
+export const createFocusWorkEvent = async (payload) => {
+  const res = await api.post("/focus/work-events", payload, authConfig())
+  return res.data
+}
+
+export const fetchFocusProjectRegistry = async () => {
+  const res = await api.get("/focus/projects", authConfig())
+  return res.data
+}
+
+export const fetchFocusProjectGoals = async (params = {}) => {
+  const res = await api.get("/focus/project-goals", {
+    ...authConfig(),
+    params
+  })
+  return res.data
+}
+
 export const fetchActivityEvents = async (params = {}) => {
   const res = await api.get("/activity/events", {
     ...authConfig(),
