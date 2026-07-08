@@ -14,6 +14,21 @@ import {
   syncGitHubActivity,
   updateFocusCurrent
 } from "../../services/admin"
+import {
+  buildDisplayOutcomes,
+  filterVisibleActions,
+  formatSummaryItems,
+  getChangedFileCount,
+  getCommandSummary,
+  getDisplayField,
+  getDisplayReadyState,
+  getProjectLastWorkSummary,
+  getProjectLastWorkTime,
+  getProjectLatestStatus,
+  getWorkEventStatus,
+  isRenewalHeadersActionText,
+  isUnknownValue
+} from "./focusIntelligence"
 
 const emptyFocusForm = {
   activeProjectId: "",
@@ -273,11 +288,13 @@ function AdminFocus() {
     return activityEvents.filter(event => event.source === "portfolio")
   }, [activityEvents])
 
-  const actionQueue = useMemo(() => {
+  const rawActionQueue = useMemo(() => {
     return listFromResponse(briefing?.actionQueue || briefing?.action_queue, ["actions", "queue"]).slice(0, 5)
   }, [briefing])
 
-  const trackingSummary = tracking?.summary || {}
+  const trackingSummary = useMemo(() => {
+    return tracking?.summary || {}
+  }, [tracking])
 
   const trackingProjects = useMemo(() => {
     return listFromResponse(tracking?.projects, ["projects"]).slice(0, 8)
@@ -286,6 +303,28 @@ function AdminFocus() {
   const recentWorkEvents = useMemo(() => {
     return listFromResponse(focusWorkEvents, ["events", "workEvents", "work_events"]).slice(0, 5)
   }, [focusWorkEvents])
+
+  const { visibleActions: actionQueue, suppressedActions } = useMemo(() => {
+    return filterVisibleActions(rawActionQueue, recentWorkEvents)
+  }, [rawActionQueue, recentWorkEvents])
+
+  const displayReadyState = useMemo(() => {
+    return getDisplayReadyState({
+      briefing,
+      trackingSummary,
+      visibleActions: actionQueue,
+      recentWorkEvents
+    })
+  }, [actionQueue, briefing, recentWorkEvents, trackingSummary])
+
+  const nextSmallestAction = briefing?.nextSmallestAction || briefing?.next_smallest_action
+  const displayNextSmallestAction = suppressedActions.length > 0 && isRenewalHeadersActionText(nextSmallestAction)
+    ? ""
+    : nextSmallestAction
+
+  const displayOutcomes = useMemo(() => {
+    return buildDisplayOutcomes(briefing, recentWorkEvents, trackingProjects)
+  }, [briefing, recentWorkEvents, trackingProjects])
 
   const registeredProjects = useMemo(() => {
     return listFromResponse(focusProjectRegistry, ["projects", "registry"])
@@ -588,8 +627,11 @@ function AdminFocus() {
     return trackingProjects.map((project, index) => {
       const key = getField(project, ["projectKey", "project_key", "key", "id"], `project-${index}`)
       const name = getField(project, ["projectName", "project_name", "name"], key)
-      const latestStatus = getField(project, ["latestStatus", "latest_status", "status"], "Unknown")
-      const lastWorkTime = getField(project, ["lastWorkTime", "last_work_time", "lastWorkedAt", "last_worked_at"])
+      const latestStatus = getProjectLatestStatus(project)
+      const lastWorkTime = getProjectLastWorkTime(project)
+      const lastWorkSummary = getProjectLastWorkSummary(project)
+      const changedFileCount = getChangedFileCount(project)
+      const commandSummaryItems = formatSummaryItems(getCommandSummary(project))
 
       return (
         <article className="admin-list-card" key={`${key}-${index}`}>
@@ -605,6 +647,18 @@ function AdminFocus() {
               <dt>Last work</dt>
               <dd>{formatDate(lastWorkTime)}</dd>
             </div>
+            {lastWorkSummary && (
+              <div>
+                <dt>Latest work</dt>
+                <dd>{formatValue(lastWorkSummary)}</dd>
+              </div>
+            )}
+            {!isUnknownValue(changedFileCount) && (
+              <div>
+                <dt>Changed files</dt>
+                <dd>{formatValue(changedFileCount)}</dd>
+              </div>
+            )}
             <div>
               <dt>Active goals</dt>
               <dd>{formatValue(getField(project, ["activeGoalCount", "active_goal_count", "activeGoals", "active_goals"], 0))}</dd>
@@ -622,6 +676,12 @@ function AdminFocus() {
               <dd>{formatValue(getField(project, ["failedCount", "failed_count"], 0))}</dd>
             </div>
           </dl>
+          {commandSummaryItems.length > 0 && (
+            <>
+              <span className="card-kicker">Commands</span>
+              <CompactList items={commandSummaryItems} emptyCopy="No command summary returned." />
+            </>
+          )}
         </article>
       )
     })
@@ -640,9 +700,12 @@ function AdminFocus() {
     return recentWorkEvents.map((workEvent, index) => {
       const id = getField(workEvent, ["id", "_id"], `work-event-${index}`)
       const title = getField(workEvent, ["task", "summary", "title", "rawReport", "raw_report"], "Untitled work event")
-      const status = getField(workEvent, ["status", "resultStatus", "result_status"], "Unknown")
+      const status = getWorkEventStatus(workEvent)
       const project = getField(workEvent, ["projectKey", "project_key", "projectName", "project_name"], "Unknown project")
       const createdAt = getField(workEvent, ["createdAt", "created_at", "occurredAt", "occurred_at"])
+      const goal = getDisplayField(workEvent, ["goal"])
+      const changedFileCount = getChangedFileCount(workEvent)
+      const commandSummaryItems = formatSummaryItems(getCommandSummary(workEvent))
 
       return (
         <article className="admin-list-card" key={`${id}-${index}`}>
@@ -654,6 +717,14 @@ function AdminFocus() {
             <small>{formatDate(createdAt)}</small>
           </div>
           <p>Status: {status}</p>
+          {goal && <p>Goal: {goal}</p>}
+          {!isUnknownValue(changedFileCount) && <p>Changed files: {changedFileCount}</p>}
+          {commandSummaryItems.length > 0 && (
+            <>
+              <span className="card-kicker">Commands</span>
+              <CompactList items={commandSummaryItems} emptyCopy="No command summary returned." />
+            </>
+          )}
         </article>
       )
     })
@@ -731,7 +802,7 @@ function AdminFocus() {
             <section className="admin-focus-intelligence-grid">
               <article className="admin-panel admin-focus-summary">
                 <span className="card-kicker">Briefing</span>
-                <h2>{formatValue(briefing?.readyState || briefing?.ready_state, "No ready state")}</h2>
+                <h2>{formatValue(displayReadyState, "No ready state")}</h2>
                 <dl className="admin-focus-fields">
                   <div>
                     <dt>Current priority</dt>
@@ -739,7 +810,7 @@ function AdminFocus() {
                   </div>
                   <div>
                     <dt>Next smallest action</dt>
-                    <dd>{formatValue(briefing?.nextSmallestAction || briefing?.next_smallest_action)}</dd>
+                    <dd>{formatValue(displayNextSmallestAction)}</dd>
                   </div>
                   <div>
                     <dt>Confidence</dt>
@@ -794,10 +865,10 @@ function AdminFocus() {
                   <DetailValue value={briefing.goalProgress || briefing.goal_progress} />
                 </article>
               )}
-              {(briefing?.outcomes || briefing?.outcomesSummary || briefing?.outcomes_summary) && (
+              {displayOutcomes && (
                 <article className="admin-panel">
                   <span className="card-kicker">Outcomes</span>
-                  <DetailValue value={briefing.outcomes || briefing.outcomesSummary || briefing.outcomes_summary} />
+                  <DetailValue value={displayOutcomes} />
                 </article>
               )}
             </section>
@@ -811,7 +882,13 @@ function AdminFocus() {
                 {actionQueue.length === 0 && (
                   <article className="admin-list-card">
                     <span className="card-kicker">Empty</span>
-                    <p>No action queue items returned.</p>
+                    <p>No pending action queue items returned.</p>
+                  </article>
+                )}
+                {suppressedActions.length > 0 && (
+                  <article className="admin-list-card">
+                    <span className="card-kicker">Backend follow-up</span>
+                    <p>Suppressed a stale completed renewal-header action returned by the backend; backend action resolution needs follow-up.</p>
                   </article>
                 )}
                 {actionQueue.map((item, index) => {
