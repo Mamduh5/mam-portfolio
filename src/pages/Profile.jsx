@@ -59,7 +59,6 @@ function Profile() {
               onError={() => setAvatarFailed(true)}
             />
           )}
-          <h2>Builder profile</h2>
           <p>{profile.introduction || "Public profile details will appear here after they are added in the admin dashboard."}</p>
         </article>
 
