@@ -7,6 +7,7 @@ import {
   updateAsset,
   uploadImage
 } from "../../services/admin"
+import { getAssetUrl, getUploadResultUrl } from "../../utils/projectMedia"
 
 const emptyMetadata = {
   entityType: "",
@@ -29,10 +30,6 @@ const toCollection = (data) => {
 }
 
 const getAssetId = (asset) => asset._id || asset.id || asset.assetId
-
-const getAssetUrl = (asset) => (
-  asset.url || asset.imageUrl || asset.image_url || asset.fileUrl || asset.file_url || asset.publicUrl || ""
-)
 
 const getAssetFilename = (asset) => (
   asset.filename || asset.originalName || asset.original_name || asset.key || "Uploaded asset"
@@ -65,7 +62,7 @@ const getResultAssetId = (result) => (
   result?.assetId || result?.asset_id || result?.asset?._id || result?.asset?.id || result?.id || ""
 )
 
-const getResultUrl = (result) => result?.url || result?.asset?.url || ""
+const getResultUrl = (result) => getUploadResultUrl(result)
 
 function AdminUploads() {
   const [file, setFile] = useState(null)
@@ -82,6 +79,7 @@ function AdminUploads() {
   const [assetError, setAssetError] = useState("")
   const [assetSuccess, setAssetSuccess] = useState("")
   const [copied, setCopied] = useState(false)
+  const [copiedAssetId, setCopiedAssetId] = useState("")
 
   const loadProjects = useCallback(async () => {
     try {
@@ -165,6 +163,9 @@ function AdminUploads() {
       }
       const data = await uploadImage(file, payload)
       setResult(data)
+      if (!getResultUrl(data)) {
+        setError("Upload completed, but the response did not include a reusable public image URL.")
+      }
       setMetadata(emptyMetadata)
       await loadAssets()
     } catch (err) {
@@ -185,6 +186,19 @@ function AdminUploads() {
     } catch (err) {
       console.error(err)
       setError("Could not copy URL.")
+    }
+  }
+
+  const handleAssetCopy = async (assetId, url) => {
+    if (!url) return
+
+    try {
+      await navigator.clipboard.writeText(url)
+      setCopiedAssetId(assetId)
+      setAssetSuccess("Asset URL copied.")
+    } catch (err) {
+      console.error(err)
+      setAssetError("Could not copy asset URL.")
     }
   }
 
@@ -275,6 +289,7 @@ function AdminUploads() {
   const selectedAsset = assets.find(asset => getAssetId(asset) === selectedAssetId) || null
   const selectedDraft = selectedAsset ? assetDrafts[selectedAssetId] || {} : {}
   const selectedAssetUrl = selectedAsset ? getAssetUrl(selectedAsset) : ""
+  const resultUrl = getResultUrl(result)
 
   return (
     <div className="admin-desk">
@@ -352,10 +367,14 @@ function AdminUploads() {
             <article className="admin-panel admin-upload-result">
               <span className="card-kicker">Upload complete</span>
               <h2>{result.filename || result.asset?.filename || "Uploaded file"}</h2>
-              <p>{getResultUrl(result)}</p>
+              {resultUrl ? (
+                <p>{resultUrl}</p>
+              ) : (
+                <p className="form-status form-status--error">No reusable public URL was returned.</p>
+              )}
               {getResultAssetId(result) && <small>Asset ID: {getResultAssetId(result)}</small>}
               <div className="admin-actions">
-                <button className="button button--secondary" type="button" onClick={handleCopy}>
+                <button className="button button--secondary" type="button" onClick={handleCopy} disabled={!resultUrl}>
                   {copied ? "Copied" : "Copy URL"}
                 </button>
               </div>
@@ -391,7 +410,10 @@ function AdminUploads() {
                   className={`admin-asset-tile${selectedAssetId === assetId ? " admin-asset-tile--selected" : ""}`}
                   type="button"
                   key={assetId}
-                  onClick={() => setSelectedAssetId(assetId)}
+                  onClick={() => {
+                    setSelectedAssetId(assetId)
+                    setCopiedAssetId("")
+                  }}
                 >
                   {assetUrl ? (
                     <img src={assetUrl} alt={getAssetAltText(asset) || getAssetFilename(asset)} />
@@ -427,6 +449,19 @@ function AdminUploads() {
                 <span>Linked type: {getAssetEntityType(selectedAsset) || "standalone"}</span>
                 <span>Linked item: {getAssetEntityId(selectedAsset) || "None"}</span>
                 <span>Created: {formatDate(getAssetCreatedAt(selectedAsset))}</span>
+              </div>
+              <div className="admin-asset-url-panel">
+                <span className="card-kicker">Reusable URL</span>
+                {selectedAssetUrl ? (
+                  <>
+                    <p>{selectedAssetUrl}</p>
+                    <button className="button button--secondary" type="button" onClick={() => handleAssetCopy(selectedAssetId, selectedAssetUrl)}>
+                      {copiedAssetId === selectedAssetId ? "Copied" : "Copy URL"}
+                    </button>
+                  </>
+                ) : (
+                  <p className="form-status form-status--error">This asset record does not include a reusable public URL.</p>
+                )}
               </div>
               <label>
                 Role

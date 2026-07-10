@@ -107,10 +107,61 @@ export const getProjectAssets = (project = {}) => {
   return candidates.find(Array.isArray) || []
 }
 
+const firstString = (...values) => (
+  values
+    .map(value => (typeof value === "string" ? value.trim() : ""))
+    .find(Boolean) || ""
+)
+
+export const getMediaUrl = (source = {}) => {
+  if (typeof source === "string") return source.trim()
+  if (!source || typeof source !== "object") return ""
+
+  return firstString(
+    source.url,
+    source.publicUrl,
+    source.public_url,
+    source.avatarUrl,
+    source.avatar_url,
+    source.imageUrl,
+    source.image_url,
+    source.photoUrl,
+    source.photo_url,
+    source.fileUrl,
+    source.file_url,
+    source.assetUrl,
+    source.asset_url,
+    source.downloadUrl,
+    source.download_url,
+    source.location,
+    source.Location,
+    source.href,
+    typeof source.avatar === "string" ? source.avatar : "",
+    typeof source.image === "string" ? source.image : "",
+    typeof source.photo === "string" ? source.photo : "",
+    source.asset?.url,
+    source.asset?.publicUrl,
+    source.asset?.public_url,
+    source.asset?.imageUrl,
+    source.asset?.image_url,
+    source.asset?.fileUrl,
+    source.asset?.file_url
+  )
+}
+
 export const getAssetRole = (asset = {}) => asset.assetRole || asset.asset_role || asset.role || ""
 
-export const getAssetUrl = (asset = {}) => (
-  asset.url || asset.imageUrl || asset.image_url || asset.fileUrl || asset.file_url || asset.publicUrl || ""
+export const getAssetUrl = (asset = {}) => getMediaUrl(asset)
+
+export const getUploadResultUrl = (result = {}) => getMediaUrl(result)
+
+export const getProfileAvatarUrl = (profile = {}) => (
+  firstString(
+    getMediaUrl(profile),
+    getMediaUrl(profile.avatar),
+    getMediaUrl(profile.image),
+    getMediaUrl(profile.photo)
+  )
 )
 
 export const getAssetAlt = (asset = {}, fallback = "") => (

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
-import { fetchProfile, updateProfile } from "../../services/admin"
+import { fetchProfile, updateProfile, uploadImage } from "../../services/admin"
+import { getProfileAvatarUrl, getUploadResultUrl } from "../../utils/projectMedia"
 
 const emptyProfile = {
   name: "",
@@ -19,28 +20,52 @@ const toForm = (profile = {}) => ({
   email: profile.email || "",
   github: profile.github || "",
   bio: profile.bio || profile.introduction || "",
-  avatarUrl: profile.avatarUrl || profile.avatar_url || "",
+  avatarUrl: getProfileAvatarUrl(profile),
   phone: profile.phone || "",
   line: profile.line || "",
   facebook: profile.facebook || ""
 })
 
-const toPayload = (form) => ({
-  name: form.name.trim(),
-  title: form.title.trim(),
-  email: form.email.trim(),
-  github: form.github.trim(),
-  bio: form.bio.trim(),
-  avatarUrl: form.avatarUrl.trim(),
-  phone: form.phone.trim(),
-  line: form.line.trim(),
-  facebook: form.facebook.trim()
-})
+const toPayload = (form) => {
+  const avatarUrl = form.avatarUrl.trim()
+
+  return {
+    name: form.name.trim(),
+    title: form.title.trim(),
+    email: form.email.trim(),
+    github: form.github.trim(),
+    bio: form.bio.trim(),
+    introduction: form.bio.trim(),
+    avatarUrl,
+    avatar_url: avatarUrl,
+    imageUrl: avatarUrl,
+    image_url: avatarUrl,
+    phone: form.phone.trim(),
+    line: form.line.trim(),
+    facebook: form.facebook.trim()
+  }
+}
+
+const isValidImageUrl = (value) => {
+  const trimmed = value.trim()
+  if (!trimmed) return true
+
+  try {
+    const url = new URL(trimmed, globalThis.location?.origin || "http://localhost")
+    return ["http:", "https:"].includes(url.protocol) || trimmed.startsWith("/")
+  } catch {
+    return false
+  }
+}
 
 function AdminProfile() {
   const [form, setForm] = useState(emptyProfile)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [avatarFile, setAvatarFile] = useState(null)
+  const [avatarUploading, setAvatarUploading] = useState(false)
+  const [avatarError, setAvatarError] = useState("")
+  const [avatarImageFailed, setAvatarImageFailed] = useState(false)
   const [error, setError] = useState("")
   const [success, setSuccess] = useState("")
 
@@ -64,10 +89,58 @@ function AdminProfile() {
   }, [])
 
   const handleChange = (event) => {
+    const { name, value } = event.target
+
     setForm({
       ...form,
-      [event.target.name]: event.target.value
+      [name]: value
     })
+
+    if (name === "avatarUrl") {
+      setAvatarImageFailed(false)
+      setAvatarError(value.trim() && !isValidImageUrl(value)
+        ? "Enter a valid http(s) image URL or a site-relative image path."
+        : "")
+    }
+  }
+
+  const handleAvatarUpload = async () => {
+    setAvatarError("")
+    setError("")
+    setSuccess("")
+
+    if (!avatarFile) {
+      setAvatarError("Choose an image file before uploading.")
+      return
+    }
+
+    setAvatarUploading(true)
+
+    try {
+      const result = await uploadImage(avatarFile, {
+        entityType: "profile",
+        assetRole: "avatar",
+        altText: form.name ? `${form.name} profile image` : "Profile image"
+      })
+      const avatarUrl = getUploadResultUrl(result)
+
+      if (!avatarUrl) {
+        setAvatarError("Upload completed, but the response did not include a reusable public image URL.")
+        return
+      }
+
+      setForm(current => ({
+        ...current,
+        avatarUrl
+      }))
+      setAvatarImageFailed(false)
+      setSuccess("Profile image uploaded. Save profile to publish it.")
+    } catch (err) {
+      console.error(err)
+      setAvatarError(err.response?.data?.error || "Failed to upload profile image.")
+    } finally {
+      setAvatarUploading(false)
+    }
   }
 
   const handleSubmit = async (event) => {
@@ -75,6 +148,12 @@ function AdminProfile() {
     setSaving(true)
     setError("")
     setSuccess("")
+
+    if (!isValidImageUrl(form.avatarUrl)) {
+      setSaving(false)
+      setAvatarError("Enter a valid http(s) image URL or a site-relative image path.")
+      return
+    }
 
     try {
       const updated = await updateProfile(toPayload(form))
@@ -162,9 +241,19 @@ function AdminProfile() {
             <fieldset>
               <legend>Media</legend>
               <label>
+                Upload avatar image
+                <input type="file" accept="image/*" onChange={(event) => setAvatarFile(event.target.files?.[0] || null)} />
+              </label>
+              <div className="admin-profile-media-actions">
+                <button className="button button--secondary" type="button" onClick={handleAvatarUpload} disabled={avatarUploading}>
+                  {avatarUploading ? "Uploading..." : "Upload avatar"}
+                </button>
+              </div>
+              <label>
                 Avatar URL
                 <input name="avatarUrl" value={form.avatarUrl} onChange={handleChange} />
               </label>
+              {avatarError && <p className="form-status form-status--error">{avatarError}</p>}
             </fieldset>
             {error && <p className="form-status form-status--error">{error}</p>}
             {success && <p className="form-status form-status--success">{success}</p>}
@@ -172,7 +261,16 @@ function AdminProfile() {
 
           <aside className="admin-panel admin-inspector">
             <span className="card-kicker">Preview</span>
-            {form.avatarUrl && <img className="admin-profile-preview-image" src={form.avatarUrl} alt={form.name || "Profile preview"} />}
+            {form.avatarUrl && !avatarImageFailed && !avatarError && (
+              <img
+                className="admin-profile-preview-image"
+                src={form.avatarUrl}
+                alt={form.name || "Profile preview"}
+                onLoad={() => setAvatarImageFailed(false)}
+                onError={() => setAvatarImageFailed(true)}
+              />
+            )}
+            {avatarImageFailed && <p className="form-status form-status--error">The profile image URL could not be loaded.</p>}
             <h2>{form.name || "Mam"}</h2>
             <p>{form.title || "Title not set"}</p>
             <div className="ruled-rows">

@@ -7,6 +7,7 @@ import {
   updateProject,
   uploadImage
 } from "../../services/admin"
+import { getUploadResultUrl } from "../../utils/projectMedia"
 
 const emptyProject = {
   name: "",
@@ -203,7 +204,9 @@ const getSyncValue = (result, keys) => {
   return 0
 }
 
-const getUploadUrl = (result) => result?.url || result?.asset?.url || result?.previewImage || result?.preview_image || ""
+const getUploadUrl = (result) => (
+  getUploadResultUrl(result) || result?.previewImage || result?.preview_image || ""
+)
 
 const severityRank = {
   healthy: 0,

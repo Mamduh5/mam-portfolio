@@ -1,16 +1,19 @@
 import { useEffect, useState } from "react"
 import { api } from "../services/api"
 import PublicHero from "../components/PublicHero"
+import { getProfileAvatarUrl } from "../utils/projectMedia"
 
 function Profile() {
   const [profile, setProfile] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
+  const [avatarFailed, setAvatarFailed] = useState(false)
 
   useEffect(() => {
     api.get("/profile")
       .then(res => {
         setProfile(res.data)
+        setAvatarFailed(false)
         setError(false)
       })
       .catch(err => {
@@ -35,6 +38,8 @@ function Profile() {
     )
   }
 
+  const avatarUrl = getProfileAvatarUrl(profile)
+
   return (
     <div className="page-stack">
       <PublicHero
@@ -46,6 +51,14 @@ function Profile() {
       <section className="profile-grid" aria-label="Profile information">
         <article className="profile-panel">
           <span className="card-kicker">About</span>
+          {avatarUrl && !avatarFailed && (
+            <img
+              className="profile-avatar"
+              src={avatarUrl}
+              alt={profile.name ? `${profile.name} profile` : "Profile"}
+              onError={() => setAvatarFailed(true)}
+            />
+          )}
           <h2>Builder profile</h2>
           <p>{profile.introduction || "Public profile details will appear here after they are added in the admin dashboard."}</p>
         </article>

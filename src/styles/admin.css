@@ -718,6 +718,31 @@ button.admin-ruled-row {
   align-self: start;
 }
 
+.admin-profile-media-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.admin-asset-url-panel {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  padding: 10px;
+  background: var(--paper-stack);
+  border: 1px solid var(--guide-line);
+  border-radius: 6px;
+}
+
+.admin-asset-url-panel p {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.admin-asset-url-panel .button {
+  justify-self: start;
+}
+
 .admin-preview-panel {
   display: grid;
   gap: 10px;
